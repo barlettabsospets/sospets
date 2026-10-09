@@ -258,3 +258,11 @@ body.pub .thead .th-in { padding-bottom: 0; }
 .tp-legend { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 1rem; font-weight: 800; }
 .tp-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; background: var(--in); }
 .tp-legend .o i { background: var(--out); }
+
+/* marca: o desenho (cão e gato) com o nome escrito em texto embaixo, "SOS Pets" e "DF Águas Claras" */
+.th-brand, .lg-logo { display: grid; justify-items: center; gap: 0; text-decoration: none; }
+.th-brand img { height: 3.25rem !important; width: auto; display: block; }
+.marca { display: grid; justify-items: center; line-height: 1; }
+.marca b { font-family: var(--serif); font-weight: 700; font-size: 1.3rem; color: #6B4A35; letter-spacing: -0.01em; }
+.marca small { margin-top: 2px; font-family: var(--font); font-weight: 800; font-size: .625rem; letter-spacing: .04em; color: #7A5A44; white-space: nowrap; }
+@media (min-width: 900px) { .th-brand img { height: 3.5rem !important; } .marca b { font-size: 1.4rem; } .marca small { font-size: .6875rem; } }

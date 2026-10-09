@@ -25,9 +25,10 @@ function escolha(root, { label, options, value, onChange }) {
   const id = root.id;
   const ponto = o => o.cor ? `<i style="background:${o.cor}" aria-hidden="true"></i>` : '';
   root.classList.add('ad-sel');
+  const itens = () => options.map(o => `<li role="option" id="${id}-op-${o.v || 'todos'}" data-v="${o.v}">${ponto(o)}<span>${o.label}</span></li>`).join('');
   root.innerHTML = `<button class="pdrop-btn" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="${id}-list" aria-labelledby="${label} ${id}-txt"><span id="${id}-txt"></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
-    <ul class="pdrop-list" id="${id}-list" role="listbox" tabindex="-1" aria-labelledby="${label}" hidden>${options.map(o => `<li role="option" id="${id}-op-${o.v}" data-v="${o.v}">${ponto(o)}<span>${o.label}</span></li>`).join('')}</ul>`;
-  const btn = $('.pdrop-btn', root), list = $('.pdrop-list', root), opts = $$('[role=option]', list);
+    <ul class="pdrop-list" id="${id}-list" role="listbox" tabindex="-1" aria-labelledby="${label}" hidden>${itens()}</ul>`;
+  const btn = $('.pdrop-btn', root), list = $('.pdrop-list', root); let opts = $$('[role=option]', list);
   let cur = value, ativo = 0;
   const marcar = k => { ativo = (k + opts.length) % opts.length; opts.forEach((li, j) => li.classList.toggle('act', j === ativo)); list.setAttribute('aria-activedescendant', opts[ativo].id); };
   const abrir = () => { list.hidden = false; btn.setAttribute('aria-expanded', 'true'); marcar(Math.max(0, opts.findIndex(li => li.dataset.v === cur))); list.focus(); };
@@ -49,5 +50,7 @@ function escolha(root, { label, options, value, onChange }) {
   });
   document.addEventListener('pointerdown', e => { if (!list.hidden && !root.contains(e.target)) fechar(); });
   set(value, true);
-  return { set, get: () => cur };
+  // trocar as opções depois (ex.: quantidades que mudam com o mês), mantendo a escolhida
+  function atualizar(novas) { options = novas; list.innerHTML = itens(); opts = $$('[role=option]', list); set(options.some(o => o.v === cur) ? cur : options[0].v, true); }
+  return { set, get: () => cur, atualizar };
 }

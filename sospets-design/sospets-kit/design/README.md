@@ -14,7 +14,8 @@ Abra `index.html` no navegador. Não precisa instalar nada: as fontes (Nunito, F
 | `publico.css` | Base das três páginas públicas: página inteira, letras que crescem com a tela, cabeçalho com abas, cartões, seletor de período |
 | `transparencia.css` / `animais.css` / `despesas.css` | O que é específico de cada página pública |
 | `app.js` | Utilidades e componentes em JavaScript, incluindo o seletor de período (`periodPicker`) |
-| `assets/logo-provisorio.png` | Logo provisório com fundo transparente, extraído de uma imagem de referência |
+| `assets/logo-provisorio.png` | Logo provisório com fundo transparente, extraído de uma imagem de referência (o texto embutido nele está desatualizado; só o design system ainda usa) |
+| `assets/logo-ilustracao.png` | Só o desenho do logo (cão e gato). O nome vem em texto embaixo: "SOS Pets" e "DF Águas Claras" |
 
 Todos os dados são **fictícios**. Os valores de outubro de 2026 são os mesmos nas páginas públicas e na Área do administrador. Quando o logo original (SVG/PNG transparente) chegar, troque `assets/logo-provisorio.png`.
 
