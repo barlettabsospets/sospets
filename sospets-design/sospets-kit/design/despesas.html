@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Despesas | SOS Pets DF Águas Claras</title>
+<meta name="description" content="Tudo o que o SOS Pets DF Águas Claras pagou com o dinheiro arrecadado, por categoria e por pet.">
+<meta name="theme-color" content="#FFF4E3">
+
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="theme4.css">
+<link rel="stylesheet" href="publico.css">
+<link rel="stylesheet" href="despesas.css">
+</head>
+<body class="pub">
+<script>document.documentElement.classList.add('js')</script>
+<a class="skip" href="#main">Pular para o conteúdo</a>
+<div class="proto">Protótipo com dados fictícios. <a href="sistema.html">Ver o design system</a></div>
+
+<header class="thead">
+  <div class="wrap th-in">
+    <a class="th-brand" href="index.html" aria-label="SOS Pets DF Águas Claras, página inicial"><img src="assets/logo-provisorio.png" alt="SOS Pets DF Águas Claras"></a>
+    <nav class="th-tabs" aria-label="Principal">
+      <a href="index.html" aria-label="Prestação de contas"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span class="full">Prestação de contas</span><span class="short" aria-hidden="true">Contas</span></a>
+      <a href="animais.html"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="11" r="1.8"/><circle cx="10" cy="6.5" r="1.8"/><circle cx="14" cy="6.5" r="1.8"/><circle cx="18" cy="11" r="1.8"/><path d="M12 12.5c-2.8 0-5 2.6-5 4.8 0 1.6 1.2 2.2 2.5 2.2 1 0 1.6-.5 2.5-.5s1.5.5 2.5.5c1.3 0 2.5-.6 2.5-2.2 0-2.2-2.2-4.8-5-4.8z"/></svg>Pets</a>
+      <a href="despesas.html" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg>Despesas</a>
+    </nav>
+    <a class="th-admin" href="login.html"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg><span>Área do administrador</span></a>
+  </div>
+</header>
+
+<main id="main" class="wrap tp">
+  <!-- lista à esquerda (o principal), números do mês à direita a partir de 1100 px -->
+  <div class="dp-split">
+  <!-- mês: no computador fica em cima do resumo do mês (coluna da direita); no celular, antes da lista -->
+  <div class="dp-period"><span class="lab" id="periodo-lab">Selecione o mês</span><div id="periodo"></div></div>
+  <section class="dp-list" aria-labelledby="h-list">
+    <div class="dp-h">
+      <h1 id="h-list">Despesas</h1>
+      <p>Tudo o que foi pago com o dinheiro arrecadado. Busque pela descrição ou pelo pet, ou filtre pela categoria.</p>
+    </div>
+    <div class="dp-tools">
+      <label class="dp-busca"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.4-4.4"/></svg><span class="sr-only">Buscar pela descrição ou pelo pet</span>
+        <input type="search" id="busca" placeholder="Buscar despesa ou pet…" autocomplete="off" spellcheck="false"></label>
+      <div class="dp-cchips" id="dp-cats" role="group" aria-label="Categoria"></div>
+    </div>
+    <div class="dp-list-h"><p class="dp-count" id="dp-count" aria-live="polite"></p><button type="button" class="tp-ani-clear" id="dp-clear" hidden>Limpar filtros</button></div>
+    <div class="card dp-table">
+      <div class="tp-rows" id="dp-rows"></div>
+      <p class="dp-sum" id="dp-sum"></p>
+    </div>
+    <p class="dp-note">Descrições não citam nomes de pessoas. Os comprovantes ficam guardados pela organização. Registros detalhados a partir de agosto de 2026.</p>
+  </section>
+
+  <aside class="dp-side" aria-label="Resumo do mês">
+    <section class="card dp-total" aria-labelledby="dp-cap" aria-live="polite">
+      <div class="card-h"><h2 id="dp-cap">Gasto em outubro</h2></div>
+      <p class="dp-big num" id="dp-total">R$ 0,00</p>
+      <p class="dp-tnote" id="dp-note"></p>
+      <h3 class="dp-sub">Para onde foi o dinheiro</h3>
+      <ul class="dp-bars" id="dp-bars" aria-label="Categorias. Escolha uma para filtrar a lista."></ul>
+    </section>
+    <section class="card dp-anis" aria-labelledby="h-anis">
+      <div class="card-h"><h2 id="h-anis">Por pet</h2></div>
+      <div class="dp-chips" id="dp-anis" role="group" aria-label="Pets. Escolha um para filtrar a lista."></div>
+    </section>
+  </aside>
+  </div>
+</main>
+
+<footer class="site-foot"><div class="wrap">
+  <p><strong>Os números são públicos, as pessoas não.</strong> Nomes de quem contribui nunca aparecem neste site.</p>
+  <p>Dados registrados desde janeiro de 2026. Dúvidas ou sugestões? Fale com a gente pelo Instagram @sospets_aguasclaras.</p>
+  <p><a href="login.html">Área do administrador</a></p>
+</div></footer>
+
+<script src="app.js"></script>
+<script src="dados.js"></script>
+<script>
+// despesas e pets vêm de dados.js (os mesmos da Prestação de contas e da página Pets)
+const D = DESPESAS;
+const ESPECIE = Object.fromEntries(PETS.map(p => [p.n, p.e]));
+const MES_LONGO = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+const MESES = [...new Set(D.map(r => +r.d.slice(5, 7) - 1))].sort((a, b) => a - b);  // meses com registros
+const hoje = new Date(), MES_ATUAL = hoje.getFullYear() === 2026 && MESES.includes(hoje.getMonth()) ? hoje.getMonth() : MESES[MESES.length - 1];
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const cap = s => s[0].toUpperCase() + s.slice(1);
+const sum = a => a.reduce((x, y) => x + y, 0);
+const dm = d => d.slice(8) + '/' + d.slice(5, 7);
+// espécie ao lado do nome: ícones próprios (assets/icone-cachorro.webp e assets/icone-gato.webp)
+const bicho = a => ESPECIE[a] === 'cachorro' ? '<img class="ic-cao" src="assets/icone-cachorro.webp" alt="">' : '<img class="ic-cao" src="assets/icone-gato.webp" alt="">';
+const aniTag = a => a ? `<span class="ani">${bicho(a)}${esc(a)}<span class="sr-only"> (${ESPECIE[a]})</span></span>` : '<span class="ani none">Vários pets</span>';
+
+let mes = String(MES_ATUAL), fCat = null, fAni = null, q = '';
+// busca sem acento e sem maiúsculas: "racao" acha "Ração"
+const sem = t => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+// link com filtro: despesas.html#pet=Luna ou #cat=Castração abre já filtrado, no mês mais recente com registro
+const hp = new URLSearchParams(location.hash.slice(1));
+if (hp.get('pet') || hp.get('cat')) {
+  fAni = hp.get('pet'); fCat = hp.get('cat');
+  const ult = D.filter(r => (!fAni || r.a === fAni) && (!fCat || r.c === fCat)).map(r => +r.d.slice(5, 7) - 1);
+  if (ult.length) mes = String(Math.max(...ult));
+}
+periodPicker($('#periodo'), {
+  label: 'periodo-lab', value: mes, steps: MESES.map(String),
+  options: MESES.slice().reverse().map((i, k) => ({ v: String(i), label: cap(MES_LONGO[i]) + ' de 2026', tag: i === MES_ATUAL ? 'mês atual' : '' })),
+  onChange: v => { mes = v; draw(); }
+});
+const cor = corCat;   // cores fixas por categoria, em dados.js
+const plural = (n, um, varios) => `${n} ${n === 1 ? um : varios}`;
+
+function draw() {
+  const m = +mes, nome = MES_LONGO[m], doMes = D.filter(r => +r.d.slice(5, 7) - 1 === m);
+  const tot = sum(doMes.map(r => r.v));
+  const cats = [...new Set(doMes.map(r => r.c))];
+  if (fCat && !cats.includes(fCat)) fCat = null;
+  const porCat = cats.map(c => ({ c, n: doMes.filter(r => r.c === c).length, v: sum(doMes.filter(r => r.c === c).map(r => r.v)) })).sort((a, b) => b.v - a.v);
+
+  // lado direito: total do mês e para onde foi (barras com o valor escrito; tocar filtra a lista)
+  $('#dp-cap').textContent = 'Gasto em ' + nome;
+  $('#dp-total').textContent = fmt(tot);
+  $('#dp-note').textContent = `${plural(doMes.length, 'despesa', 'despesas')} em ${plural(cats.length, 'categoria', 'categorias')}.`;
+  const max = Math.max(...porCat.map(x => x.v), 1);
+  $('#dp-bars').innerHTML = porCat.map(x => `<li><button type="button" data-c="${esc(x.c)}" aria-pressed="${fCat === x.c}"${fCat && fCat !== x.c ? ' class="off"' : ''}>
+    <span class="n">${esc(x.c)}</span><span class="v">${fmt(x.v)}</span>
+    <span class="t" aria-hidden="true"><b style="width:${x.v / max * 100}%;background:${cor(x.c)}"></b></span></button></li>`).join('');
+
+  const anis = [...new Set(doMes.map(r => r.a))].map(a => ({ a, v: sum(doMes.filter(r => r.a === a).map(r => r.v)) })).sort((x, y) => (x.a === '') - (y.a === '') || y.v - x.v);
+  if (fAni !== null && !anis.some(x => x.a === fAni)) fAni = null;
+  $('#dp-anis').innerHTML = anis.map(x => `<button type="button" data-a="${esc(x.a)}" aria-pressed="${fAni === x.a}"${fAni !== null && fAni !== x.a ? ' class="off"' : ''}>
+    ${x.a ? `${bicho(x.a)}${esc(x.a)}` : 'Vários pets'}<b>${fmt(x.v)}</b></button>`).join('');
+
+  // filtros da lista: categoria com a quantidade de despesas, como na página Pets
+  $('#dp-cats').innerHTML = `<button type="button" data-c="" aria-pressed="${!fCat}">Todas<b class="num">${doMes.length}</b></button>` +
+    porCat.map(x => `<button type="button" data-c="${esc(x.c)}" aria-pressed="${fCat === x.c}"><i style="background:${cor(x.c)}" aria-hidden="true"></i>${esc(x.c)}<b class="num">${x.n}</b></button>`).join('');
+
+  // lista: categoria + pet + busca
+  const busca = sem(q.trim());
+  const L = doMes.filter(r => (!fCat || r.c === fCat) && (fAni === null || r.a === fAni) && (!busca || sem(r.t + ' ' + (r.a || 'vários pets')).includes(busca)));
+  const filtros = [fCat, fAni === null ? null : (fAni || 'Vários pets'), busca ? `“${q.trim()}”` : null].filter(Boolean);
+  $('#dp-clear').hidden = !filtros.length;
+  $('#dp-count').textContent = `${plural(L.length, 'despesa', 'despesas')} em ${nome}${filtros.length ? ' · ' + filtros.join(' · ') : ''}`;
+  $('#dp-rows').innerHTML = '<div class="hd" aria-hidden="true"><span>Descrição</span><span>Pet</span><span>Categoria</span><span>Data</span><span>Valor</span></div>' +
+    (L.length ? L.map(r => `<div class="tp-row"><span class="t1">${esc(r.t)}</span>${aniTag(r.a)}<span class="cat" data-d="${dm(r.d)}">${esc(r.c)}</span><span class="dt">${dm(r.d)}</span><span class="amt">${fmt(r.v)}</span></div>`).join('')
+      : '<p class="dp-empty">Nenhuma despesa encontrada. Confira a busca ou limpe os filtros.</p>');
+  const st = sum(L.map(r => r.v));
+  $('#dp-sum').innerHTML = filtros.length ? `<span>Soma do que aparece na lista</span><b>${fmt(st)}</b>` : `<span>Total de ${nome}</span><b>${fmt(tot)}</b>`;
+}
+const filtraCat = e => { const b = e.target.closest('button'); if (b) { const c = b.dataset.c || null; fCat = fCat === c ? null : c; draw(); } };
+$('#dp-cats').addEventListener('click', filtraCat);
+$('#dp-bars').addEventListener('click', filtraCat);
+$('#dp-anis').addEventListener('click', e => { const b = e.target.closest('button'); if (b) { fAni = fAni === b.dataset.a ? null : b.dataset.a; draw(); } });
+let tb; $('#busca').addEventListener('input', e => { clearTimeout(tb); tb = setTimeout(() => { q = e.target.value; draw(); }, 150); });
+$('#dp-clear').addEventListener('click', () => { fCat = null; fAni = null; q = ''; $('#busca').value = ''; draw(); });
+draw();
+</script>
+</body>
+</html>

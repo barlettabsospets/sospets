@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Entrar | SOS Pets DF Águas Claras</title>
+<meta name="description" content="">
+<meta name="theme-color" content="#FFF4E3">
+
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="theme4.css">
+<link rel="stylesheet" href="publico.css">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body class="pub admin auth">
+<script>document.documentElement.classList.add('js')</script>
+<a class="skip" href="#main">Pular para o conteúdo</a>
+<div class="proto">Protótipo com dados fictícios. <a href="sistema.html">Ver o design system</a></div>
+
+<div class="lg-wrap">
+  <main id="main" class="lg-card">
+    <a class="lg-logo" href="index.html" aria-label="SOS Pets DF Águas Claras, voltar ao site"><img src="assets/logo-provisorio.png" alt="SOS Pets DF Águas Claras"></a>
+    <div class="lg-h">
+      <h1>Área do administrador</h1>
+      <p>Entre para registrar contribuições, despesas e pets.</p>
+    </div>
+    <form id="f" novalidate>
+      <div class="field"><label for="email">E-mail</label><input id="email" type="email" autocomplete="username" inputmode="email" placeholder="voce@exemplo.com"></div>
+      <div class="field"><label for="senha">Senha</label>
+        <div class="lg-senha"><input id="senha" type="password" autocomplete="current-password"><button type="button" id="ver" aria-pressed="false" aria-controls="senha">Mostrar</button></div></div>
+      <p class="lg-erro" id="erro" role="alert" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.5h.01"/></svg><span>Informe seu e-mail e a senha para entrar.</span></p>
+      <button class="btn btn-primary lg-entrar" type="submit">Entrar</button>
+    </form>
+    <p class="lg-help">Acesso restrito à equipe do SOS Pets. Esqueceu a senha? Peça a redefinição a quem administra o sistema.</p>
+  </main>
+  <a class="tp-more lg-voltar" href="index.html"><svg viewBox="0 0 24 24" aria-hidden="true" style="transform:rotate(180deg)"><path d="m9 5 7 7-7 7"/></svg>Voltar ao site</a>
+</div>
+
+<script src="app.js"></script>
+<script>
+$('#f').addEventListener('submit', e => {
+  e.preventDefault();
+  const falta = !$('#email').value.trim() ? $('#email') : !$('#senha').value ? $('#senha') : null;
+  $$('#f input').forEach(i => i.removeAttribute('aria-invalid'));
+  if (falta) { $('#erro').hidden = false; falta.setAttribute('aria-invalid', 'true'); falta.focus(); return; }
+  location.href = 'admin-contribuicoes.html';
+});
+// mostrar a senha ajuda quem digita no celular
+$('#ver').addEventListener('click', e => { const on = $('#senha').type === 'password'; $('#senha').type = on ? 'text' : 'password'; e.target.textContent = on ? 'Esconder' : 'Mostrar'; e.target.setAttribute('aria-pressed', on); $('#senha').focus(); });
+</script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+/* SOS Pets DF Águas Claras: página Pets (arquivo animais.css). Carrega depois de publico.css.
+   O catálogo é o protagonista. Ordem da página: faixa "quem precisa de ajuda", catálogo (busca + filtros de
+   situação com a quantidade + espécie, cards compactos 3×3) e, ao lado, os números: chegadas e saídas do mês
+   escolhido (duas barras deitadas com o número) e o anel da fila de castração.
+   Cores das situações, validadas para daltonismo nesta ordem: rua vinho, lar azul, adotado verde. */
+:root { --s-rua: #A40E4C; --s-lar: #2D5F9A; --s-adotado: #356A2A; --ev-ch: #C2477A; --ev-sa: #356A2A; }
+.s-rua { --c: var(--s-rua); } .s-lar { --c: var(--s-lar); } .s-adotado { --c: var(--s-adotado); } .s-fila { --c: var(--orange); }
+
+/* catálogo + números: empilhados até 1099 px; a partir de 1100 px, catálogo (2/3) à esquerda e números (1/3) à direita */
+@media (min-width: 900px) and (max-width: 1099px) { .an-mov { grid-column: span 8; } .an-fila { grid-column: span 4; } }
+@media (min-width: 1100px) {
+  .an-split { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 32px; align-items: start; margin-top: 40px; }
+  .an-split > .an-cat, .an-split > .an-num { margin-top: 0; }
+  .an-split .an-num .tp-grid { grid-template-columns: minmax(0, 1fr); }
+  .an-split .an-mov-h .pbar { max-width: none; width: 100%; }
+  .an-split .an-num .an-cat-h h1, .an-cat-h h2 { font-size: clamp(1.5rem, 2.2vw, 2rem); white-space: nowrap; }
+  .an-split .an-card .ph { aspect-ratio: 16 / 10; }
+}
+
+/* filtro de espécie: pílula branca, compacta, dentro da barra do catálogo */
+.an-seg { display: flex; gap: 4px; padding: 4px; border-radius: 999px; background: #fff; border: 1px solid rgba(74, 40, 20, .1); box-shadow: 0 1px 2px rgba(74, 40, 20, .06); }
+.an-seg button { flex: 1; min-height: 40px; padding: 0 14px; border: 0; border-radius: 999px; background: none; cursor: pointer; font: 800 .9375rem var(--font); color: var(--ink-2); white-space: nowrap; transition: background-color .2s, color .2s; }
+.an-seg button:hover { background: var(--cream); color: var(--ink); }
+.an-seg button[aria-pressed="true"] { background: var(--primary); color: #fff; }
+
+.an-chips i { width: 10px; height: 10px; border-radius: 3px; background: var(--c); flex: none; }
+
+/* 1. faixa de ajuda: dois cartões baixos, lado a lado no computador */
+.an-ajuda { display: grid; gap: var(--gap); padding-top: 24px; }
+@media (min-width: 900px) { .an-ajuda { padding-top: 32px; } }
+@media (min-width: 900px) and (max-width: 1099px) { .an-ajuda { grid-template-columns: 7fr 5fr; } }
+/* mesmas colunas do catálogo (2/3) e dos números (1/3) logo abaixo */
+@media (min-width: 1100px) { .an-ajuda { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 32px; } }
+.an-help { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 12px 18px; padding: 16px 20px; }
+.an-help-lar { background: linear-gradient(160deg, #FFFFFF 40%, #FDEEF2 100%); }
+.an-help-nec { background: linear-gradient(160deg, #FFFFFF 40%, #FFF0E0 100%); }
+.an-help[hidden] { display: none; }
+.an-help-b { flex: 1 1 14rem; display: grid; gap: 4px; min-width: 0; }
+.an-help h3 { font-family: var(--font); font-size: 1.125rem; font-weight: 800; color: var(--ink); }
+.an-help-t { font-size: .9375rem; line-height: 1.4; color: var(--ink-2); font-weight: 700; } .an-help-t b { color: var(--ink); font-size: 1.0625rem; }
+.an-help .prog { height: 8px; margin-top: 4px; background: #fff; box-shadow: inset 0 0 0 1px rgba(74, 40, 20, .08); } .an-help .prog i { background: var(--primary-500); }
+.an-avs { display: flex; gap: 6px; }
+.an-av { display: grid; justify-items: center; gap: 4px; padding: 4px 6px; border: 0; border-radius: 12px; background: none; cursor: pointer; font: inherit; color: var(--ink); transition: background-color .2s; }
+.an-av:hover { background: rgba(255, 255, 255, .8); }
+.an-av b { font-size: .875rem; font-weight: 800; }
+.av { width: 2.75rem; height: 2.75rem; border-radius: 50%; display: grid; place-items: center; overflow: hidden; background: #EFE6DA; color: rgba(74, 40, 20, .35); box-shadow: 0 0 0 2px #fff; }
+.av svg { width: 50%; height: 50%; } .av img { width: 100%; height: 100%; object-fit: cover; }
+.av.lg { width: 3.5rem; height: 3.5rem; flex: none; order: -1; }
+.av.mais { background: #fff; color: var(--ink); font-weight: 800; font-size: 1rem; box-shadow: inset 0 0 0 2px rgba(74, 40, 20, .18); }
+.an-av:has(.mais) b { color: var(--primary); }
+
+/* 2. catálogo */
+.an-cat, .an-num { display: grid; gap: 16px; margin-top: 40px; }
+.an-cat-h { display: grid; gap: 4px; }
+.an-cat-h h1, .an-cat-h h2 { font-family: var(--serif); font-weight: 700; font-size: clamp(1.75rem, 6vw, 2.25rem); line-height: 1.1; color: var(--primary); }
+.an-cat-h p { font-size: 1.0625rem; color: var(--ink-2); } .an-cat-h p b { color: var(--ink); }
+.an-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; }
+.an-busca { position: relative; flex: 1 1 16rem; max-width: 24rem; }
+.an-busca svg { position: absolute; left: 14px; top: 50%; width: 20px; height: 20px; margin-top: -10px; fill: none; stroke: var(--ink-2); stroke-width: 2.2; stroke-linecap: round; pointer-events: none; }
+.an-busca input { width: 100%; min-height: 48px; padding: 0 14px 0 44px; border-radius: 14px; border: 1px solid rgba(74, 40, 20, .18); background: #fff; font: 700 1rem var(--font); color: var(--ink); }
+.an-busca input::placeholder { color: var(--ink-2); font-weight: 600; opacity: .8; }
+.an-busca input:focus-visible { outline: 3px solid var(--primary-500); outline-offset: 1px; border-color: transparent; }
+.an-chips { display: flex; flex-wrap: wrap; gap: 6px; flex-basis: 100%; }
+.an-chips button { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; padding: 0 14px; border-radius: 99px; border: 1px solid rgba(74, 40, 20, .14); background: #fff; cursor: pointer;
+  font: 800 .9375rem var(--font); color: var(--ink-2); transition: background-color .2s, color .2s, border-color .2s; }
+.an-chips button:hover { color: var(--ink); border-color: rgba(74, 40, 20, .3); }
+.an-chips button[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: #fff; }
+.an-chips button[aria-pressed="true"] i { box-shadow: 0 0 0 2px #fff; }
+.an-chips b { font-weight: 800; color: var(--ink); margin-left: 1px; }
+.an-chips button[aria-pressed="true"] b { color: #fff; }
+@media (max-width: 559px) { .an-busca { max-width: none; } .an-tools .an-seg { width: 100%; } }
+
+/* 3. o trabalho em números */
+.an-mov h3, .an-fila h3 { font-family: var(--font); font-size: 1.125rem; font-weight: 800; color: var(--ink); line-height: 1.3; }
+
+/* chegadas e saídas da rua: duas barras deitadas do período escolhido, rótulo à esquerda e número à direita */
+.an-mov-h { align-items: center; }
+.an-mov-h .pbar { max-width: 21rem; }
+@media (max-width: 599px) { .an-mov-h .pbar { max-width: none; } }
+.an-hbars { display: grid; gap: 6px; }
+.an-hb { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr) 2.25rem; align-items: center; gap: 12px; min-height: 48px; padding: 6px 10px; margin: 0 -10px;
+  border: 0; border-radius: 12px; background: none; cursor: pointer; font: inherit; text-align: left; transition: background-color .2s; }
+.an-hb:hover { background: var(--cream); }
+.an-hb[aria-pressed="true"] { background: #fff; box-shadow: inset 0 0 0 2px var(--ink); }
+.an-hb:focus-visible { outline: 3px solid var(--primary-500); outline-offset: 2px; }
+.an-hb .l { font-size: 1rem; font-weight: 800; color: var(--ink); line-height: 1.2; }
+.an-hb .tr { height: 22px; border-radius: 6px; background: rgba(74, 40, 20, .06); overflow: hidden; }
+.an-hb .tr i { display: block; height: 100%; min-width: 4px; border-radius: 6px; transition: width .3s ease-out; }
+.an-hb.ev-ent .tr i { background: var(--ev-ch); } .an-hb.ev-saida .tr i { background: var(--ev-sa); }
+.an-hb b { font-size: 1.5rem; font-weight: 800; color: var(--ink); text-align: right; }
+@media (prefers-reduced-motion: reduce) { .an-hb .tr i { transition: none; } }
+.an-movsum { display: grid; gap: 8px; padding-top: 12px; border-top: 1px solid rgba(74, 40, 20, .1); }
+.an-movsum .t { font-size: 1rem; color: var(--ink-2); font-weight: 700; } .an-movsum .t b { color: var(--ink); }
+.an-evs { display: flex; flex-wrap: wrap; gap: 8px; }
+.an-evs button { display: inline-flex; align-items: baseline; gap: 6px; min-height: 44px; padding: 8px 14px; border-radius: 12px; border: 0; cursor: pointer; font: 700 1rem var(--font); color: var(--ink);
+  background: linear-gradient(180deg, #FFF8EE, var(--cream)); box-shadow: inset 0 0 0 1px rgba(74, 40, 20, .06); transition: background-color .2s, box-shadow .2s; }
+.an-evs button b { font-size: 1.25rem; font-weight: 800; }
+.an-evs button:hover { background: var(--cream-2); }
+.an-evs button[aria-pressed="true"] { background: #fff; box-shadow: inset 0 0 0 2px var(--ink); }
+
+/* fila de castração: anel */
+.an-ring-w { display: grid; justify-items: center; text-align: center; gap: 14px; flex: 1; align-content: center; }
+.an-ring { position: relative; width: 8.5rem; aspect-ratio: 1; }
+.an-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); display: block; }
+.an-ring .tr { fill: none; stroke: var(--orange-100); stroke-width: 14; }
+.an-ring .fe { fill: none; stroke: var(--orange); stroke-width: 14; stroke-linecap: round; transition: stroke-dasharray .4s ease-out; }
+.an-ring .mid { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; }
+.an-ring .mid b { font-size: 2.25rem; line-height: 1; color: var(--orange-700); }
+.an-ring .mid span { font-size: .875rem; font-weight: 800; color: var(--ink-2); }
+.an-ring-t { max-width: 20em; font-size: 1.0625rem; line-height: 1.45; color: var(--ink-2); font-weight: 700; } .an-ring-t b { color: var(--ink); }
+.an-foot2 { flex-wrap: wrap; gap: 4px 18px; }
+.an-foot2 button.tp-more { border: 0; background: none; padding: 0; cursor: pointer; font-family: var(--font); }
+
+/* lista paginada */
+.an-list-h { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; min-height: 44px; }
+.an-count { font-size: 1.0625rem; font-weight: 800; color: var(--ink); }
+.an-cat .tp-ani-clear { min-height: 44px; }
+.an-cat .empty { margin-top: 0; }
+.an-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 339px) { .an-cards { grid-template-columns: minmax(0, 1fr); } }
+@media (min-width: 640px) { .an-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; } }
+.an-pager { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px; padding-top: 6px; }
+.an-pager[hidden] { display: none; }
+.an-pager button { min-width: 44px; height: 44px; padding: 0 10px; border-radius: 12px; border: 0; cursor: pointer; display: grid; place-items: center; font: 800 1rem var(--font); color: var(--ink);
+  background: #fff; box-shadow: 0 1px 2px rgba(74, 40, 20, .08), inset 0 0 0 1px rgba(74, 40, 20, .08); transition: background-color .2s; }
+.an-pager button:hover:not([disabled]):not([aria-current]) { background: var(--cream); }
+.an-pager button[aria-current="page"] { background: var(--primary); color: #fff; box-shadow: none; }
+.an-pager button[disabled] { opacity: .35; cursor: default; }
+.an-pager svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.an-pager-t { width: 100%; text-align: center; font-size: .9375rem; font-weight: 700; color: var(--ink-2); }
+
+/* card do pet: compacto. Sem foto, um espaço neutro com uma pata discreta; quando a foto chegar, ela ocupa o mesmo lugar. */
+.an-card { background: var(--surface); border-radius: 16px; overflow: hidden; border: 1px solid rgba(74, 40, 20, .07); box-shadow: 0 1px 2px rgba(74, 40, 20, .06), 0 8px 20px -14px rgba(74, 40, 20, .25); }
+.an-card .ph { display: grid; place-items: center; width: 100%; aspect-ratio: 4 / 3; background: #F3ECE2; color: rgba(74, 40, 20, .16); }
+.an-card img.ph { object-fit: cover; display: block; }
+.an-card .ph svg { width: 28%; }
+.an-card .body { padding: 10px 12px 12px; display: grid; gap: 6px; justify-items: start; }
+.an-card h3 { font-family: var(--font); font-size: 1.125rem; font-weight: 800; color: var(--ink); line-height: 1.2; overflow-wrap: anywhere; }
+.an-card .chip { font-size: .8125rem; padding: 3px 10px; white-space: normal; }
+.an-card .info { font-size: .875rem; font-weight: 700; color: var(--ink-2); line-height: 1.35; }
+.an-card .cast { display: flex; align-items: center; gap: 5px; font-size: .875rem; font-weight: 800; color: var(--ink-2); line-height: 1.3; }
+.an-card .cast.ok { color: var(--green-700); }
+.an-card .cast svg { width: 1em; height: 1em; flex: none; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.an-card .cast:not(.ok) svg { stroke-width: 2.2; opacity: .6; }

@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pets | SOS Pets DF Águas Claras</title>
+<meta name="description" content="Todos os pets do SOS Pets DF Águas Claras: quantos ainda estão na rua, em lar temporário, adotados e castrados.">
+<meta name="theme-color" content="#FFF4E3">
+
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="theme4.css">
+<link rel="stylesheet" href="publico.css">
+<link rel="stylesheet" href="animais.css">
+</head>
+<body class="pub">
+<script>document.documentElement.classList.add('js')</script>
+<a class="skip" href="#main">Pular para o conteúdo</a>
+<div class="proto">Protótipo com dados fictícios. <a href="sistema.html">Ver o design system</a></div>
+
+<header class="thead">
+  <div class="wrap th-in">
+    <a class="th-brand" href="index.html" aria-label="SOS Pets DF Águas Claras, página inicial"><img src="assets/logo-provisorio.png" alt="SOS Pets DF Águas Claras"></a>
+    <nav class="th-tabs" aria-label="Principal">
+      <a href="index.html" aria-label="Prestação de contas"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span class="full">Prestação de contas</span><span class="short" aria-hidden="true">Contas</span></a>
+      <a href="animais.html" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="11" r="1.8"/><circle cx="10" cy="6.5" r="1.8"/><circle cx="14" cy="6.5" r="1.8"/><circle cx="18" cy="11" r="1.8"/><path d="M12 12.5c-2.8 0-5 2.6-5 4.8 0 1.6 1.2 2.2 2.5 2.2 1 0 1.6-.5 2.5-.5s1.5.5 2.5.5c1.3 0 2.5-.6 2.5-2.2 0-2.2-2.2-4.8-5-4.8z"/></svg>Pets</a>
+      <a href="despesas.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg>Despesas</a>
+    </nav>
+    <a class="th-admin" href="login.html"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg><span>Área do administrador</span></a>
+  </div>
+</header>
+
+<main id="main" class="wrap tp">
+  <!-- 1. quem precisa de ajuda agora: uma faixa curta com chamada para ação -->
+  <section class="an-ajuda" aria-labelledby="h-ajuda">
+    <h2 class="sr-only" id="h-ajuda">Quem precisa de ajuda agora</h2>
+    <div class="card an-help an-help-lar">
+      <div class="an-help-b">
+        <h3>Precisam de lar temporário</h3>
+        <p class="an-help-t" id="lar-txt"></p>
+      </div>
+      <div class="an-avs" id="lar-avs"></div>
+    </div>
+    <div class="card an-help an-help-nec" id="necs"></div>
+  </section>
+
+  <!-- 2 e 3 lado a lado no computador: catálogo à esquerda (principal), números à direita -->
+  <div class="an-split">
+  <!-- 2. catálogo: o conteúdo principal -->
+  <section class="an-cat" aria-labelledby="h-cat">
+    <div class="an-cat-h">
+      <h1 id="h-cat">Nossos pets</h1>
+      <p>Busque pelo nome ou filtre pela situação atual.</p>
+    </div>
+    <div class="an-tools">
+      <label class="an-busca"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.4-4.4"/></svg><span class="sr-only">Buscar pelo nome</span>
+        <input type="search" id="busca" placeholder="Buscar pelo nome…" autocomplete="off" spellcheck="false"></label>
+      <div class="an-seg" id="esp" role="group" aria-label="Espécie">
+        <button type="button" data-v="" aria-pressed="true">Todos</button>
+        <button type="button" data-v="cachorro" aria-pressed="false">Cães</button>
+        <button type="button" data-v="gato" aria-pressed="false">Gatos</button>
+      </div>
+      <div class="an-chips" role="group" aria-label="Situação">
+        <button type="button" data-f="" aria-pressed="true">Todos<b class="num" id="c-todos"></b></button>
+        <button type="button" class="s-rua" data-f="rua" aria-pressed="false"><i aria-hidden="true"></i>Na rua<b class="num" id="c-rua"></b></button>
+        <button type="button" class="s-lar" data-f="lar" aria-pressed="false"><i aria-hidden="true"></i>Em lar temporário<b class="num" id="c-lar"></b></button>
+        <button type="button" class="s-adotado" data-f="adotado" aria-pressed="false"><i aria-hidden="true"></i>Adotados<b class="num" id="c-adotado"></b></button>
+        <button type="button" class="s-fila" data-f="fila" aria-pressed="false"><i aria-hidden="true"></i>Na fila de castração<b class="num" id="c-fila"></b></button>
+      </div>
+    </div>
+    <div class="an-list-h"><p class="an-count" id="an-count" aria-live="polite"></p><button type="button" class="tp-ani-clear" id="an-clear" hidden>Limpar filtros</button></div>
+    <div class="an-cards" id="grid"></div>
+    <div class="empty" id="vazio" hidden>Nenhum pet encontrado. Confira o nome ou limpe os filtros.</div>
+    <nav class="an-pager" id="pager" aria-label="Páginas do catálogo"></nav>
+  </section>
+
+  <!-- 3. o trabalho em números: menor, depois do catálogo -->
+  <section class="an-num" aria-label="Números do grupo">
+    <div class="tp-grid">
+      <section class="card an-mov" aria-labelledby="h-mov">
+        <div class="card-h an-mov-h"><h3 id="h-mov">Chegadas e saídas da rua</h3><span class="sr-only" id="mov-lab">Mês</span><div id="periodo"></div></div>
+        <div class="an-hbars" id="movbars"></div>
+        <div class="an-movsum" id="movsum"></div>
+      </section>
+
+      <section class="card an-fila" aria-labelledby="h-fila">
+        <div class="card-h"><h3 id="h-fila">Fila de castração</h3><span class="meta">ainda não adotados</span></div>
+        <div class="an-ring-w">
+          <div class="an-ring" id="fila-ring" role="img"></div>
+          <p class="an-ring-t" id="fila-txt"></p>
+        </div>
+        <div class="card-foot an-foot2"><button type="button" class="tp-more" id="ver-fila" data-f="fila" aria-pressed="false">Ver quem está na fila<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button></div>
+      </section>
+    </div>
+  </section>
+  </div>
+</main>
+
+<footer class="site-foot"><div class="wrap">
+  <p><strong>Os números são públicos, as pessoas não.</strong> Nomes de quem contribui nunca aparecem neste site.</p>
+  <p>Dados registrados desde janeiro de 2026. Dúvidas ou sugestões? Fale com a gente pelo Instagram @sospets_aguasclaras.</p>
+  <p><a href="login.html">Área do administrador</a></p>
+</div></footer>
+
+<script src="app.js"></script>
+<script src="dados.js"></script>
+<script>
+// tudo vem do cadastro em dados.js; "hoje" é o mês atual do protótipo
+const MES_LONGO = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+const MES_CURTO = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const cap = s => s[0].toUpperCase() + s.slice(1);
+const plural = (n, um, varios) => `${n} ${n === 1 ? um : varios}`;
+const curto = ym => MES_CURTO[+ym.slice(5) - 1] + '/' + ym.slice(0, 4);
+const nomeMes = ym => MES_LONGO[+ym.slice(5) - 1];
+const genero = (p, m, f) => p.sx === 'f' ? f : m;
+const tempo = n => n <= 0 ? 'este mês' : n === 1 ? '1 mês' : `${n} meses`;
+const ha = n => n <= 0 ? 'desde este mês' : 'há ' + tempo(n);
+const sit = p => situacaoPet(p);
+const SIT = { rua: ['chip-warn', 'Na rua'], lar: ['chip-foster', 'Em lar temporário'], adotado: ['chip-adopted', 'Adotado'], falecido: ['chip-off', 'Em memória'] };
+// quando o pet saiu da rua pela primeira vez (lar temporário ou adoção)
+const saidaRua = p => [p.lar, p.ado].filter(Boolean).sort()[0] || null;
+const MESES = Array.from({ length: +HOJE.slice(5) }, (_, i) => `2026-${String(i + 1).padStart(2, '0')}`);
+const PAW = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="6" cy="11" r="2.2"/><circle cx="10" cy="6" r="2.2"/><circle cx="16" cy="6" r="2.2"/><circle cx="20" cy="11" r="2.2"/><path d="M12 12c-3 0-6 3-6 5.5 0 2 1.5 2.5 3 2.5 1.2 0 2-.5 3-.5s1.8.5 3 .5c1.5 0 3-.5 3-2.5C18 15 15 12 12 12z"/></svg>';
+const CHEV = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>';
+
+// estado: espécie, uma seleção que filtra a lista, o mês do movimento e a página da lista
+let esp = '', sel = null, q = '', mov = HOJE, page = 1;
+const PAGE = 9;
+// busca sem acento e sem maiúsculas: "sao" acha "São"
+const sem = t => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+const noMov = (p, k) => { const v = k === 'saida' ? saidaRua(p) : p[k]; return mov === 'all' ? !!v && v >= '2026-01' : v === mov; };
+const quandoMov = () => mov === 'all' ? 'desde janeiro' : 'em ' + nomeMes(mov);
+const FILTROS = {
+  // rótulo da lista: (quantidade) => texto, concordando com 1 ou vários
+  rua: [p => sit(p) === 'rua', () => 'na rua'], lar: [p => sit(p) === 'lar', () => 'em lar temporário'], adotado: [p => sit(p) === 'adotado', n => n === 1 ? 'adotado' : 'adotados'],
+  castrado: [p => !!p.cast, n => n === 1 ? 'castrado' : 'castrados'], fila: [p => ['rua', 'lar'].includes(sit(p)) && !p.cast, () => 'na fila de castração'],
+  precisa: [p => !!p.precisaLar, n => n === 1 ? 'que precisa de lar temporário' : 'que precisam de lar temporário'],
+  'ev:ent': [p => noMov(p, 'ent'), n => `que ${n === 1 ? 'chegou' : 'chegaram'} ${quandoMov()}`], 'ev:saida': [p => noMov(p, 'saida'), n => `que ${n === 1 ? 'saiu' : 'saíram'} da rua ${quandoMov()}`],
+  'ev:ado': [p => noMov(p, 'ado'), n => `${n === 1 ? 'adotado' : 'adotados'} ${quandoMov()}`], 'ev:cast': [p => noMov(p, 'cast'), n => `${n === 1 ? 'castrado' : 'castrados'} ${quandoMov()}`]
+};
+
+const picker = periodPicker($('#periodo'), {
+  label: 'mov-lab', value: mov, steps: MESES,
+  options: [{ v: 'all', label: 'Desde janeiro' }, ...MESES.slice().reverse().map(ym => ({ v: ym, label: cap(nomeMes(ym)) + ' de 2026', tag: ym === HOJE ? 'mês atual' : '' }))],
+  onChange: v => { mov = v; if (sel && sel.startsWith('ev:')) page = 1; draw(); }
+});
+
+// 2. chegadas e saídas da rua no período escolhido: duas barras deitadas, com o número escrito ao lado.
+//    Cada barra mostra esses pets no catálogo. Outro mês: setas ou lista do seletor.
+function drawMov() {
+  const nEv = k => PETS.filter(p => noMov(p, k)).length, ch = nEv('ent'), sa = nEv('saida'), max = Math.max(ch, sa, 1);
+  const linha = (k, rot, n) => `<button type="button" class="an-hb ev-${k}" data-f="ev:${k}" aria-pressed="${sel === 'ev:' + k}" aria-label="${rot}: ${n}. Ver no catálogo">` +
+    `<span class="l">${rot}</span><span class="tr"><i style="width:${n / max * 100}%"></i></span><b class="num">${n}</b></button>`;
+  $('#movbars').innerHTML = linha('ent', n1(ch, 'Chegou', 'Chegaram'), ch) + linha('saida', n1(sa, 'Saiu da rua', 'Saíram da rua'), sa);
+  const rua = mov === 'all' ? null : PETS.filter(p => situacaoPet(p, mov) === 'rua').length, ado = nEv('ado'), cast = nEv('cast');
+  const fim = mov === 'all' || mov === HOJE ? `Hoje, <b>${plural(PETS.filter(p => sit(p) === 'rua').length, 'pet está', 'pets estão')} na rua</b>.` : `${cap(nomeMes(mov))} terminou com <b>${plural(rua, 'pet', 'pets')} na rua</b>.`;
+  $('#movsum').innerHTML = `<p class="t">${fim}</p>` +
+    `<div class="an-evs">` + [['ado', ado, 'adotado', 'adotados'], ['cast', cast, 'castrado', 'castrados']].map(([k, n, sg, pl]) =>
+      `<button type="button" class="ev-${k}" data-f="ev:${k}" aria-pressed="${sel === 'ev:' + k}"><b>${n}</b>${n === 1 ? sg : pl}</button>`).join('') + '</div>';
+}
+const n1 = (n, um, varios) => n === 1 ? um : varios;
+
+// 3. fila de castração: anel com a parte já castrada dos pets que ainda não foram adotados (na rua ou em lar temporário).
+//    Adotados não entram na fila, mesmo sem castração.
+function drawFila() {
+  const base = PETS.filter(p => ['rua', 'lar'].includes(sit(p))), fila = base.filter(FILTROS.fila[0]), feitos = base.length - fila.length;
+  const r = 52, C = 2 * Math.PI * r, fr = base.length ? feitos / base.length : 0;
+  $('#fila-ring').innerHTML = `<svg viewBox="0 0 132 132" aria-hidden="true"><circle cx="66" cy="66" r="${r}" class="tr"/><circle cx="66" cy="66" r="${r}" class="fe" stroke-dasharray="${fr * C} ${C}"/></svg><div class="mid"><b class="num">${fila.length}</b><span>na fila</span></div>`;
+  $('#fila-ring').setAttribute('aria-label', `${fila.length} de ${base.length} pets ainda sem castração`);
+  $('#fila-txt').innerHTML = base.length ? `<b>${feitos} de ${base.length}</b> pets na rua ou em lar temporário já foram castrados. Faltam <b>${fila.length}</b>.` : 'Nenhum pet esperando castração.';
+}
+
+// faixa de ajuda: quem precisa de lar temporário e necessidades ligadas a campanhas
+const avatar = (p, cls = '') => `<span class="av ${cls}" aria-hidden="true">${p.foto ? `<img src="${esc(p.foto)}" alt="">` : PAW}</span>`;
+function drawAjuda() {
+  const precisa = PETS.filter(p => p.precisaLar);
+  $('#lar-txt').textContent = precisa.length ? `${plural(precisa.length, 'pet está na rua e pronto', 'pets estão na rua e prontos')} para ir para uma casa enquanto espera adoção.` : 'Nenhum pet esperando lar temporário agora.';
+  // até 3 rostos; se houver mais, um círculo "+N" que mostra todos no catálogo
+  const MAX = precisa.length > 3 ? 2 : 3, resto = precisa.length - MAX;
+  $('#lar-avs').innerHTML = precisa.slice(0, MAX).map(p => `<button type="button" class="an-av" data-f="precisa" aria-label="Ver ${esc(p.n)} no catálogo">${avatar(p)}<b>${esc(p.n)}</b></button>`).join('') +
+    (resto > 0 ? `<button type="button" class="an-av" data-f="precisa" aria-label="Ver todos os ${precisa.length} no catálogo"><span class="av mais" aria-hidden="true">+${resto}</span><b>ver todos</b></button>` : '');
+  const camps = Camps.get().filter(c => c.st === 'open'), p = PETS.find(p => p.nec), c = p && camps.find(c => c.n.includes(p.n)), pc = c && c.meta ? Math.min(100, pct(c.inn, c.meta)) : null;
+  $('#necs').hidden = !p;
+  if (p) $('#necs').innerHTML = `<div class="an-help-b"><h3>${esc(p.n)} ${esc(p.nec.toLowerCase())}</h3>` +
+    (c ? `<p class="an-help-t"><b class="num">${fmt(c.inn)}</b> arrecadados de ${fmt(c.meta)}</p>` + (pc !== null ? `<div class="prog" role="img" aria-label="${pc}% da meta"><i style="width:${pc}%"></i></div>` : '') : '') +
+    `</div>${avatar(p, 'lg')}`;
+}
+
+// card do catálogo: foto (ou espaço neutro com uma pata), nome, situação, espécie com o tempo e a castração
+function card(p) {
+  const s = sit(p), bicho = p.e === 'cachorro' ? genero(p, 'Cão', 'Cadela') : genero(p, 'Gato', 'Gata');
+  const quando = s === 'rua' ? ha(mesesEntre(p.ent, HOJE)) : s === 'lar' ? ha(mesesEntre(p.lar, HOJE)) : `em ${curto(p.ado)}`;
+  const foto = p.foto ? `<img class="ph" src="${esc(p.foto)}" alt="Foto de ${esc(p.n)}">` : `<div class="ph" role="img" aria-label="Ainda sem foto">${PAW}</div>`;
+  return `<article class="an-card">${foto}<div class="body"><h3>${esc(p.n)}</h3>` +
+    `<span class="chip ${SIT[s][0]}">${s === 'adotado' ? genero(p, 'Adotado', 'Adotada') : SIT[s][1]}</span>` +
+    `<p class="info">${bicho} · ${quando}</p>` +
+    (p.cast ? `<p class="cast ok"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>${genero(p, 'Castrado', 'Castrada')}</p>`
+      : `<p class="cast"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7.5"/></svg>${genero(p, 'Ainda não castrado', 'Ainda não castrada')}</p>`) + `</div></article>`;
+}
+
+// catálogo paginado: espécie + situação (ou outro filtro vindo da página) + busca pelo nome
+function drawList(rolar) {
+  const f = sel ? FILTROS[sel] : null, busca = sem(q.trim());
+  const L = PETS.filter(p => (!esp || p.e === esp) && (!f || f[0](p)) && (!busca || sem(p.n).includes(busca)));
+  const paginas = Math.max(1, Math.ceil(L.length / PAGE)); page = Math.min(page, paginas);
+  const quem = esp === 'gato' ? ['gato', 'gatos'] : esp === 'cachorro' ? ['cão', 'cães'] : ['pet', 'pets'];
+  const rot = f ? ' ' + f[1](L.length) : '';
+  $('#an-count').textContent = `${plural(L.length, quem[0], quem[1])}${rot}${busca ? ` com “${q.trim()}” no nome` : ''}`;
+  $('#an-clear').hidden = !sel && !esp && !busca;
+  $$('.an-chips button').forEach(b => b.setAttribute('aria-pressed', b.dataset.f === (sel || '')));
+  $('#grid').innerHTML = L.slice((page - 1) * PAGE, page * PAGE).map(card).join('');
+  $('#vazio').hidden = L.length > 0;
+  const nums = Array.from({ length: paginas }, (_, k) => k + 1);
+  $('#pager').hidden = paginas < 2;
+  $('#pager').innerHTML = `<button type="button" data-p="${page - 1}" ${page === 1 ? 'disabled' : ''} aria-label="Página anterior"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button>` +
+    nums.map(n => `<button type="button" data-p="${n}"${n === page ? ' aria-current="page"' : ''} aria-label="Página ${n} de ${paginas}">${n}</button>`).join('') +
+    `<button type="button" data-p="${page + 1}" ${page === paginas ? 'disabled' : ''} aria-label="Próxima página">${CHEV}</button>` +
+    `<span class="an-pager-t">${(page - 1) * PAGE + 1}–${Math.min(page * PAGE, L.length)} de ${L.length}</span>`;
+  if (rolar && $('#h-cat').getBoundingClientRect().top < 0) $('#h-cat').scrollIntoView({ block: 'start' });
+}
+
+// filtros com quantidade, faixa de ajuda e números mostram todos os pets; espécie e busca valem só para o catálogo
+function draw() {
+  // a quantidade de cada situação fica no próprio filtro (todos os pets, sem contar espécie nem busca)
+  $('#c-todos').textContent = PETS.length;
+  ['rua', 'lar', 'adotado', 'fila'].forEach(k => { $('#c-' + k).textContent = PETS.filter(FILTROS[k][0]).length; });
+  drawMov(); drawFila(); drawAjuda();
+  $('#ver-fila').setAttribute('aria-pressed', sel === 'fila');
+  drawList();
+}
+$('#esp').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; esp = b.dataset.v; page = 1; $$('#esp button').forEach(x => x.setAttribute('aria-pressed', x === b)); drawList(); });
+let tb; $('#busca').addEventListener('input', e => { clearTimeout(tb); tb = setTimeout(() => { q = e.target.value; page = 1; drawList(); }, 150); });
+// qualquer botão com data-f filtra o catálogo; fora dos filtros do catálogo, leva até ele
+document.addEventListener('click', e => { const b = e.target.closest('[data-f]'); if (!b) return;
+  const f = b.dataset.f || null, naBarra = !!b.closest('.an-chips');
+  sel = naBarra || b.classList.contains('an-av') || !f ? f : sel === f ? null : f; page = 1;
+  if (!naBarra) { q = ''; $('#busca').value = ''; }
+  draw();
+  if (!naBarra) $('#h-cat').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }); });
+$('#pager').addEventListener('click', e => { const b = e.target.closest('button[data-p]'); if (!b || b.disabled) return; page = +b.dataset.p; drawList(true); $('#pager button[aria-current]')?.focus(); });
+$('#an-clear').addEventListener('click', () => { sel = null; esp = ''; q = ''; page = 1; $('#busca').value = ''; $$('#esp button').forEach(x => x.setAttribute('aria-pressed', x.dataset.v === '')); draw(); });
+draw();
+</script>
+</body>
+</html>

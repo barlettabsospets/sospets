@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pets | Área do administrador</title>
+<meta name="description" content="">
+<meta name="theme-color" content="#FFF4E3">
+
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="theme4.css">
+<link rel="stylesheet" href="publico.css">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body class="pub admin">
+<script>document.documentElement.classList.add('js')</script>
+<a class="skip" href="#main">Pular para o conteúdo</a>
+<div class="proto">Protótipo com dados fictícios. <a href="sistema.html">Ver o design system</a></div>
+
+<header class="thead">
+  <div class="wrap th-in">
+    <a class="th-brand" href="admin-contribuicoes.html" aria-label="SOS Pets DF Águas Claras, início da área do administrador"><img src="assets/logo-provisorio.png" alt="SOS Pets DF Águas Claras"></a>
+    <nav class="th-tabs" aria-label="Área do administrador"><a href="admin-contribuicoes.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-9-9c-1.3-3.2.8-6.5 4-6.5 2 0 3.5 1 5 3 1.5-2 3-3 5-3 3.2 0 5.3 3.3 4 6.5-2 4.6-9 9-9 9z"/></svg><span>Contribuições</span></a><a href="admin-despesas.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg><span>Despesas</span></a><a href="admin-animais.html" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="11" r="2"/><circle cx="10" cy="6" r="2"/><circle cx="16" cy="6" r="2"/><circle cx="20" cy="11" r="2"/><path d="M12 12c-3 0-6 3-6 5.5 0 2 1.5 2.5 3 2.5 1.2 0 2-.5 3-.5s1.8.5 3 .5c1.5 0 3-.5 3-2.5C18 15 15 12 12 12z"/></svg><span>Pets</span></a><a href="admin-membros.html"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.5 3-6 6.5-6s6.5 2.5 6.5 6M16 4.5a3.5 3.5 0 0 1 0 7M18 14.2c2.2.8 3.5 2.8 3.5 5.8"/></svg><span>Membros</span></a><a href="admin-mais.html"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg><span>Mais</span></a></nav>
+    <a class="th-admin" href="login.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 16l-4-4 4-4M6 12h10"/></svg><span>Sair</span></a>
+  </div>
+</header>
+<main id="main" class="wrap">
+<div class="split ad-topo">
+  <aside>
+    <div class="ad-period"><span class="lab" id="periodo-lab">Selecione o mês</span><div id="periodo"></div></div>
+    <article class="tile ad-aten" aria-live="polite"><h2>Precisa de atenção</h2><ul id="aten"></ul></article>
+    <button class="btn btn-primary" id="novo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Novo pet</button>
+  </aside>
+  <section aria-label="Lista de pets">
+    <div class="ahead"><h1>Pets</h1><p>Cadastre os pets, atualize a situação de cada um e escolha quem aparece no site público.</p></div>
+    <div class="ad-tools">
+      <label class="ad-busca"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.4-4.4"/></svg><span class="sr-only">Buscar pelo nome</span><input type="search" id="q" placeholder="Buscar pelo nome…" autocomplete="off"></label>
+      <div class="ad-chips" id="seg" role="group" aria-label="Situação">
+        <button type="button" data-v="" aria-pressed="true">Todos<b id="c-todos"></b></button>
+        <button type="button" data-v="rua" aria-pressed="false" style="--c:#A40E4C"><i aria-hidden="true"></i>Na rua<b id="c-rua"></b></button>
+        <button type="button" data-v="lar" aria-pressed="false" style="--c:#2D5F9A"><i aria-hidden="true"></i>Em lar temporário<b id="c-lar"></b></button>
+        <button type="button" data-v="adotado" aria-pressed="false" style="--c:#356A2A"><i aria-hidden="true"></i>Adotados<b id="c-adotado"></b></button>
+        <button type="button" data-v="fila" aria-pressed="false" style="--c:var(--orange)"><i aria-hidden="true"></i>Na fila de castração<b id="c-fila"></b></button>
+        <button type="button" data-v="falecido" aria-pressed="false" style="--c:#8A7F76"><i aria-hidden="true"></i>Falecidos<b id="c-falecido"></b></button>
+      </div>
+    </div>
+    <div class="ad-list-h"><p class="ad-count" id="cont" aria-live="polite"></p><button type="button" class="btn btn-ghost btn-sm" id="limpar" hidden>Limpar filtro</button></div>
+    <div class="glist" id="lista"></div>
+    <div class="empty" id="vazio" hidden>Nenhum pet encontrado. Confira o nome ou o filtro.</div>
+    <nav class="ad-pager" id="pager" aria-label="Páginas da lista de pets"></nav>
+  </section>
+</div>
+<dialog id="dlg" class="ad-dlg" aria-labelledby="dlg-t"><form method="dialog">
+  <header class="ad-dlg-h"><h2 id="dlg-t">Novo pet</h2><button class="ad-x" value="cancel" formnovalidate aria-label="Fechar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></header>
+  <div class="ad-dlg-b">
+    <fieldset class="ad-sec"><legend>Quem é</legend>
+      <div class="ad-foto">
+        <div class="ad-foto-ph" id="p-prev" aria-hidden="true"></div>
+        <div class="ad-foto-t"><b>Foto</b><span>Tire na hora ou escolha da galeria. A foto é reduzida e a localização dela é removida.</span>
+          <div class="ad-foto-b"><label class="btn btn-secondary btn-sm" for="p-foto" id="p-foto-l">Escolher foto</label><input id="p-foto" class="sr-only" type="file" accept="image/*"><button class="btn btn-ghost btn-sm" type="button" id="p-foto-x" hidden>Remover</button></div></div>
+      </div>
+      <div class="field"><label for="p-nome">Nome</label><input id="p-nome" placeholder="Ex.: Mel" required autocomplete="off"></div>
+      <div class="field"><span class="lbl" id="l-esp">Espécie</span><div class="ad-seg" role="radiogroup" aria-labelledby="l-esp"><label><input type="radio" name="esp" value="gato"><span><img src="assets/icone-gato.webp" alt="">Gato</span></label><label><input type="radio" name="esp" value="cachorro"><span><img src="assets/icone-cachorro.webp" alt="">Cachorro</span></label></div></div>
+      <div class="ad-row2">
+        <div class="field"><span class="lbl" id="l-sx">Sexo</span><div class="ad-seg" role="radiogroup" aria-labelledby="l-sx"><label><input type="radio" name="sx" value="f"><span>Fêmea</span></label><label><input type="radio" name="sx" value="m"><span>Macho</span></label></div></div>
+        <div class="field"><span class="lbl" id="l-id">Idade</span><div class="ad-seg" role="radiogroup" aria-labelledby="l-id"><label><input type="radio" name="id" value="filhote"><span>Filhote</span></label><label><input type="radio" name="id" value="adulto"><span>Adulto</span></label></div></div>
+      </div>
+    </fieldset>
+
+    <fieldset class="ad-sec"><legend>Situação</legend>
+      <div class="field"><span class="lbl sr-only" id="l-sit">Situação atual</span><div id="p-sit"></div></div>
+      <div class="ad-row2">
+        <div class="field"><label for="p-ent">Chegou ao grupo em</label><input id="p-ent" type="month"></div>
+        <div class="field" id="f-desde"><label for="p-desde" id="l-desde">Desde</label><input id="p-desde" type="month"></div>
+      </div>
+      <p class="ad-aviso" id="p-aviso-fal" hidden>Um pet falecido sai das contas de “na rua”, “em lar temporário” e da fila de castração. O histórico e as despesas dele continuam guardados.</p>
+      <label class="check" id="f-precisa"><input type="checkbox" id="p-precisa"> Precisa de lar temporário agora</label>
+      <div class="field"><label for="p-nec">Precisa de algo agora? (opcional, aparece no site)</label><input id="p-nec" placeholder="Ex.: Precisa de cirurgia"></div>
+    </fieldset>
+
+    <fieldset class="ad-sec"><legend>Saúde</legend>
+      <div class="field"><span class="lbl">Castrado?</span><div class="ad-seg" role="radiogroup" aria-label="Castrado?"><label><input type="radio" name="cast" value="sim"><span>Sim</span></label><label><input type="radio" name="cast" value="nao"><span>Não</span></label><label><input type="radio" name="cast" value=""><span>Não sei</span></label></div></div>
+      <div class="ad-checks"><label class="check"><input type="checkbox" id="p-vac"> Vacinado</label><label class="check"><input type="checkbox" id="p-verm"> Vermifugado</label><label class="check" id="f-fiv"><input type="checkbox" id="p-fiv"> Testado para FIV/FeLV</label></div>
+    </fieldset>
+
+    <fieldset class="ad-sec"><legend>Privacidade</legend>
+      <div class="field"><label for="p-loc">Onde fica (só a equipe vê)</label><input id="p-loc" placeholder="Ex.: perto da padaria, quadra 105"></div>
+      <label class="check"><input type="checkbox" id="p-pub" checked> Mostrar no site público</label>
+    </fieldset>
+  </div>
+  <footer class="ad-dlg-f"><button class="btn btn-secondary" value="cancel" formnovalidate>Cancelar</button><button class="btn btn-primary" id="p-ok" value="ok">Salvar pet</button></footer>
+</form></dialog></main>
+<div class="toast" id="toast" role="status"><span id="toast-t"></span><button class="btn btn-ghost" id="desfazer">Desfazer</button></div>
+<nav class="tabbar" aria-label="Área do administrador"><a href="admin-contribuicoes.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-9-9c-1.3-3.2.8-6.5 4-6.5 2 0 3.5 1 5 3 1.5-2 3-3 5-3 3.2 0 5.3 3.3 4 6.5-2 4.6-9 9-9 9z"/></svg><span>Contribuições</span></a><a href="admin-despesas.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg><span>Despesas</span></a><a href="admin-animais.html" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="11" r="2"/><circle cx="10" cy="6" r="2"/><circle cx="16" cy="6" r="2"/><circle cx="20" cy="11" r="2"/><path d="M12 12c-3 0-6 3-6 5.5 0 2 1.5 2.5 3 2.5 1.2 0 2-.5 3-.5s1.8.5 3 .5c1.5 0 3-.5 3-2.5C18 15 15 12 12 12z"/></svg><span>Pets</span></a><a href="admin-membros.html"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.5 3-6 6.5-6s6.5 2.5 6.5 6M16 4.5a3.5 3.5 0 0 1 0 7M18 14.2c2.2.8 3.5 2.8 3.5 5.8"/></svg><span>Membros</span></a><a href="admin-mais.html"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg><span>Mais</span></a></nav>
+<script src="app.js"></script>
+<script src="admin.js"></script>
+<script src="dados.js"></script>
+<script>
+function toast(t, undo) { $('#toast-t').textContent = t; $('#toast').removeAttribute('data-show'); void $('#toast').offsetWidth; $('#toast').setAttribute('data-show', ''); toast.u = undo; $('#desfazer').hidden = !undo; clearTimeout(toast.h); toast.h = setTimeout(() => $('#toast').removeAttribute('data-show'), 6000); }
+$('#desfazer').addEventListener('click', () => { if (toast.u) toast.u(); toast.u = null; $('#toast').removeAttribute('data-show'); });
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function openDlg(id) { const d = $('#' + id); const f = $('form', d); if (f) f.reset(); d.showModal(); }
+
+// pets do mesmo cadastro do site (dados.js): os números batem com a página Pets
+const SIT = { rua: ['Na rua', 'chip-warn'], lar: ['Em lar temporário', 'chip-foster'], adotado: ['Adotado', 'chip-adopted'], falecido: ['Falecido', 'chip-off'] };
+const semAc = t => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+const gen = (p, m, f) => p.sx === 'f' ? f : m;
+// mês escolhido: a lista mostra a situação de cada pet no fim dele (no mês atual, a situação de hoje)
+let ym = HOJE;
+const st = p => situacaoPet(p, ym), castNo = p => !!p.cast && p.cast <= ym;
+const FILTRO = { rua: p => st(p) === 'rua', lar: p => st(p) === 'lar', adotado: p => st(p) === 'adotado',
+  falecido: p => st(p) === 'falecido', fila: p => ['rua', 'lar'].includes(st(p)) && !castNo(p),
+  // filtros que vêm do cartão "Precisa de atenção"
+  precisa: p => st(p) === 'rua' && !!p.precisaLar, nec: p => !!p.nec && ['rua', 'lar'].includes(st(p)) };
+// como a lista se apresenta com cada filtro: "3 pets que precisam de lar temporário"
+const ROT = { rua: 'na rua', lar: 'em lar temporário', adotado: 'adotados', falecido: 'falecidos', fila: 'na fila de castração',
+  precisa: 'que precisam de lar temporário', nec: 'com alguma necessidade agora' };
+const tempo = n => n <= 0 ? 'desde este mês' : n === 1 ? 'há 1 mês' : `há ${n} meses`;
+const ICA = { casa: '<path d="M4 11 12 4l8 7"/><path d="M6 9.5V20h12V9.5"/>', fila: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>', alerta: '<path d="M12 4 2.5 20h19z"/><path d="M12 10v4M12 17h.01"/>' };
+const oculto = new Set();   // pets escondidos do site público
+const MESES = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+const MES_NOME = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro'];
+const mes = ym => ym ? MESES[+ym.slice(5) - 1] + '/' + ym.slice(0, 4) : '';
+let f = '', page = 1;
+function draw() {
+  const n = k => PETS.filter(FILTRO[k]).length;
+  $('#c-todos').textContent = PETS.filter(st).length; ['rua', 'lar', 'adotado', 'fila', 'falecido'].forEach(k => { $('#c-' + k).textContent = n(k); });
+  // filtro com 0 some da barra (a não ser que seja o escolhido)
+  $$('#seg button').forEach(b => { b.setAttribute('aria-pressed', b.dataset.v === f); b.hidden = !!b.dataset.v && n(b.dataset.v) === 0 && f !== b.dataset.v; });
+  // precisa de atenção: só o que tem alguém; cada item filtra a lista
+  const nec = PETS.filter(FILTRO.nec);
+  const itens = [['precisa', ICA.casa, `${n('precisa')} ${n('precisa') === 1 ? 'precisa' : 'precisam'} de lar temporário`, n('precisa')],
+    ['fila', ICA.fila, `${n('fila')} na fila de castração`, n('fila')],
+    ...nec.map(p => ['nec', ICA.alerta, `${esc(p.n)}: ${esc(p.nec.toLowerCase())}`, 1])].filter(x => x[3] > 0);
+  if (ym !== HOJE) $('#aten').innerHTML = `<li class="ok">Você está vendo ${MES_NOME[+ym.slice(5) - 1]} de 2026. O que precisa de atenção aparece no mês atual.</li>`; else
+  $('#aten').innerHTML = itens.length ? itens.map(([k, ic, t]) => `<li><button type="button" data-f="${k}" aria-pressed="${f === k}"><svg viewBox="0 0 24 24" aria-hidden="true">${ic}</svg><span>${t}</span><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button></li>`).join('')
+    : '<li class="ok">Nada pendente agora.</li>';
+  const q = semAc($('#q').value.trim());
+  const L = PETS.filter(p => st(p) && (!f || FILTRO[f](p)) && (!q || semAc(p.n).includes(q)));
+  const pg = paginar(L, page, $('#pager'), $('#cont'), f && ROT[f] ? [`pet ${ROT[f].replace(/s$/, '').replace('precisam', 'precisa')}`, `pets ${ROT[f]}`] : ['pet', 'pets']); page = pg.pagina;
+  $('#limpar').hidden = !f;
+  $('#vazio').hidden = L.length > 0; $('#lista').hidden = L.length === 0;
+  // a linha inteira abre a edição; mostrar/ocultar no site fica dentro de Editar
+  // tabela: Pet | Espécie e idade | Situação | Castrado | ›. A linha inteira abre a edição.
+  const COR_SIT = { rua: '#A40E4C', lar: '#2D5F9A', adotado: '#356A2A', falecido: '#6E655E' };
+  $('#lista').innerHTML = (pg.V.length ? '<div class="ad-th" aria-hidden="true"><span>Pet</span><span>Espécie e idade</span><span>Situação</span><span>Castrado</span><span></span></div>' : '') +
+    pg.V.map(p => { const i = PETS.indexOf(p), s = st(p), bicho = p.e === 'cachorro' ? gen(p, 'Cão', 'Cadela') : gen(p, 'Gato', 'Gata');
+    const quando = s === 'rua' ? tempo(mesesEntre(p.ent, ym)) : s === 'lar' ? tempo(mesesEntre(p.lar, ym)) : `em ${mes(s === 'adotado' ? p.ado : p.obito)}`;
+    const nome = s === 'adotado' ? gen(p, 'Adotado', 'Adotada') : s === 'falecido' ? gen(p, 'Falecido', 'Falecida') : SIT[s][0];
+    const ic = `<img class="ic-cao" src="assets/icone-${p.e === 'cachorro' ? 'cachorro' : 'gato'}.webp" alt="">`;
+    const idade = `${bicho} ${gen(p, p.id, p.id === 'adulto' ? 'adulta' : p.id)}`, cast = castNo(p);
+    return `<button type="button" class="ad-tr" data-i="${i}" aria-label="Editar ${esc(p.n)}: ${idade}, ${nome} ${quando}, ${cast ? 'castrado' : 'não castrado'}">
+      <span class="c-pet">${p.foto ? `<img class="ft" src="${p.foto}" alt="">` : ic}<b>${esc(p.n)}</b>${oculto.has(p.n) ? '<em class="tag">Oculto no site</em>' : ''}</span>
+      <span class="c-esp" data-c=" · ${cast ? gen(p, 'castrado', 'castrada') : gen(p, 'não castrado', 'não castrada')}">${idade}</span>
+      <span class="c-sit"><span><em class="sit-b" style="--c:${COR_SIT[s]}">${nome}</em><small>${quando}</small></span></span>
+      <span class="c-cast ${cast ? 'sim' : 'nao'}">${cast ? 'Sim' : 'Não'}</span>
+      <span class="c-go" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg></span></button>`; }).join('');
+}
+$('#seg').addEventListener('click', e => { const b = e.target.closest('button'); if (b) { f = f === b.dataset.v ? '' : b.dataset.v; page = 1; draw(); } });
+$('#q').addEventListener('input', () => { page = 1; draw(); });
+ligarPaginas($('#pager'), n => { page = n; draw(); });
+periodPicker($('#periodo'), { label: 'periodo-lab', value: HOJE, steps: MES_NOME.map((m, i) => `2026-${String(i + 1).padStart(2, '0')}`),
+  options: MES_NOME.map((m, i) => i).reverse().map(i => ({ v: `2026-${String(i + 1).padStart(2, '0')}`, label: MES_NOME[i][0].toUpperCase() + MES_NOME[i].slice(1) + ' de 2026', tag: i === 9 ? 'mês atual' : '' })),
+  onChange: v => { ym = v; page = 1; if (ym !== HOJE && ['precisa', 'nec'].includes(f)) f = ''; draw(); } });
+
+// janela de cadastro: a mesma para "Novo pet" e "Editar"
+let edit = null, foto = null;
+const sitSel = escolha($('#p-sit'), { label: 'l-sit', value: 'rua', onChange: () => ajustaSituacao(), options: [
+  { v: 'rua', label: 'Na rua', cor: '#A40E4C' }, { v: 'lar', label: 'Em lar temporário', cor: '#2D5F9A' }, { v: 'adotado', label: 'Adotado', cor: '#356A2A' }, { v: 'falecido', label: 'Falecido', cor: '#8A7F76' }] });
+const radio = n => n === 'sit' ? sitSel.get() : ($(`input[name="${n}"]:checked`) || {}).value;
+const marcar = (n, v) => $$(`input[name="${n}"]`).forEach(r => { r.checked = r.value === (v ?? ''); });
+const PAW = '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="6" cy="11" r="2.2"/><circle cx="10" cy="6" r="2.2"/><circle cx="16" cy="6" r="2.2"/><circle cx="20" cy="11" r="2.2"/><path d="M12 12c-3 0-6 3-6 5.5 0 2 1.5 2.5 3 2.5 1.2 0 2-.5 3-.5s1.8.5 3 .5c1.5 0 3-.5 3-2.5C18 15 15 12 12 12z"/></svg>';
+function mostraFoto() { $('#p-prev').innerHTML = foto ? `<img src="${foto}" alt="">` : PAW; $('#p-foto-l').textContent = foto ? 'Trocar foto' : 'Escolher foto'; $('#p-foto-x').hidden = !foto; }
+// os campos que dependem da situação: data, aviso de falecido, "precisa de lar" só para quem está na rua
+function ajustaSituacao() {
+  const s = radio('sit'), rot = { lar: 'Em lar temporário desde', adotado: 'Adotado em', falecido: 'Faleceu em' }[s];
+  $('#f-desde').hidden = !rot; if (rot) $('#l-desde').textContent = rot;
+  $('#p-aviso-fal').hidden = s !== 'falecido'; $('#f-precisa').hidden = s !== 'rua';
+  $('#f-fiv').hidden = radio('esp') !== 'gato';
+}
+$('#dlg').addEventListener('change', e => { if (e.target.name === 'esp') ajustaSituacao(); });
+function abrirPet(p) {
+  edit = p; openDlg('dlg');
+  $('#dlg-t').textContent = p ? `Editar ${p.n}` : 'Novo pet'; $('#p-ok').textContent = p ? 'Salvar alterações' : 'Salvar pet';
+  const s = p ? situacaoPet(p) : 'rua';
+  $('#p-nome').value = p ? p.n : ''; $('#p-nec').value = p?.nec || ''; $('#p-loc').value = p?.loc || '';
+  marcar('esp', p ? p.e : 'gato'); marcar('sx', p ? p.sx : 'f'); marcar('id', p ? p.id : 'adulto'); sitSel.set(s, true);
+  marcar('cast', p ? (p.cast ? 'sim' : p.castNao ? 'nao' : '') : '');
+  $('#p-ent').value = p ? p.ent : HOJE; $('#p-desde').value = (p && { lar: p.lar, adotado: p.ado, falecido: p.obito }[s]) || HOJE;
+  $('#p-precisa').checked = !!p?.precisaLar; $('#p-vac').checked = !!p?.vac; $('#p-verm').checked = !!p?.verm; $('#p-fiv').checked = !!p?.fiv;
+  $('#p-pub').checked = !(p && oculto.has(p.n)); foto = p?.foto || null; mostraFoto(); ajustaSituacao();
+  $('#p-nome').focus();
+}
+// foto: corta no centro e reduz para 320 px (miniatura leve); redesenhar no canvas já descarta a localização
+$('#p-foto').addEventListener('change', e => { const file = e.target.files[0]; if (!file) return;
+  const img = new Image(); img.onload = () => { const c = document.createElement('canvas'), N = 320, l = Math.min(img.width, img.height); c.width = c.height = N;
+    c.getContext('2d').drawImage(img, (img.width - l) / 2, (img.height - l) / 2, l, l, 0, 0, N, N); foto = c.toDataURL('image/webp', .82); URL.revokeObjectURL(img.src); mostraFoto(); };
+  img.src = URL.createObjectURL(file); });
+$('#p-foto-x').onclick = () => { foto = null; $('#p-foto').value = ''; mostraFoto(); };
+$('#novo').onclick = () => abrirPet(null);
+$('#p-ok').addEventListener('click', e => { const n = $('#p-nome').value.trim(); if (!n) return;
+  const p = edit || { ent: HOJE }, antes = edit ? { ...edit } : null, s = radio('sit'), desde = $('#p-desde').value || HOJE;
+  Object.assign(p, { n, e: radio('esp'), sx: radio('sx'), id: radio('id'), nec: $('#p-nec').value.trim() || undefined, loc: $('#p-loc').value.trim() || undefined,
+    ent: $('#p-ent').value || p.ent, precisaLar: s === 'rua' && $('#p-precisa').checked, vac: $('#p-vac').checked, verm: $('#p-verm').checked, fiv: radio('esp') === 'gato' && $('#p-fiv').checked, foto: foto || undefined });
+  // situação: guarda a data do passo atual e limpa os passos que não valem mais
+  if (s === 'rua') { p.lar = p.ado = p.obito = undefined; }
+  if (s === 'lar') { p.lar = desde; p.ado = p.obito = undefined; }
+  if (s === 'adotado') { p.ado = desde; p.obito = undefined; }
+  if (s === 'falecido') { p.obito = desde; }
+  const c = radio('cast'); p.cast = c === 'sim' ? (p.cast || HOJE) : undefined; p.castNao = c === 'nao';
+  if (antes && antes.n !== n && oculto.has(antes.n)) { oculto.delete(antes.n); oculto.add(n); }
+  $('#p-pub').checked ? oculto.delete(n) : oculto.add(n);
+  if (!edit) { PETS.unshift(p); f = ''; page = 1; }
+  draw();
+  setTimeout(() => toast(edit ? `${n}: alterações salvas.` : `${n} foi ${gen(p, 'cadastrado', 'cadastrada')}.`, antes ? () => { Object.keys(p).forEach(k => delete p[k]); Object.assign(p, antes); draw(); } : null), 50); });
+$('#lista').addEventListener('click', e => { const b = e.target.closest('.ad-tr'); if (b) abrirPet(PETS[+b.dataset.i]); });
+$('#aten').addEventListener('click', e => { const b = e.target.closest('button[data-f]'); if (!b) return; f = f === b.dataset.f ? '' : b.dataset.f; page = 1; draw(); $('#cont').scrollIntoView({ block: 'nearest' }); });
+$('#limpar').onclick = () => { f = ''; page = 1; draw(); };
+draw();</script>
+</body>
+</html>

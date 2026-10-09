@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contribuições | Área do administrador</title>
+<meta name="description" content="">
+<meta name="theme-color" content="#FFF4E3">
+
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="theme4.css">
+<link rel="stylesheet" href="publico.css">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body class="pub admin">
+<script>document.documentElement.classList.add('js')</script>
+<a class="skip" href="#main">Pular para o conteúdo</a>
+<div class="proto">Protótipo com dados fictícios. <a href="sistema.html">Ver o design system</a></div>
+
+<header class="thead">
+  <div class="wrap th-in">
+    <a class="th-brand" href="admin-contribuicoes.html" aria-label="SOS Pets DF Águas Claras, início da área do administrador"><img src="assets/logo-provisorio.png" alt="SOS Pets DF Águas Claras"></a>
+    <nav class="th-tabs" aria-label="Área do administrador"><a href="admin-contribuicoes.html" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-9-9c-1.3-3.2.8-6.5 4-6.5 2 0 3.5 1 5 3 1.5-2 3-3 5-3 3.2 0 5.3 3.3 4 6.5-2 4.6-9 9-9 9z"/></svg><span>Contribuições</span></a><a href="admin-despesas.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg><span>Despesas</span></a><a href="admin-animais.html"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="11" r="2"/><circle cx="10" cy="6" r="2"/><circle cx="16" cy="6" r="2"/><circle cx="20" cy="11" r="2"/><path d="M12 12c-3 0-6 3-6 5.5 0 2 1.5 2.5 3 2.5 1.2 0 2-.5 3-.5s1.8.5 3 .5c1.5 0 3-.5 3-2.5C18 15 15 12 12 12z"/></svg><span>Pets</span></a><a href="admin-membros.html"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.5 3-6 6.5-6s6.5 2.5 6.5 6M16 4.5a3.5 3.5 0 0 1 0 7M18 14.2c2.2.8 3.5 2.8 3.5 5.8"/></svg><span>Membros</span></a><a href="admin-mais.html"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg><span>Mais</span></a></nav>
+    <a class="th-admin" href="login.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 16l-4-4 4-4M6 12h10"/></svg><span>Sair</span></a>
+  </div>
+</header>
+<main id="main" class="wrap">
+  <div class="split ad-topo">
+    <aside>
+      <div class="ad-period"><span class="lab" id="periodo-lab">Selecione o mês</span><div id="periodo"></div></div>
+      <article class="tile" aria-live="polite">
+        <div class="summary">
+          <div class="mini-ring" aria-hidden="true"><svg viewBox="0 0 104 104"><circle class="t" cx="52" cy="52" r="44" fill="none" stroke-width="11"/><circle class="a" id="ring" cx="52" cy="52" r="44" fill="none" stroke-width="11" stroke-linecap="round" stroke-dasharray="0 277"/></svg><b id="r-p">0%</b></div>
+          <div class="big"><span id="n-pagos">18</span> de <span id="n-total">24</span> membros<small id="n-falta"></small><small>Arrecadado no mês: <b id="v-total"></b></small></div>
+        </div>
+      </article>
+      <button class="btn btn-secondary" id="avulsa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Registrar doação avulsa</button>
+    </aside>
+    <section aria-label="Membros">
+      <div class="ahead"><h1>Contribuições</h1><p>Marque quem contribuiu no mês. Os nomes aparecem só aqui; o site público mostra apenas os totais.</p></div>
+      <div class="ad-tools">
+        <label class="ad-busca"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.4-4.4"/></svg><span class="sr-only">Buscar membro</span><input type="search" id="q" placeholder="Buscar membro…" autocomplete="off"></label>
+        <div class="ad-chips" id="seg" role="group" aria-label="Mostrar"><button type="button" aria-pressed="true" data-v="pend">Faltam contribuir<b id="c-pend"></b></button><button type="button" aria-pressed="false" data-v="paid">Já contribuíram<b id="c-paid"></b></button><button type="button" aria-pressed="false" data-v="all">Todos<b id="c-all"></b></button></div>
+      </div>
+      <p class="ad-count" id="cont" aria-live="polite"></p>
+      <div class="glist" id="lista"></div>
+      <div class="empty" id="tudo" hidden></div>
+      <nav class="ad-pager" id="pager" aria-label="Páginas da lista de membros"></nav>
+    </section>
+  </div>
+</main>
+<div class="toast" id="toast" role="status"><span id="toast-t"></span><button class="btn btn-ghost" id="desfazer">Desfazer</button></div>
+<dialog id="dlg" aria-labelledby="dlg-t">
+  <form method="dialog">
+    <h2 id="dlg-t">Doação avulsa</h2>
+    <p class="muted" style="margin-top:-8px">Para quem não é membro, ou quando a pessoa prefere não ser identificada.</p>
+    <div class="field"><label for="d-nome">Nome (opcional)</label><input id="d-nome" placeholder="Anônimo"></div>
+    <div class="field"><label for="d-val">Valor</label><div class="money"><span>R$</span><input id="d-val" inputmode="decimal" value="20,00"></div></div>
+    <div class="field"><label for="d-camp">Campanha (opcional)</label><select id="d-camp"><option value="">Nenhuma</option></select></div>
+    <div class="btns"><button class="btn btn-secondary" value="cancel" formnovalidate>Cancelar</button><button class="btn btn-primary" id="d-ok" value="ok">Registrar</button></div>
+  </form>
+</dialog>
+<nav class="tabbar" aria-label="Área do administrador"><a href="admin-contribuicoes.html" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-9-9c-1.3-3.2.8-6.5 4-6.5 2 0 3.5 1 5 3 1.5-2 3-3 5-3 3.2 0 5.3 3.3 4 6.5-2 4.6-9 9-9 9z"/></svg><span>Contribuições</span></a><a href="admin-despesas.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg><span>Despesas</span></a><a href="admin-animais.html"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="11" r="2"/><circle cx="10" cy="6" r="2"/><circle cx="16" cy="6" r="2"/><circle cx="20" cy="11" r="2"/><path d="M12 12c-3 0-6 3-6 5.5 0 2 1.5 2.5 3 2.5 1.2 0 2-.5 3-.5s1.8.5 3 .5c1.5 0 3-.5 3-2.5C18 15 15 12 12 12z"/></svg><span>Pets</span></a><a href="admin-membros.html"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.5 3-6 6.5-6s6.5 2.5 6.5 6M16 4.5a3.5 3.5 0 0 1 0 7M18 14.2c2.2.8 3.5 2.8 3.5 5.8"/></svg><span>Membros</span></a><a href="admin-mais.html"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg><span>Mais</span></a></nav>
+
+<script src="app.js"></script>
+<script src="admin.js"></script>
+<script>
+const NAMES = ['Ana Exemplo','Bruno Teste','Carla Modelo','Diego Amostra','Elisa Fictícia','Fábio Demo','Gisele Piloto','Hugo Exemplo','Irene Teste','João Modelo','Karina Amostra','Lucas Fictício','Marta Demo','Nelson Piloto','Olívia Exemplo','Paulo Teste','Quésia Modelo','Rafael Amostra','Sofia Fictícia','Tiago Demo','Úrsula Piloto','Vera Exemplo','Wagner Teste','Yara Modelo'];
+const mk = mi => NAMES.map((n, i) => { const cur = mi === 9; return ({ n, paid: cur ? i < 18 : (i + mi) % 6 !== 0, v: [20,20,30,20,50,20,20,20,20,20,30,20,20,20,20,20,20,20][i] || 20, d: '0' + (1 + (i % 7)) + '/' + String(mi + 1).padStart(2, '0'),
+    note: i === 20 ? 'Sem contribuir há 3 meses' : i === 21 ? 'Sem contribuir há 2 meses' : 'Contribuiu no mês anterior' }); });
+let M = mk(9);
+let view = 'pend', last = null, mes = 9, page = 1; const C = 2 * Math.PI * 44;
+const MES_NOME = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro'];
+const semAc = t => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+function draw() {
+  const paid = M.filter(m => m.paid), np = paid.length, tv = paid.reduce((s, m) => s + m.v, 0);
+  $('#n-pagos').textContent = np; $('#n-total').textContent = M.length; $('#v-total').textContent = fmt(tv);
+  $('#ring').style.strokeDasharray = `${np / M.length * C} ${C}`; $('#r-p').textContent = pct(np, M.length) + '%';
+  const falta = M.length - np;
+  $('#n-falta').textContent = falta ? `Faltam ${falta} ${falta === 1 ? 'membro' : 'membros'} contribuir` : 'Todos contribuíram';
+  $('#c-pend').textContent = falta; $('#c-paid').textContent = np; $('#c-all').textContent = M.length;
+  $$('#seg button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === view));
+  const q = semAc($('#q').value.trim());
+  const list = M.map((m, i) => ({ m, i })).filter(x => (view === 'all' || (view === 'paid') === x.m.paid) && (!q || semAc(x.m.n).includes(q)));
+  $('#tudo').hidden = list.length > 0; $('#lista').hidden = list.length === 0;
+  $('#tudo').textContent = q ? 'Ninguém encontrado com esse nome.' : view === 'pend' ? 'Todo mundo contribuiu neste mês. Obrigada pelo cuidado!' : 'Ninguém contribuiu neste mês ainda.';
+  const pg = paginar(list, page, $('#pager'), $('#cont'), ['membro', 'membros']); page = pg.pagina;
+  $('#lista').innerHTML = pg.V.map(({ m, i }) => `<div class="row ${m.paid ? 'paid' : ''}" data-i="${i}">
+    <div class="avatar" aria-hidden="true">${m.n[0]}</div>
+    <div class="who"><strong>${m.n}</strong>${m.paid ? `<span class="chip chip-ok" style="margin-top:4px"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m4 12.5 5 5L20 6.5"/></svg>Pago em ${m.d}</span>` : `<small>${m.note}</small>`}</div>
+    <div class="actions">${m.paid
+      ? `<b style="margin-right:auto">${fmt(m.v)}</b><button class="btn btn-ghost btn-sm" data-act="undo">Desfazer</button>`
+      : `<div class="money"><span>R$</span><input aria-label="Valor de ${m.n}" inputmode="decimal" value="20,00"></div><button class="btn btn-primary" data-act="pay">Contribuiu</button>`}</div></div>`).join('');
+}
+function toast(t, undo) { $('#toast-t').textContent = t; $('#toast').removeAttribute('data-show'); void $('#toast').offsetWidth; $('#toast').setAttribute('data-show', ''); last = undo; $('#desfazer').hidden = !undo; clearTimeout(toast.h); toast.h = setTimeout(() => $('#toast').removeAttribute('data-show'), 6000); }
+$('#lista').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  const row = b.closest('.row'), m = M[+row.dataset.i];
+  if (b.dataset.act === 'pay') { const v = parseMoney($('input', row).value) || 20; m.paid = true; m.v = v; m.d = '07/' + String(mes + 1).padStart(2, '0'); draw(); toast(`Contribuição de ${fmt(v)} registrada para ${m.n}.`, () => { m.paid = false; draw(); }); }
+  else if (b.dataset.act === 'undo') { m.paid = false; draw(); toast(`Contribuição de ${m.n} desfeita.`, null); }
+});
+$('#desfazer').addEventListener('click', () => { if (last) last(); last = null; $('#toast').removeAttribute('data-show'); });
+$('#seg').addEventListener('click', e => { const b = e.target.closest('button'); if (b) { view = b.dataset.v; page = 1; draw(); } });
+$('#q').addEventListener('input', () => { page = 1; draw(); });
+ligarPaginas($('#pager'), n => { page = n; draw(); });
+periodPicker($('#periodo'), { label: 'periodo-lab', value: '9', steps: MES_NOME.map((m, i) => String(i)),
+  options: MES_NOME.map((m, i) => i).reverse().map(i => ({ v: String(i), label: MES_NOME[i][0].toUpperCase() + MES_NOME[i].slice(1) + ' de 2026', tag: i === 9 ? 'mês atual' : '' })),
+  onChange: v => { mes = +v; M = mk(mes); page = 1; draw(); } });
+$('#avulsa').addEventListener('click', () => { $('#d-camp').innerHTML = '<option value="">Nenhuma</option>' + Camps.get().filter(c => c.st === 'open').map(c => `<option>${c.n}</option>`).join(''); $('#dlg').showModal(); });
+$('#d-ok').addEventListener('click', () => { const v = parseMoney($('#d-val').value) || 20; const n = $('#d-nome').value.trim() || 'Anônimo'; setTimeout(() => toast(`Doação avulsa de ${fmt(v)} registrada (${n}).`, null), 50); });
+draw();
+</script>
+</body>
+</html>

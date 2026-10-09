@@ -1,0 +1,41 @@
+/* SOSPets Águas Claras — tokens do design system (protótipo v2)
+   Fonte da verdade: docs/BRAND.md. Cores oficiais: #134074, #A40E4C, #E18335, #DB5375, #B6CCA1.
+   Laranja, rosa e verde-sálvia NÃO são cores de texto (contraste insuficiente): usar as versões -700. */
+:root {
+  /* marca */
+  --primary: #134074;
+  --primary-500: #2D5F9A;
+  --accent: #A40E4C;
+  --orange: #E18335;
+  --pink: #DB5375;
+  --green: #B6CCA1;
+
+  /* derivadas para texto e fundos de chip (passam AA) */
+  --orange-700: #9A4F0D;
+  --orange-100: #FCEBD9;
+  --pink-700: #B8335A;
+  --pink-100: #FBE4EA;
+  --green-700: #3F5A2B;
+  --green-100: #E3EBDA;
+  --blue-100: #E4ECF5;
+
+  /* neutros */
+  --bg: #FBFBFD;
+  --surface: #FFFFFF;
+  --fill: #F2F2F5;
+  --ink: #1D1D1F;
+  --ink-2: #5F5F66;
+  --line: rgba(0, 0, 0, .07);
+  --field: #8A8A90;
+
+  /* tipografia: Inter como base; em aparelhos Apple entra a fonte do sistema (SF) */
+  --font: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+
+  /* formas */
+  --r-sm: 12px;
+  --r-md: 18px;
+  --r-lg: 28px;
+  --r-xl: 36px;
+
+  --ease: cubic-bezier(.2, .7, .2, 1);
+}

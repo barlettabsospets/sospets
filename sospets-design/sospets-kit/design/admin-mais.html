@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mais | Área do administrador</title>
+<meta name="description" content="">
+<meta name="theme-color" content="#FFF4E3">
+
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="theme4.css">
+<link rel="stylesheet" href="publico.css">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body class="pub admin">
+<script>document.documentElement.classList.add('js')</script>
+<a class="skip" href="#main">Pular para o conteúdo</a>
+<div class="proto">Protótipo com dados fictícios. <a href="sistema.html">Ver o design system</a></div>
+
+<header class="thead">
+  <div class="wrap th-in">
+    <a class="th-brand" href="admin-contribuicoes.html" aria-label="SOS Pets DF Águas Claras, início da área do administrador"><img src="assets/logo-provisorio.png" alt="SOS Pets DF Águas Claras"></a>
+    <nav class="th-tabs" aria-label="Área do administrador"><a href="admin-contribuicoes.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-9-9c-1.3-3.2.8-6.5 4-6.5 2 0 3.5 1 5 3 1.5-2 3-3 5-3 3.2 0 5.3 3.3 4 6.5-2 4.6-9 9-9 9z"/></svg><span>Contribuições</span></a><a href="admin-despesas.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg><span>Despesas</span></a><a href="admin-animais.html"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="11" r="2"/><circle cx="10" cy="6" r="2"/><circle cx="16" cy="6" r="2"/><circle cx="20" cy="11" r="2"/><path d="M12 12c-3 0-6 3-6 5.5 0 2 1.5 2.5 3 2.5 1.2 0 2-.5 3-.5s1.8.5 3 .5c1.5 0 3-.5 3-2.5C18 15 15 12 12 12z"/></svg><span>Pets</span></a><a href="admin-membros.html"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.5 3-6 6.5-6s6.5 2.5 6.5 6M16 4.5a3.5 3.5 0 0 1 0 7M18 14.2c2.2.8 3.5 2.8 3.5 5.8"/></svg><span>Membros</span></a><a href="admin-mais.html" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg><span>Mais</span></a></nav>
+    <a class="th-admin" href="login.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 16l-4-4 4-4M6 12h10"/></svg><span>Sair</span></a>
+  </div>
+</header>
+<main id="main" class="wrap">
+<div class="ahead"><h1>Mais</h1><p>Exportar dados, categorias de despesa, campanhas, configurações e o histórico de alterações.</p></div>
+<div class="split"><aside><nav class="glist menu-list" aria-label="Nesta página">
+  <a href="#exportar"><span>Exportar dados<small>Baixar tudo em planilha</small></span></a>
+  <a href="#categorias"><span>Categorias de despesa<small>Adicionar ou renomear</small></span></a>
+  <a href="admin-campanhas.html"><span>Campanhas<small>Criar, editar, encerrar</small></span></a>
+  <a href="#config"><span>Configurações<small>Início dos dados e avisos</small></span></a>
+  <a href="#auditoria"><span>Histórico de alterações<small>Quem mudou o quê</small></span></a>
+  <a href="index.html"><span>Ver o site público<small>Como os membros enxergam</small></span></a>
+</nav></aside><div>
+<section class="sec tile" id="exportar"><h2>Exportar dados</h2><p class="muted" style="margin-bottom:14px">Seus dados são da organização. Baixe quando quiser.</p>
+  <div class="two"><button class="btn btn-secondary" data-ex="Doações">Doações (planilha)</button><button class="btn btn-secondary" data-ex="Despesas">Despesas (planilha)</button><button class="btn btn-secondary" data-ex="Pets">Pets (planilha)</button><button class="btn btn-secondary" data-ex="Membros">Membros (planilha)</button></div></section>
+<section class="sec tile" id="categorias"><h2>Categorias de despesa</h2>
+  <div class="glist" id="cats"></div>
+  <div class="field" style="margin-top:14px"><label for="c-n">Nova categoria</label><div style="display:flex;gap:10px"><input id="c-n" placeholder="Ex.: Taxas e cartório"><button class="btn btn-primary" id="c-add" style="flex:none">Adicionar</button></div></div></section>
+<section class="sec tile" id="campanhas"><h2>Campanhas</h2><div class="glist" id="camps-mini"></div><p style="margin-top:14px"><a class="btn btn-secondary" href="admin-campanhas.html">Gerenciar campanhas</a></p></section>
+<section class="sec tile" id="config"><h2>Configurações</h2>
+  <div class="ad-form"><p class="muted" style="margin:0">O valor padrão da contribuição mensal fica em <a href="admin-membros.html">Membros</a>, junto de quem tem valor próprio.</p>
+  <div class="field"><label for="s-i">Dados registrados desde</label><input id="s-i" type="date" value="2026-01-01"><span class="hint">Aparece no site público, para ser transparente sobre o que existe.</span></div>
+  <div class="field"><label for="s-a">Avisar quando alguém ficar sem contribuir por</label><select id="s-a"><option>2 meses</option><option selected>3 meses</option><option>6 meses</option></select></div>
+  <button class="btn btn-primary" id="s-ok">Salvar configurações</button></div></section>
+<section class="sec tile" id="auditoria"><h2>Histórico de alterações</h2>
+  <div class="glist"><div class="arow"><div class="avatar" aria-hidden="true">+</div><div><span class="t1">Contribuição registrada</span><span class="t2">R$ 20,00 · hoje, 20:41</span></div></div>
+  <div class="arow"><div class="avatar" aria-hidden="true">+</div><div><span class="t1">Despesa criada: Ração para gatos de rua</span><span class="t2">R$ 120,00 · hoje, 20:12</span></div></div>
+  <div class="arow"><div class="avatar" aria-hidden="true">~</div><div><span class="t1">Animal alterado: Luna passou para lar temporário</span><span class="t2">ontem, 18:03</span></div></div>
+  <div class="arow"><div class="avatar" aria-hidden="true">×</div><div><span class="t1">Despesa cancelada: lançada em duplicidade</span><span class="t2">ontem, 17:40</span></div></div></div></section></div></div></main>
+<div class="toast" id="toast" role="status"><span id="toast-t"></span><button class="btn btn-ghost" id="desfazer">Desfazer</button></div>
+<nav class="tabbar" aria-label="Área do administrador"><a href="admin-contribuicoes.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-9-9c-1.3-3.2.8-6.5 4-6.5 2 0 3.5 1 5 3 1.5-2 3-3 5-3 3.2 0 5.3 3.3 4 6.5-2 4.6-9 9-9 9z"/></svg><span>Contribuições</span></a><a href="admin-despesas.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg><span>Despesas</span></a><a href="admin-animais.html"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="11" r="2"/><circle cx="10" cy="6" r="2"/><circle cx="16" cy="6" r="2"/><circle cx="20" cy="11" r="2"/><path d="M12 12c-3 0-6 3-6 5.5 0 2 1.5 2.5 3 2.5 1.2 0 2-.5 3-.5s1.8.5 3 .5c1.5 0 3-.5 3-2.5C18 15 15 12 12 12z"/></svg><span>Pets</span></a><a href="admin-membros.html"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.5 3-6 6.5-6s6.5 2.5 6.5 6M16 4.5a3.5 3.5 0 0 1 0 7M18 14.2c2.2.8 3.5 2.8 3.5 5.8"/></svg><span>Membros</span></a><a href="admin-mais.html" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg><span>Mais</span></a></nav>
+<script src="app.js"></script>
+<script>
+function toast(t, undo) { $('#toast-t').textContent = t; $('#toast').removeAttribute('data-show'); void $('#toast').offsetWidth; $('#toast').setAttribute('data-show', ''); toast.u = undo; $('#desfazer').hidden = !undo; clearTimeout(toast.h); toast.h = setTimeout(() => $('#toast').removeAttribute('data-show'), 6000); }
+$('#desfazer').addEventListener('click', () => { if (toast.u) toast.u(); toast.u = null; $('#toast').removeAttribute('data-show'); });
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function openDlg(id) { const d = $('#' + id); const f = $('form', d); if (f) f.reset(); d.showModal(); }
+
+const C = ['Castração','Veterinário e consultas','Ração','Medicamentos','Exames','Vacinas','Lar temporário','Transporte','Outros'];
+function draw() { $('#cats').innerHTML = C.map(c => `<div class="arow" style="grid-template-columns:1fr auto"><span class="t1">${esc(c)}</span></div>`).join(''); }
+$('#c-add').onclick = () => { const v = $('#c-n').value.trim(); if (!v) return; C.push(v); $('#c-n').value = ''; draw(); toast(`Categoria "${v}" criada.`, null); };
+$('#s-ok').onclick = () => toast('Configurações salvas.', null);
+$('#camps-mini').innerHTML = Camps.get().map((c, i) => `<div class="arow"><div class="thumb g${i % 4}" aria-hidden="true">${esc(c.n[0])}</div><div><span class="t1">${esc(c.n)}</span><span class="t2">${fmt(c.inn)} arrecadados · ${fmt(c.out)} gastos</span></div><span class="chip ${c.st === 'open' ? 'chip-ok' : 'chip-off'}">${c.st === 'open' ? 'Em andamento' : 'Encerrada'}</span></div>`).join('');
+document.addEventListener('click', e => { const b = e.target.closest('[data-ex]'); if (b) toast(`${b.dataset.ex}: no sistema real, o download começa agora.`, null); });
+draw();</script>
+</body>
+</html>

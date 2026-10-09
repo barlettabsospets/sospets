@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prestação de contas | SOS Pets DF Águas Claras</title>
+<meta name="description" content="Quanto o SOS Pets DF Águas Claras arrecadou, gastou e quantos pets ajudou, mês a mês.">
+<meta name="theme-color" content="#FFF4E3">
+
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="theme4.css">
+<link rel="stylesheet" href="publico.css">
+<link rel="stylesheet" href="transparencia.css">
+</head>
+<body class="pub contas">
+<script>document.documentElement.classList.add('js')</script>
+<a class="skip" href="#main">Pular para o conteúdo</a>
+<div class="proto">Protótipo com dados fictícios. <a href="sistema.html">Ver o design system</a></div>
+
+<header class="thead">
+  <div class="wrap th-in">
+    <a class="th-brand" href="index.html" aria-label="SOS Pets DF Águas Claras, página inicial"><img src="assets/logo-provisorio.png" alt="SOS Pets DF Águas Claras"></a>
+    <nav class="th-tabs" aria-label="Principal">
+      <a href="index.html" aria-current="page" aria-label="Prestação de contas"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span class="full">Prestação de contas</span><span class="short" aria-hidden="true">Contas</span></a>
+      <a href="animais.html"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="11" r="1.8"/><circle cx="10" cy="6.5" r="1.8"/><circle cx="14" cy="6.5" r="1.8"/><circle cx="18" cy="11" r="1.8"/><path d="M12 12.5c-2.8 0-5 2.6-5 4.8 0 1.6 1.2 2.2 2.5 2.2 1 0 1.6-.5 2.5-.5s1.5.5 2.5.5c1.3 0 2.5-.6 2.5-2.2 0-2.2-2.2-4.8-5-4.8z"/></svg>Pets</a>
+      <a href="despesas.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg>Despesas</a>
+    </nav>
+    <a class="th-admin" href="login.html"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg><span>Área do administrador</span></a>
+  </div>
+</header>
+
+<main id="main" class="wrap tp">
+  <!-- título e frase no mesmo tamanho da página Despesas; seletor de período à direita -->
+  <header class="tp-head tp-head-min">
+    <div class="tp-h">
+      <h1>Prestação de contas</h1>
+      <p>Veja quanto recebemos, como os recursos são utilizados e como estão os animais sob nossos cuidados.</p>
+    </div>
+    <div class="tp-period">
+      <span class="lab" id="periodo-lab">Selecione o mês</span>
+      <div id="periodo"></div>
+    </div>
+  </header>
+
+  <div class="tp-grid">
+    <section class="card c-saldo" aria-labelledby="cap" aria-live="polite">
+      <span class="shape" aria-hidden="true"></span>
+      <svg class="paw" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="6" cy="11" r="2.2"/><circle cx="10" cy="6" r="2.2"/><circle cx="16" cy="6" r="2.2"/><circle cx="20" cy="11" r="2.2"/><path d="M12 12c-3 0-6 3-6 5.5 0 2 1.5 2.5 3 2.5 1.2 0 2-.5 3-.5s1.8.5 3 .5c1.5 0 3-.5 3-2.5C18 15 15 12 12 12z"/></svg>
+      <div class="card-h"><h2 id="cap">Em caixa hoje</h2></div>
+      <p class="big num" id="saldo">R$ 0,00</p>
+      <p class="note" id="saldo-n"></p>
+    </section>
+
+    <section class="card c-resumo" aria-labelledby="h-res" aria-live="polite">
+      <div class="card-h"><h2 id="h-res">Resumo do período</h2></div>
+      <dl class="tp-sum">
+        <div class="i"><dt><i></i>Entrou</dt><dd class="v num" id="t-in">R$ 0,00</dd><dd class="d" id="t-in-s"></dd></div>
+        <div class="o"><dt><i></i>Saiu</dt><dd class="v num" id="t-out">R$ 0,00</dd><dd class="d" id="t-out-s"></dd></div>
+        <div class="s"><dt><i></i><span id="t-left-k">Sobrou</span></dt><dd class="v num" id="t-left">R$ 0,00</dd><dd class="d" id="t-left-s"></dd></div>
+      </dl>
+      <div class="tp-usebar" id="usebar" role="img"></div>
+      <p class="result" id="result"></p>
+    </section>
+
+    <section class="card c-fluxo" aria-labelledby="h-mes">
+      <div class="card-h"><h2 id="h-mes">Entrou e saiu, mês a mês</h2></div>
+      <div class="tp-legend" aria-hidden="true"><span><i></i>Entrou</span><span class="o"><i></i>Saiu</span></div>
+      <svg id="mensal" viewBox="0 0 700 300" role="img" aria-labelledby="mensal-t"><title id="mensal-t">Quanto entrou e quanto saiu em cada mês de 2026</title></svg>
+      <details class="alt foot"><summary class="tp-more"><span class="on">Ver como tabela</span><span class="off">Esconder tabela</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></summary>
+        <div class="tp-tablewrap"><table class="ct" id="mensal-tbl"><thead><tr><th>Mês</th><th>Entrou</th><th>Saiu</th></tr></thead><tbody></tbody></table></div>
+      </details>
+    </section>
+
+    <section class="card c-cats" aria-labelledby="h-cats">
+      <div class="card-h"><h2 id="h-cats">Para onde foi</h2></div>
+      <div class="tp-donut" id="donut"></div>
+      <ul class="tp-catlist" id="cats" aria-label="Categorias de gasto. Escolha uma para destacar."></ul>
+    </section>
+
+    <section class="card c-ult" aria-labelledby="h-ult">
+      <div class="card-h"><h2 id="h-ult">Últimas despesas</h2></div>
+      <div class="tp-rows" id="ultimas"></div>
+      <div class="card-foot"><a class="tp-more" href="despesas.html">Ver todas as despesas<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></a></div>
+    </section>
+
+    <section class="card c-ani" aria-labelledby="h-imp">
+      <div class="card-h"><h2 id="h-imp">Pets</h2><button type="button" class="tp-ani-clear" id="a-clear" hidden>Ver todos os pets</button></div>
+      <p class="tp-ani-lead" aria-live="polite"><b class="num" id="a-total">0</b><span id="a-lead">acompanhados hoje</span></p>
+      <div class="tp-split" id="a-bar" role="img"></div>
+      <p class="tp-split-l"><span id="a-caes"></span><span id="a-gatos"></span></p>
+      <div class="tp-ani-grp">
+        <h3 class="tp-sub-h" id="ani-when"></h3>
+        <div class="tp-stats">
+          <button type="button" class="ev" data-k="cas" aria-pressed="false"><b class="num" id="a-cas">0</b><span>Castrados</span></button>
+          <button type="button" class="ev" data-k="ado" aria-pressed="false"><b class="num" id="a-ado">0</b><span>Adotados</span></button>
+        </div>
+      </div>
+      <div class="tp-ani-grp">
+        <h3 class="tp-sub-h" id="ani-snap"></h3>
+        <div class="tp-stats">
+          <button type="button" class="sn" data-k="lar" aria-pressed="false"><b class="num" id="a-lar">0</b><span>Em lar temporário</span></button>
+          <button type="button" class="sn" data-k="rua" aria-pressed="false"><b class="num" id="a-rua">0</b><span>Em situação de rua</span></button>
+        </div>
+      </div>
+      <div class="card-foot"><a class="tp-more" href="animais.html">Conhecer os pets<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></a></div>
+    </section>
+
+    <section class="card c-camp" aria-labelledby="h-camp">
+      <div class="card-h"><h2 id="h-camp">Campanhas em andamento</h2><span class="meta">Arrecadações para casos específicos. Mostramos só os totais.</span></div>
+      <div class="tp-camps" id="camps"></div>
+      <div class="tp-camps" id="camps-old" hidden></div>
+      <div class="card-foot"><button class="tp-more tp-toggle" type="button" id="camps-btn" aria-expanded="false" aria-controls="camps-old" hidden></button></div>
+    </section>
+  </div>
+  <div class="tip" id="tip" role="status"></div>
+</main>
+
+<footer class="site-foot"><div class="wrap">
+  <p><strong>Os números são públicos, as pessoas não.</strong> Nomes de quem contribui nunca aparecem neste site.</p>
+  <p>Dados registrados desde janeiro de 2026. Dúvidas ou sugestões? Fale com a gente pelo Instagram @sospets_aguasclaras.</p>
+  <p><a href="login.html">Área do administrador</a></p>
+</div></footer>
+
+<script src="app.js"></script>
+<script src="dados.js"></script>
+<script>
+// meses com dados; outubro é o mês em andamento e bate com a Área do administrador (R$ 410,00 de 18 contribuições, 4 despesas)
+const IN  = [520, 640, 900, 830, 960, 1040, 870, 780, 890, 410];
+const OUT = [450, 540.5, 790, 640.25, 820, 905.6, 700, 610, 724, 354];
+const CNT = [16, 20, 28, 26, 30, 33, 27, 24, 28, 18];
+const MES = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out'];
+const MES_LONGO = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro'];
+const CATS = ['Castração','Veterinário e consultas','Ração','Medicamentos','Exames','Vacinas','Lar temporário','Transporte','Outros'];
+const BY_SET = [1650,1180.35,1020,760,640,380,240,210,100];        // jan a set
+const BY_OUT = [0, 180, 120, 0, 0, 24, 0, 30, 0];                   // outubro, igual à Área do administrador
+// animais: eventos de cada mês e situação no fim de cada mês (o último é hoje)
+// pets: tudo calculado a partir do cadastro em dados.js (mesmos números da página Pets)
+const ymDe = i => `2026-${String(i + 1).padStart(2, '0')}`;
+const caoS = p => p.e === 'cachorro';
+const porMes = (f) => MES.map((m, i) => PETS.filter(p => f(p, ymDe(i))).length);
+const CAS = porMes((p, ym) => p.cast === ym), ADO = porMes((p, ym) => p.ado === ym);
+const LAR = porMes((p, ym) => situacaoPet(p, ym) === 'lar'), RUA = porMes((p, ym) => situacaoPet(p, ym) === 'rua');
+// quantos de cada grupo são cães (o resto são gatos), para a barra de cães e gatos de cada grupo
+const CAES = { cas: porMes((p, ym) => caoS(p) && p.cast === ym), ado: porMes((p, ym) => caoS(p) && p.ado === ym),
+  lar: porMes((p, ym) => caoS(p) && situacaoPet(p, ym) === 'lar'), rua: porMes((p, ym) => caoS(p) && situacaoPet(p, ym) === 'rua') };
+// últimas despesas: as 5 mais recentes do cadastro em dados.js
+const ULT = DESPESAS.slice().sort((a, b) => b.d.localeCompare(a.d)).slice(0, 5).map(r => [r.d.slice(8) + '/' + r.d.slice(5, 7), r.t, r.c, r.v, r.a]);
+const ESPECIE = Object.fromEntries(PETS.map(p => [p.n, p.e]));
+// a rosca mostra as 5 maiores categorias de sempre, cada uma com uma cor fixa (validada para daltonismo nesta ordem); o resto vira "Outras"
+const TOP = 5, CORES = ['#DB7838', '#2D5F9A', '#C2477A', '#D4A017', '#2A9D8F'], COR_OUTRAS = '#CFC3B4';
+const LAST = IN.length - 1;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const sum = a => a.reduce((x, y) => x + y, 0);
+const cap = s => s[0].toUpperCase() + s.slice(1);
+const WEIGHT = i => BY_SET.map((v, k) => v * (1 + 0.35 * Math.sin((i + 1) * (k + 2))));
+function byFor(p) {
+  if (p === 'all') return BY_SET.map((v, k) => v + BY_OUT[k]);
+  const i = +p; if (i === 9) return BY_OUT;
+  const w = WEIGHT(i), t = sum(w); return w.map(v => Math.round(v / t * OUT[i] * 100) / 100);
+}
+
+// o painel abre no mês atual; se hoje estiver fora dos dados, no último mês registrado
+const hoje = new Date(), MES_ATUAL = hoje.getFullYear() === 2026 ? Math.min(LAST, hoje.getMonth()) : LAST;
+let periodo = String(MES_ATUAL), catSel = null;
+// números trocam direto, sem contagem animada (movimento demais cansa)
+const put = (el, v, f) => { el.textContent = f(v); };
+const nomePeriodo = v => v === 'all' ? 'Desde o início' : cap(MES_LONGO[+v]) + ' de 2026';
+
+// seletor de período (componente do app.js): "desde o início" e os meses, do mais recente ao mais antigo
+const picker = periodPicker($('#periodo'), {
+  label: 'periodo-lab', value: periodo, steps: MES.map((m, i) => String(i)),
+  options: [{ v: 'all', label: 'Desde o início' }, ...MES.map((m, i) => i).reverse().map((i, k) => ({ v: String(i), label: cap(MES_LONGO[i]) + ' de 2026', tag: i === MES_ATUAL ? 'mês atual' : '' }))],
+  onChange: v => { periodo = v; render(); }
+});
+function setPeriodo(v) { picker.set(v); }
+
+function render() {
+  const p = periodo, idx = p === 'all' ? null : +p, atual = idx === MES_ATUAL;
+  const inn = idx === null ? sum(IN) : IN[idx], out = idx === null ? sum(OUT) : OUT[idx];
+  const end = idx === null ? LAST : idx, saldo = sum(IN.slice(0, end + 1)) - sum(OUT.slice(0, end + 1));
+
+  // saldo
+  $('#cap').textContent = idx === null || atual ? 'Em caixa hoje' : 'Em caixa no fim de ' + MES_LONGO[idx];
+  put($('#saldo'), saldo, fmt);
+  $('#saldo-n').textContent = idx === null || atual ? 'Tudo o que entrou menos tudo o que saiu desde janeiro de 2026.' : `Saldo acumulado de janeiro até o fim de ${MES_LONGO[idx]}.`;
+
+  // resumo: entrou − saiu = sobrou
+  $('#h-res').textContent = idx === null ? 'Resumo desde o início do projeto' : 'Resumo de ' + MES_LONGO[idx];
+  const by = byFor(p), left = inn - out, over = left < 0, used = Math.min(100, pct(out, inn));
+  put($('#t-in'), inn, fmt); $('#t-in-s').textContent = `${fmtInt(idx === null ? sum(CNT) : CNT[idx])} contribuições`;
+  put($('#t-out'), out, fmt); $('#t-out-s').textContent = `em ${by.filter(v => v > 0).length} categorias`;
+  $('#t-left-k').textContent = over ? 'Faltou' : 'Sobrou';
+  put($('#t-left'), Math.abs(left), fmt); $('#t-left-s').textContent = over ? 'pago com o caixa' : 'ficou em caixa';
+  $('#usebar').innerHTML = `<i style="width:${used}%"></i>${over ? '' : `<i style="width:${100 - used}%"></i>`}`;
+  $('#usebar').setAttribute('aria-label', over ? 'O gasto passou do que entrou' : `${used}% do que entrou foi usado e ${100 - used}% sobrou`);
+  $('#result').innerHTML = over ? `Saiu mais do que entrou neste período.` : `<b>${used}%</b> do que entrou foi usado. O restante ficou em caixa.`;
+
+  // para onde foi: segue o período escolhido
+  const tot = sum(by), rest = by.slice(TOP).map((v, k) => v ? CATS[TOP + k] : null).filter(Boolean);
+  const parts = by.slice(0, TOP).map((v, i) => ({ n: CATS[i], v, c: CORES[i] }));
+  parts.push({ n: rest.length ? `Outras (${rest.join(', ').toLowerCase()})` : 'Outras', v: sum(by.slice(TOP)), c: COR_OUTRAS });
+  const shown = parts.filter(x => x.v > 0);
+  if (catSel !== null && !shown.some(x => x.c === catSel)) catSel = null;
+  drawDonut(shown, tot);
+
+  // animais: o número grande segue o período (aniTopo) + o que aconteceu nele
+  aniCtx = { idx, end, atual };
+  drawAniTop();
+  // dois grupos: o que aconteceu no período e como os animais estavam no fim dele
+  $('#ani-when').textContent = idx === null ? 'Desde janeiro de 2026' : 'Em ' + MES_LONGO[idx];
+  $('#ani-snap').textContent = idx === null || atual ? 'Situação hoje' : 'Situação no fim de ' + MES_LONGO[idx];
+  put($('#a-cas'), idx === null ? sum(CAS) : CAS[idx], fmtInt);
+  put($('#a-ado'), idx === null ? sum(ADO) : ADO[idx], fmtInt);
+  put($('#a-lar'), LAR[end], fmtInt);
+  put($('#a-rua'), RUA[end], fmtInt);
+
+  drawMensal(idx);
+}
+
+// rosca: tocar numa fatia ou na legenda destaca a categoria e mostra o valor dela no meio; tocar de novo volta ao total
+let donutData = { parts: [], tot: 0 }, donutAnim = true;
+function drawDonut(parts, tot) {
+  donutData = { parts, tot };
+  const r = 80, C = 2 * Math.PI * r, gap = parts.length > 1 ? 2 : 0; let acc = 0;
+  const segs = parts.map(x => { const len = x.v / tot * C, on = catSel === x.c, off = catSel !== null && !on;
+    const s = `<circle class="seg${on ? ' on' : ''}${off ? ' off' : ''}" data-c="${x.c}" cx="100" cy="100" r="${r}" fill="none" stroke="${x.c}" stroke-width="${on ? 34 : 28}" stroke-dasharray="${Math.max(0, len - gap)} ${C}" stroke-dashoffset="${-acc}"/>`; acc += len; return s; }).join('');
+  const sel = parts.find(x => x.c === catSel);
+  $('#donut').classList.toggle('still', !donutAnim); donutAnim = false;
+  $('#donut').innerHTML = `<svg viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="${r}" fill="none" stroke="var(--cream-2)" stroke-width="28"/>${segs}</svg>` +
+    `<div class="mid">${sel ? `<span>${esc(sel.n.replace(/ \(.*\)$/, ''))}</span><b class="num">${fmt(sel.v)}</b><span>${pct(sel.v, tot)}% do total</span>` : `<span>Total gasto</span><b class="num">${fmt(tot)}</b>`}</div>`;
+  $('#cats').innerHTML = parts.length ? parts.map(x => `<li><button type="button" data-c="${x.c}" aria-pressed="${catSel === x.c}"${catSel !== null && catSel !== x.c ? ' class="off"' : ''}><i style="background:${x.c}" aria-hidden="true"></i><span class="n">${esc(x.n)}</span><span class="v">${fmt(x.v)}</span><span class="p">${pct(x.v, tot)}%</span></button></li>`).join('')
+    : '<li class="none">Nenhuma despesa registrada neste período.</li>';
+}
+function escolherCat(c) { catSel = catSel === c ? null : c; drawDonut(donutData.parts, donutData.tot); }
+$('#donut').addEventListener('click', e => { const seg = e.target.closest('.seg'); escolherCat(seg ? seg.dataset.c : catSel); });
+$('#cats').addEventListener('click', e => { const b = e.target.closest('button'); if (b) escolherCat(b.dataset.c); });
+
+// tocar num número de Animais troca o topo do card (total e barra de cães e gatos) para aquele grupo; tocar de novo volta
+let aniCtx = null, aniSel = null;
+function aniGrupo(k) {
+  const { idx, end, atual } = aniCtx, mes = idx === null ? null : MES_LONGO[idx];
+  const ev = k === 'cas' || k === 'ado', arr = { cas: CAS, ado: ADO, lar: LAR, rua: RUA }[k];
+  const n = ev ? (idx === null ? sum(arr) : arr[idx]) : arr[end];
+  const c = ev ? (idx === null ? sum(CAES[k]) : CAES[k][idx]) : CAES[k][end];
+  const nome = { cas: 'castrados', ado: 'adotados', lar: 'em lar temporário', rua: 'em situação de rua' }[k];
+  const quando = ev ? (idx === null ? 'desde janeiro' : `em ${mes}`) : (idx === null || atual ? 'hoje' : `no fim de ${mes}`);
+  return { n, c, g: n - c, txt: `${nome} ${quando}` };
+}
+// número grande do card, segue o período: desde o início = todos os pets que já passaram pelo grupo (adotados inclusive);
+// num mês = os acompanhados (na rua + em lar temporário) no fim dele, ou hoje se for o mês atual
+function aniTopo() {
+  const { idx, end, atual } = aniCtx;
+  if (idx === null) { const c = PETS.filter(caoS).length; return { n: PETS.length, c, g: PETS.length - c, txt: 'pets já ajudados pelo grupo' }; }
+  const n = LAR[end] + RUA[end], c = CAES.lar[end] + CAES.rua[end];
+  return { n, c, g: n - c, txt: atual ? 'acompanhados hoje' : `acompanhados no fim de ${MES_LONGO[idx]}` };
+}
+function drawAniTop() {
+  const d = aniSel ? aniGrupo(aniSel) : aniTopo();
+  $('#a-total').textContent = fmtInt(d.n); $('#a-lead').textContent = d.txt;
+  $('#a-bar').innerHTML = d.n ? `<i style="width:${pct(d.c, d.n)}%"></i><i style="flex:1"></i>` : '';
+  $('#a-bar').classList.toggle('empty', !d.n);
+  $('#a-bar').setAttribute('aria-label', `${d.c} ${d.c === 1 ? 'cão' : 'cães'} e ${d.g} ${d.g === 1 ? 'gato' : 'gatos'}`);
+  $('#a-caes').textContent = `${d.c} ${d.c === 1 ? 'cão' : 'cães'}`; $('#a-gatos').textContent = `${d.g} ${d.g === 1 ? 'gato' : 'gatos'}`;
+  $('#a-clear').hidden = !aniSel;
+  $$('.c-ani .tp-stats button').forEach(b => { b.setAttribute('aria-pressed', b.dataset.k === aniSel); b.classList.toggle('off', !!aniSel && b.dataset.k !== aniSel); });
+}
+$$('.c-ani .tp-stats button').forEach(b => b.addEventListener('click', () => { aniSel = aniSel === b.dataset.k ? null : b.dataset.k; drawAniTop(); }));
+$('#a-clear').addEventListener('click', () => { aniSel = null; drawAniTop(); });
+
+let curSel = null;
+// quantos meses aparecem: 6 no computador, 3 no celular. Terminam no mês mais recente;
+// se o período escolhido for mais antigo, a janela anda para trás até mostrá-lo. A tabela mostra os mesmos meses.
+const mesesVisiveis = sel => {
+  const n = Math.min(MES.length, matchMedia('(max-width: 599px)').matches ? 3 : 6);
+  let ini = MES.length - n;
+  if (sel !== null && sel < ini) ini = sel;
+  return Array.from({ length: n }, (_, k) => ini + k);
+};
+function drawMensal(sel) {
+  curSel = sel;
+  const VIS = mesesVisiveis(sel);
+  $('#mensal-tbl tbody').innerHTML = VIS.map(i => `<tr><td>${MES_LONGO[i]}</td><td>${fmt(IN[i])}</td><td>${fmt(OUT[i])}</td></tr>`).join('');
+  const svg = $('#mensal'), box = Math.round(svg.getBoundingClientRect().width) || 320;
+  // o texto do gráfico acompanha o tamanho de letra da página
+  const fs = parseFloat(getComputedStyle(document.documentElement).fontSize) * 0.875;
+  const W = Math.max(260, box), narrow = W < 480, H = narrow ? 260 : Math.min(420, Math.round(W * 0.5)), L = Math.round(fs * (narrow ? 4.6 : 5.2)), T = 10, R = 2;
+  const longo = (W - L - R) / VIS.length >= fs * 4.8, B = Math.round(longo ? fs + 22 : fs * 2 + 20);
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const ph = H - T - B, base = T + ph, yMax = 1200, h = v => v / yMax * ph;
+  let s = `<title id="mensal-t">Quanto entrou e quanto saiu de ${MES_LONGO[VIS[0]]} a ${MES_LONGO[VIS[VIS.length - 1]]} de 2026</title>`;
+  (narrow ? [600, 1200] : [400, 800, 1200]).forEach(g => { s += `<line class="grid" x1="${L}" x2="${W - R}" y1="${base - h(g)}" y2="${base - h(g)}"/><text x="${L - 8}" y="${base - h(g) + 4}" text-anchor="end">R$ ${fmtInt(g)}</text>`; });
+  s += `<line class="zero" x1="${L}" x2="${W - R}" y1="${base}" y2="${base}"/>`;
+  // barras lado a lado, topo arredondado e base presa à linha do zero
+  const gw = (W - L - R) / VIS.length, bw = Math.max(6, Math.min(28, Math.floor((gw - 8) / 2))), rr = Math.min(4, bw / 2);
+  const bar = (x, v, cls) => { const t = base - h(v), r = Math.min(rr, h(v)); return `<path class="${cls}" d="M${x},${base}V${t + r}Q${x},${t} ${x + r},${t}H${x + bw - r}Q${x + bw},${t} ${x + bw},${t + r}V${base}Z"/>`; };
+  VIS.forEach((i, k) => {
+    const m = MES[i], cx = L + gw * k + gw / 2, on = sel === i;
+    // rótulo com o ano: "jan/2026" quando cabe; senão, mês em cima e ano embaixo
+    const lab = longo ? `<text x="${cx}" y="${base + fs + 8}" text-anchor="middle">${m}/2026</text>`
+      : `<text x="${cx}" y="${base + fs + 6}" text-anchor="middle">${m}</text><text class="yr" x="${cx}" y="${base + fs * 2 + 8}" text-anchor="middle">2026</text>`;
+    const tw = Math.round(longo ? fs * 4.4 : fs * 2.2);
+    s += `<g class="m${on ? ' sel' : ''}" tabindex="0" role="button" data-i="${i}" aria-pressed="${on}" aria-label="Ver ${MES_LONGO[i]} de 2026: entrou ${fmt(IN[i])}, saiu ${fmt(OUT[i])}">` +
+      `<rect class="hit" x="${cx - gw / 2 + 2}" y="${T}" width="${gw - 4}" height="${ph + B - 4}" rx="10"/>` +
+      bar(cx - bw - 1, IN[i], 'bar-a') + bar(cx + 1, OUT[i], 'bar-g') + lab +
+      (on ? `<rect class="uline" x="${cx - tw / 2}" y="${H - 5}" width="${tw}" height="3" rx="1.5"/>` : '') + '</g>';
+  });
+  svg.innerHTML = s;
+  requestAnimationFrame(() => setTimeout(() => svg.classList.add('still'), 700));
+  const tip = $('#tip');
+  const show = (i, r) => { tip.innerHTML = `<b>${MES_LONGO[i]}</b><br>Entrou ${fmt(IN[i])}<br>Saiu ${fmt(OUT[i])}<br>Sobrou ${fmt(IN[i] - OUT[i])}`; tip.style.display = 'block';
+    tip.style.left = Math.max(8, Math.min(r.x - 60, innerWidth - 228)) + 'px'; tip.style.top = Math.max(8, r.y - 110) + 'px'; };
+  $$('g.m', svg).forEach(g => {
+    const i = +g.dataset.i;
+    g.addEventListener('pointermove', e => { if (e.pointerType === 'mouse') show(i, { x: e.clientX, y: e.clientY }); });
+    // tocar num mês muda o filtro da página inteira para esse mês; tocar de novo volta para "desde o início"
+    g.addEventListener('click', () => { tip.style.display = 'none'; setPeriodo(curSel === i ? 'all' : String(i)); });
+    g.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setPeriodo(curSel === i ? 'all' : String(i)); $(`#mensal g.m[data-i="${i}"]`).focus(); } });
+    g.addEventListener('focus', () => { const b = g.getBoundingClientRect(); show(i, { x: b.left + b.width / 2, y: b.top + 40 }); });
+    g.addEventListener('pointerleave', e => { if (e.pointerType === 'mouse') tip.style.display = 'none'; });
+    g.addEventListener('blur', () => tip.style.display = 'none');
+  });
+}
+document.addEventListener('scroll', () => { $('#tip').style.display = 'none'; }, { passive: true });
+
+// campanhas: só as em andamento; as encerradas ficam no histórico
+function campHTML(c) {
+  const p = c.meta ? Math.min(100, pct(c.inn, c.meta)) : null;
+  // foto do animal da campanha; enquanto não houver foto enviada, um espaço reservado com a pata
+  const foto = c.foto ? `<img class="ph" src="${esc(c.foto)}" alt="Foto de ${esc(c.n)}">`
+    : `<div class="ph" role="img" aria-label="Espaço para a foto (ainda não enviada)"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="6" cy="11" r="2.2"/><circle cx="10" cy="6" r="2.2"/><circle cx="16" cy="6" r="2.2"/><circle cx="20" cy="11" r="2.2"/><path d="M12 12c-3 0-6 3-6 5.5 0 2 1.5 2.5 3 2.5 1.2 0 2-.5 3-.5s1.8.5 3 .5c1.5 0 3-.5 3-2.5C18 15 15 12 12 12z"/></svg><span>Foto</span></div>`;
+  return `<article class="tp-camp ${c.st}">${foto}<div class="body"><div class="top"><h3>${esc(c.n)}</h3>${c.st === 'open' ? '' : '<span class="chip chip-off">Encerrada</span>'}</div>
+    ${c.d ? `<p class="desc">${esc(c.d)}</p>` : ''}
+    <p class="raised"><b class="num">${fmt(c.inn)}</b>arrecadados${c.meta ? ` de ${fmt(c.meta)}` : ''}</p>
+    ${c.meta ? `<div class="prog" role="img" aria-label="${p}% da meta"><i style="width:${p}%"></i></div>` : ''}
+    <p class="nums">Gasto <b>${fmt(c.out)}</b> · Saldo <b>${fmt(c.inn - c.out)}</b></p></div></article>`;
+}
+function drawCamps() {
+  const all = Camps.get(), open = all.filter(c => c.st === 'open'), old = all.filter(c => c.st !== 'open');
+  $('#camps').innerHTML = open.length ? open.map(campHTML).join('') : '<p class="muted">Nenhuma campanha em andamento agora.</p>';
+  $('#camps-old').innerHTML = old.map(campHTML).join('');
+  const btn = $('#camps-btn'); btn.hidden = !old.length;
+  const label = () => { const o = btn.getAttribute('aria-expanded') === 'true';
+    btn.innerHTML = `${o ? 'Esconder histórico' : `Ver histórico (${old.length} ${old.length === 1 ? 'encerrada' : 'encerradas'})`}<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${o ? 'm6 15 6-6 6 6' : 'm6 9 6 6 6-6'}"/></svg>`; };
+  btn.onclick = () => { const o = btn.getAttribute('aria-expanded') !== 'true'; btn.setAttribute('aria-expanded', o); $('#camps-old').hidden = !o; label(); };
+  label();
+}
+
+$('#ultimas').innerHTML = '<div class="hd" aria-hidden="true"><span>Descrição</span><span>Pet</span><span>Categoria</span><span>Data</span><span>Valor</span></div>' +
+  ULT.map(r => `<div class="tp-row"><span class="t1">${esc(r[1])}</span>` +
+    `<span class="ani${r[4] ? '' : ' none'}">${r[4] ? `${ESPECIE[r[4]] === 'cachorro' ? '<img class="ic-cao" src="assets/icone-cachorro.webp" alt="">' : '<img class="ic-cao" src="assets/icone-gato.webp" alt="">'}${esc(r[4])}<span class="sr-only"> (${ESPECIE[r[4]]})</span>` : 'Vários pets'}</span>` +
+    `<span class="cat" data-d="${r[0]}">${esc(r[2])}</span><span class="dt">${r[0]}</span><span class="amt">${fmt(r[3])}</span></div>`).join('');
+let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => drawMensal(curSel), 120); });
+drawCamps();
+render();
+</script>
+</body>
+</html>
