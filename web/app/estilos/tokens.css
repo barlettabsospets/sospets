@@ -1,0 +1,127 @@
+/* Tokens do design system (T2.1). Fonte: tokens.css, theme4.css, publico.css e animais.css do protótipo.
+   Os valores ficam no @theme do Tailwind (bg-primary, text-ink, rounded-card...) e os nomes do
+   protótipo (--primary, --ink, --r-md...) apontam para eles, porque o CSS portado usa esses nomes.
+   Laranja, rosa e verde-sálvia NÃO são cores de texto (contraste insuficiente): usar as versões -700.
+   Cores de categoria de despesa NÃO ficam aqui: vêm da tabela categorias. */
+
+/* static: gera todas as variáveis, mesmo as que nenhuma classe do Tailwind usa */
+@theme static {
+  --color-*: initial;
+  --font-*: initial;
+
+  /* marca */
+  --color-primary: #134074;
+  --color-primary-500: #2D5F9A;
+  --color-accent: #A40E4C;
+  --color-orange: #E18335;
+  --color-pink: #DB5375;
+  --color-green: #B6CCA1;
+
+  /* derivadas para texto e fundos de chip (passam AA) */
+  --color-orange-700: #9A4F0D;
+  --color-orange-100: #FCEBD9;
+  --color-pink-700: #B8335A;
+  --color-pink-100: #FBE4EA;
+  --color-green-700: #3F5A2B;
+  --color-green-100: #E3EBDA;
+  --color-blue-100: #E4ECF5;
+
+  /* tema v4: fundos quentes */
+  --color-cream: #FFF4E3;
+  --color-cream-2: #FCE6C8;
+  --color-taupe: #E6D3B8;
+  --color-peach: #FFE1C2;
+  --color-sage-100: #DCE8D0;
+
+  /* neutros (tema v4) */
+  --color-bg: #FFF4E3;
+  --color-surface: #FFFFFF;
+  --color-fill: #F8E8D0;
+  --color-ink: #2A1810;
+  --color-ink-2: #6A5446;
+  --color-line: rgba(74, 40, 20, .12);
+  --color-field: #8C7355;
+  --color-white: #FFFFFF;
+  --color-black: #000000;
+
+  /* entrou e saiu (publico.css; validadas para daltonismo) */
+  --color-in: #356A2A;
+  --color-out: #DB7838;
+
+  /* situação dos pets (animais.css) */
+  --color-s-rua: #A40E4C;
+  --color-s-lar: #2D5F9A;
+  --color-s-adotado: #356A2A;
+  --color-ev-ch: #C2477A;
+  --color-ev-sa: #356A2A;
+
+  /* fontes locais (public/assets/fonts), sem Google Fonts */
+  --font-sans: "Nunito", system-ui, sans-serif;
+  --font-display: "Barlow Condensed", "Arial Narrow", Impact, sans-serif;
+  --font-serif: "Fraunces", Georgia, serif;
+
+  /* formas */
+  --radius-sm: 14px;
+  --radius-md: 20px;
+  --radius-lg: 32px;
+  --radius-xl: 40px;
+  --radius-card: 24px;
+  --spacing-gap: 14px;
+
+  --ease-sos: cubic-bezier(.2, .7, .2, 1);
+}
+
+/* nomes usados pelo CSS do protótipo */
+:root {
+  --primary: var(--color-primary);
+  --primary-500: var(--color-primary-500);
+  --accent: var(--color-accent);
+  --orange: var(--color-orange);
+  --pink: var(--color-pink);
+  --green: var(--color-green);
+  --orange-700: var(--color-orange-700);
+  --orange-100: var(--color-orange-100);
+  --pink-700: var(--color-pink-700);
+  --pink-100: var(--color-pink-100);
+  --green-700: var(--color-green-700);
+  --green-100: var(--color-green-100);
+  --blue-100: var(--color-blue-100);
+  --cream: var(--color-cream);
+  --cream-2: var(--color-cream-2);
+  --taupe: var(--color-taupe);
+  --peach: var(--color-peach);
+  --sage-100: var(--color-sage-100);
+  --bg: var(--color-bg);
+  --surface: var(--color-surface);
+  --fill: var(--color-fill);
+  --ink: var(--color-ink);
+  --ink-2: var(--color-ink-2);
+  --line: var(--color-line);
+  --field: var(--color-field);
+  --in: var(--color-in);
+  --out: var(--color-out);
+  --s-rua: var(--color-s-rua);
+  --s-lar: var(--color-s-lar);
+  --s-adotado: var(--color-s-adotado);
+  --ev-ch: var(--color-ev-ch);
+  --ev-sa: var(--color-ev-sa);
+  --font: var(--font-sans);
+  --display: var(--font-display);
+  --serif: var(--font-serif);
+  --r-sm: var(--radius-sm);
+  --r-md: var(--radius-md);
+  --r-lg: var(--radius-lg);
+  --r-xl: var(--radius-xl);
+  --card-r: var(--radius-card);
+  --gap: var(--spacing-gap);
+  --ease: var(--ease-sos);
+}
+
+@font-face { font-family: "Nunito"; font-weight: 400; font-display: swap; src: url(/assets/fonts/nunito-latin-400-normal.woff2) format("woff2"); }
+@font-face { font-family: "Nunito"; font-weight: 600; font-display: swap; src: url(/assets/fonts/nunito-latin-600-normal.woff2) format("woff2"); }
+@font-face { font-family: "Nunito"; font-weight: 700; font-display: swap; src: url(/assets/fonts/nunito-latin-700-normal.woff2) format("woff2"); }
+@font-face { font-family: "Nunito"; font-weight: 800; font-display: swap; src: url(/assets/fonts/nunito-latin-800-normal.woff2) format("woff2"); }
+@font-face { font-family: "Barlow Condensed"; font-weight: 600; font-display: swap; src: url(/assets/fonts/barlow-condensed-latin-600-normal.woff2) format("woff2"); }
+@font-face { font-family: "Barlow Condensed"; font-weight: 700; font-display: swap; src: url(/assets/fonts/barlow-condensed-latin-700-normal.woff2) format("woff2"); }
+@font-face { font-family: "Barlow Condensed"; font-weight: 800; font-display: swap; src: url(/assets/fonts/barlow-condensed-latin-800-normal.woff2) format("woff2"); }
+@font-face { font-family: "Fraunces"; font-weight: 700; font-display: swap; src: url(/assets/fonts/fraunces-latin-700-normal.woff2) format("woff2"); }

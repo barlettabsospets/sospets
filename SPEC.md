@@ -306,12 +306,12 @@ Formato: `[ ]` a fazer, `[x]` feito. **Dep.** = precisa de outra tarefa antes. C
 - [ ] **T1.11** Importar a planilha real: script em `web/scripts/importar-planilha.ts` que lê o `.xlsx` de `web/dados-reais/` (pasta fora do git) e grava em pets, membros, contribuições, despesas, campanhas e categorias. Mostra um relatório antes de gravar (quantas linhas, totais por mês, linhas com problema). Rodar primeiro num banco local ou em homologação, conferir os totais com a planilha e só depois, com pedido explícito, em produção. *Dep.: T1.9*
 
 ### Fase 2: base do front-end
-- [ ] **T2.1** Portar `tokens.css` para o `@theme` do Tailwind; copiar as fontes de `assets/fonts` e as imagens do logo. *Dep.: T0.3*
-- [ ] **T2.2** `lib/dominio`: `situacaoPet`, `mesesEntre`, formatação BRL e de mês ("out/2026"), cálculo de saldo, com testes Vitest usando os mesmos casos do protótipo. *Dep.: T0.6*
-- [ ] **T2.3** Teste que compara `situacao_pet` do SQL com `situacaoPet` do TS para todos os pets do seed em todos os meses. *Dep.: T1.9, T2.2*
-- [ ] **T2.4** Componentes de UI (`components/ui`): botão, cartão, seletor de período (`periodPicker`), lista de escolha (`escolha`), chips, paginação, diálogo, toast com "Desfazer". Mesmo teclado e ARIA do `app.js` e do `admin.js`. *Dep.: T2.1*
-- [ ] **T2.5** Layouts: cabeçalho público (logo, abas, "Área do administrador"), cabeçalho do admin (abas + "Sair"), tabbar no celular, rodapé com `dados_desde`, faixa de homologação. *Dep.: T2.4*
-- [ ] **T2.6** Gráficos SVG (`components/graficos`): barras mensais clicáveis, rosca com legenda, barras por categoria. *Dep.: T2.1*
+- [x] **T2.1** Portar `tokens.css` para o `@theme` do Tailwind; copiar as fontes de `assets/fonts` e as imagens do logo. *Dep.: T0.3*
+- [x] **T2.2** `lib/dominio`: `situacaoPet`, `mesesEntre`, formatação BRL e de mês ("out/2026"), cálculo de saldo, com testes Vitest usando os mesmos casos do protótipo. *Dep.: T0.6*
+- [x] **T2.3** Teste que compara `situacao_pet` do SQL com `situacaoPet` do TS para todos os pets do seed em todos os meses. *Dep.: T1.9, T2.2*
+- [x] **T2.4** Componentes de UI (`components/ui`): botão, cartão, seletor de período (`periodPicker`), lista de escolha (`escolha`), chips, paginação, diálogo, toast com "Desfazer". Mesmo teclado e ARIA do `app.js` e do `admin.js`. *Dep.: T2.1*
+- [x] **T2.5** Layouts: cabeçalho público (logo, abas, "Área do administrador"), cabeçalho do admin (abas + "Sair"), tabbar no celular, rodapé com `dados_desde`, faixa de homologação. *Dep.: T2.4*
+- [x] **T2.6** Gráficos SVG (`components/graficos`): barras mensais clicáveis, rosca com legenda, barras por categoria. *Dep.: T2.1*
 
 ### Fase 3: login
 - [ ] **T3.1** Página `/entrar` igual a `login.html`, com login por e-mail e senha no Supabase Auth e mensagens de erro em português. *Dep.: T0.5, T2.5*

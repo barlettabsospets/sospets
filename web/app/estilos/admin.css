@@ -1,0 +1,403 @@
+/* Gerado por scripts/portar-estilos.mjs a partir de sospets-design/sospets-kit/design/admin.css.
+   Não edite: ajustes do app vão em ajustes.css. */
+/* SOS Pets DF Águas Claras: área do administrador. Carrega depois de publico.css.
+   Usa o mesmo desenho das páginas públicas (cabeçalho com abas de pasta, títulos em serifa, cartões brancos
+   com sombra, seletor de mês próprio, filtros em pílula com a quantidade), mas continua sendo uma ferramenta:
+   a ação principal de cada página fica sempre à vista. Nada se mexe (sem entrada animada, sem botão que sobe).
+   Botão principal em azul: laranja é a cor de "saiu" nos gráficos e não deve marcar "contribuiu". */
+
+/* cabeçalho: abas de pasta a partir de 760 px; no celular, a barra de baixo com os 5 atalhos */
+@media (max-width: 759px) { body.admin .th-tabs { display: none; } body.admin .th-in { grid-template-areas: "brand . admin"; padding-bottom: 8px; } }
+@media (min-width: 760px) { body.admin .tabbar { display: none; } body.admin { padding-bottom: 40px; } }
+@media (min-width: 760px) and (max-width: 899px) { body.admin .th-tabs a { padding: 0 8px; font-size: .9375rem; } }
+body.admin .th-admin svg { top: 0; }
+@media (max-width: 599px) { body.admin .th-admin { padding: 0 14px; } body.admin .th-admin span { position: static; width: auto; height: auto; clip: auto; } }
+
+/* barra de baixo no celular: mesma linguagem das abas (branca, ativa em azul) */
+body.admin .tabbar { background: #fff; border: 1px solid rgba(74, 40, 20, .1); box-shadow: 0 10px 30px -10px rgba(74, 40, 20, .35); -webkit-backdrop-filter: none; backdrop-filter: none; }
+body.admin .tabbar a { font-size: .75rem; font-weight: 800; color: var(--ink-2); }
+body.admin .tabbar a[aria-current="page"] { background: var(--cream); color: var(--primary); box-shadow: inset 0 3px 0 var(--primary); }
+@media (max-width: 759px) { body.admin { padding-bottom: 104px; } }
+
+/* sem movimento */
+body.admin .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+body.admin .btn:hover, body.admin .btn:active { transform: none; }
+
+/* título da página: igual ao "Despesas" e ao "Nossos pets" do site */
+body.admin .ahead { padding: 24px 0 16px; display: grid; gap: 4px; }
+@media (min-width: 900px) { body.admin .ahead { padding-top: 32px; } }
+body.admin .ahead h1 { font-family: var(--serif); font-weight: 700; font-size: clamp(1.75rem, 6vw, 2.25rem); line-height: 1.1; color: var(--primary); text-transform: none; letter-spacing: 0; }
+body.admin .ahead p { margin: 0 !important; font-size: 1.0625rem; color: var(--ink-2); max-width: 44em; }
+
+/* grade: lista à esquerda (2/3), resumo e ação à direita (1/3). No celular, ação e resumo vêm antes da lista. */
+body.admin .split { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: start; }
+body.admin .split > aside, body.admin .split > section, body.admin .split > div { display: grid; gap: 16px; min-width: 0; align-content: start; }
+@media (min-width: 1100px) {
+  body.admin .split { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 32px; }
+  body.admin .split > aside { order: 2; position: sticky; top: 16px; }
+}
+
+/* cartões: mesma moldura do site */
+body.admin :is(.tile, .glist) { background: #fff; border-radius: var(--card-r); border: 1px solid rgba(74, 40, 20, .06); padding: 20px;
+  box-shadow: 0 1px 2px rgba(74, 40, 20, .06), 0 12px 32px -14px rgba(74, 40, 20, .22); }
+body.admin .glist { padding: 4px 20px; overflow: hidden; }
+@media (min-width: 900px) { body.admin .tile { padding: 24px; } body.admin .glist { padding: 4px 24px; } }
+body.admin .tile:hover { box-shadow: 0 1px 2px rgba(74, 40, 20, .06), 0 12px 32px -14px rgba(74, 40, 20, .22); }
+body.admin .tile h2, body.admin .tile h3, body.admin .ad-h { font-family: var(--font); font-size: 1.125rem; font-weight: 800; color: var(--ink); text-transform: none; letter-spacing: 0; line-height: 1.3; }
+body.admin .tile .label { font-family: var(--font); text-transform: none; letter-spacing: 0; font-size: 1rem; font-weight: 800; color: var(--ink); }
+body.admin .tile .num { font-family: var(--font); font-size: clamp(2rem, 4vw, 2.5rem); font-weight: 800; line-height: 1.05; margin-top: 4px; color: var(--ink); letter-spacing: -0.02em; }
+body.admin .tile .small, body.admin .muted { color: var(--ink-2); }
+
+/* botões: azul para a ação principal, contorno para as outras; cantos de 14 px como no site */
+body.admin .btn { border-radius: 14px; font-weight: 800; min-height: 48px; box-shadow: none; }
+body.admin .btn-sm { min-height: 44px; padding: 0 14px; border-radius: 12px; font-size: .9375rem; }
+body.admin .btn-primary { background: var(--primary); color: #fff; }
+body.admin .btn-primary:hover { background: #0E3158; }
+body.admin .btn-secondary { background: #fff; color: var(--primary); border: 1.5px solid rgba(19, 64, 116, .3); }
+body.admin .btn-secondary:hover { background: var(--cream); border-color: var(--primary); }
+body.admin .btn-ghost { background: none; color: var(--primary); }
+body.admin .btn-ghost:hover { background: var(--cream); }
+body.admin .btn:focus-visible { outline: 3px solid var(--primary-500); outline-offset: 2px; }
+body.admin aside > .btn { width: 100%; }
+
+/* filtros em pílula com a quantidade: iguais aos de "Nossos pets" e "Despesas" */
+body.admin :is(.segmented, .pills, .ad-chips) { display: flex; flex-wrap: wrap; gap: 6px; padding: 0; margin: 0; background: none; overflow: visible; }
+body.admin :is(.segmented, .pills, .ad-chips) button { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; padding: 0 14px; border-radius: 99px; border: 1px solid rgba(74, 40, 20, .14);
+  background: #fff; box-shadow: none; cursor: pointer; font: 800 .9375rem var(--font); color: var(--ink-2); transition: background-color .2s, color .2s, border-color .2s; }
+body.admin :is(.segmented, .pills, .ad-chips) button:hover { color: var(--ink); border-color: rgba(74, 40, 20, .3); }
+body.admin :is(.segmented, .pills, .ad-chips) button[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: #fff; }
+body.admin .ad-chips b { font-weight: 800; color: var(--ink); } body.admin .ad-chips button[aria-pressed="true"] b { color: #fff; }
+body.admin .ad-chips i { width: 10px; height: 10px; border-radius: 3px; flex: none; background: var(--c, var(--ink-2)); }
+body.admin .ad-chips button[aria-pressed="true"] i { box-shadow: 0 0 0 2px #fff; }
+
+/* barra acima da lista: busca + filtros */
+body.admin .ad-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; }
+body.admin .ad-busca { position: relative; flex: 1 1 16rem; max-width: 24rem; }
+body.admin .ad-busca svg { position: absolute; left: 14px; top: 50%; width: 20px; height: 20px; margin-top: -10px; fill: none; stroke: var(--ink-2); stroke-width: 2.2; stroke-linecap: round; pointer-events: none; }
+body.admin .ad-busca input { width: 100%; min-height: 48px; padding: 0 14px 0 44px; border-radius: 14px; border: 1px solid rgba(74, 40, 20, .18); background: #fff; font: 700 1rem var(--font); color: var(--ink); }
+body.admin .ad-busca input:focus-visible { outline: 3px solid var(--primary-500); outline-offset: 1px; border-color: transparent; }
+@media (max-width: 559px) { body.admin .ad-busca { max-width: none; flex-basis: 100%; } }
+body.admin .ad-count { font-size: 1.0625rem; font-weight: 800; color: var(--ink); }
+
+/* seletor de mês: o mesmo do site, com o rótulo "Selecione o mês" */
+body.admin .ad-period { display: grid; gap: 6px; justify-items: center; text-align: center; }
+body.admin .ad-period .lab { font-size: .9375rem; font-weight: 800; color: var(--ink-2); }
+body.admin .ad-period .pbar { max-width: none; }
+@media (max-width: 1099px) { body.admin .ad-period .pbar { max-width: 380px; } }
+
+/* linhas das listas */
+body.admin :is(.row, .arow) { padding-inline: 0; border-color: var(--line); }
+body.admin .glist > :is(.row, .arow):last-child { border-bottom: 0; }
+body.admin :is(.row .who strong, .arow .t1) { font-weight: 800; color: var(--ink); }
+body.admin .avatar { background: var(--cream); color: var(--ink); font-weight: 800; }
+body.admin .row.paid .avatar { background: var(--green-100); color: var(--green-700); }
+body.admin .money input, body.admin .field input, body.admin .field select { border-radius: 14px; border: 1px solid rgba(74, 40, 20, .18); background: #fff; font-family: var(--font); }
+body.admin .arow .amt { font-family: var(--font); font-weight: 800; font-size: 1.0625rem; letter-spacing: -0.01em; }
+body.admin .thumb.ic { background: none; border-radius: 0; }
+body.admin .thumb.ic img { width: 40px; height: 40px; }
+body.admin .thumb.cat { border-radius: 12px; }
+
+/* vazio */
+body.admin .empty { margin-top: 0; padding: 40px 16px; border-radius: var(--card-r); background: rgba(255, 255, 255, .6); border: 1px dashed rgba(74, 40, 20, .2); font-weight: 700; }
+
+/* janelas (cadastrar, cancelar...) */
+body.admin dialog { background: #fff; border-radius: var(--card-r); padding: 24px; box-shadow: 0 30px 80px -20px rgba(42, 24, 16, .45); }
+body.admin dialog h2 { font-family: var(--serif) !important; font-weight: 700; font-size: 1.75rem !important; color: var(--primary); text-transform: none; letter-spacing: 0; line-height: 1.15; }
+body.admin dialog::backdrop { background: rgba(42, 24, 16, .45); -webkit-backdrop-filter: none; backdrop-filter: none; }
+
+/* aviso no rodapé ("desfazer") */
+body.admin .toast { background: var(--ink); -webkit-backdrop-filter: none; backdrop-filter: none; border-radius: 16px; animation: none !important; }
+@media (min-width: 760px) { body.admin .toast { bottom: 24px; } }
+body.admin .mini-ring circle { transition: none !important; }
+
+/* Mais: cada seção é um cartão; o menu vira um índice "Nesta página" */
+body.admin .sec { margin: 0; display: grid; gap: 14px; scroll-margin-top: 16px; }
+body.admin .sec h2 { font-size: 1.25rem; }
+body.admin .sec .muted { margin: -6px 0 0 !important; }
+body.admin .sec .glist { box-shadow: none; border: 1px solid var(--line); padding: 0 16px; border-radius: 16px; }
+body.admin .ad-form { display: grid; gap: 16px; }
+body.admin .menu-list { padding: 6px; display: grid; }
+body.admin .menu-list a { display: block; padding: 12px 14px; border-radius: 14px; text-decoration: none; color: var(--ink); font-weight: 800; border: 0; }
+body.admin .menu-list a:hover { background: var(--cream); }
+body.admin .menu-list a small { display: block; font-weight: 700; font-size: .9375rem; color: var(--ink-2); }
+body.admin .menu-list a::after { display: none; }
+
+/* Campanhas: cartões em grade */
+body.admin .camps { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 16px; }
+body.admin .camp .top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+body.admin .camp-big b { font-family: var(--font); font-weight: 800; }
+body.admin .chip-off { background: var(--cream-2); color: var(--ink-2); }
+body.admin .camp { display: grid; gap: 10px; align-content: start; }
+body.admin .camp .desc { font-size: 1rem; color: var(--ink-2); margin: 0; }
+body.admin .camp .since { font-size: .9375rem; font-weight: 700; color: var(--ink-2); margin: 0; }
+body.admin .camp-big { display: grid; gap: 2px; }
+body.admin .camp-big b { font-size: 2rem; line-height: 1.1; color: var(--ink); letter-spacing: -0.02em; }
+body.admin .camp-big span { font-size: .9375rem; font-weight: 700; color: var(--ink-2); }
+body.admin .camp .prog { height: 10px; border-radius: 99px; background: rgba(74, 40, 20, .06); overflow: hidden; }
+body.admin .camp .prog i { display: block; height: 100%; border-radius: 99px; background: var(--primary-500); }
+body.admin .camp-rows { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0; }
+body.admin .camp-rows > div { background: var(--cream); border-radius: 14px; padding: 10px 14px; }
+body.admin .camp-rows dt { font-family: var(--font); text-transform: none; letter-spacing: 0; font-size: .9375rem; font-weight: 700; color: var(--ink-2); }
+body.admin .camp-rows dd { margin: 0; font-family: var(--font); font-size: 1.125rem; font-weight: 800; color: var(--ink); letter-spacing: -0.01em; }
+body.admin .camp-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+
+/* páginas da lista (Membros): mesmos botões da paginação do catálogo de pets */
+body.admin .ad-pager { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px; }
+body.admin .ad-pager[hidden] { display: none; }
+body.admin .ad-pager button { min-width: 44px; height: 44px; padding: 0 10px; border-radius: 12px; border: 0; cursor: pointer; display: grid; place-items: center; font: 800 1rem var(--font); color: var(--ink);
+  background: #fff; box-shadow: 0 1px 2px rgba(74, 40, 20, .08), inset 0 0 0 1px rgba(74, 40, 20, .08); }
+body.admin .ad-pager button:hover:not([disabled]):not([aria-current]) { background: var(--cream); }
+body.admin .ad-pager button[aria-current="page"] { background: var(--primary); color: #fff; box-shadow: none; }
+body.admin .ad-pager button[disabled] { opacity: .35; cursor: default; }
+body.admin .ad-pager svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+body.admin .ad-pad .btn { margin-top: 12px; width: 100%; }
+body.admin .tile .num + .small { margin-top: 4px; }
+
+/* janela de cadastro grande (Novo pet / Editar): título e botões fixos, o meio rola; seções com legenda */
+body.admin dialog:focus-visible { outline: none; }
+body.admin dialog.ad-dlg { width: min(680px, calc(100vw - 24px)); max-height: calc(100dvh - 32px); padding: 0; overflow: hidden; }
+body.admin .ad-dlg form { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 0; max-height: calc(100dvh - 32px); }
+body.admin .ad-dlg-h { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 20px 24px 14px; border-bottom: 1px solid var(--line); }
+body.admin .ad-x { width: 44px; height: 44px; flex: none; border: 0; border-radius: 12px; background: var(--cream); color: var(--ink); display: grid; place-items: center; cursor: pointer; }
+body.admin .ad-x:hover { background: var(--cream-2); }
+body.admin .ad-x svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; }
+body.admin .ad-dlg-b { overflow-y: auto; padding: 8px 24px 20px; display: grid; gap: 4px; overscroll-behavior: contain; }
+body.admin .ad-dlg-f { display: flex; justify-content: flex-end; gap: 10px; padding: 14px 24px 18px; border-top: 1px solid var(--line); background: #fff; }
+@media (max-width: 559px) {
+  body.admin dialog.ad-dlg { position: fixed; inset: 0; width: 100%; max-width: 100%; height: 100%; max-height: 100%; margin: 0; border-radius: 0; }
+  body.admin dialog.ad-dlg form { height: 100%; max-height: 100%; }
+
+  body.admin .ad-dlg-h, body.admin .ad-dlg-b, body.admin .ad-dlg-f { padding-inline: 16px; }
+  body.admin .ad-dlg-f .btn { flex: 1; }
+}
+body.admin .ad-sec { border: 0; margin: 0; padding: 14px 0 6px; display: grid; gap: 14px; min-width: 0; }
+body.admin .ad-sec + .ad-sec { border-top: 1px solid var(--line); }
+body.admin .ad-sec legend { float: left; width: 100%; padding: 0; margin-bottom: 2px; font-size: 1.0625rem; font-weight: 800; color: var(--primary); }
+body.admin .ad-sec legend + * { clear: both; }
+body.admin .field .lbl { font-weight: 800; font-size: .9375rem; }
+body.admin .field > label { font-weight: 800; }
+body.admin .ad-row2 { display: grid; gap: 14px; }
+body.admin .ad-row3 { display: grid; gap: 14px; }
+@media (min-width: 560px) { body.admin .ad-row2 { grid-template-columns: 1fr 1fr; } body.admin .ad-row3 { grid-template-columns: auto auto auto; justify-content: start; column-gap: 20px; } }
+body.admin [hidden] { display: none !important; }
+body.admin .ad-checks { display: flex; flex-wrap: wrap; gap: 8px 20px; }
+body.admin .check { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; font-weight: 700; cursor: pointer; }
+body.admin .check input { width: 22px; height: 22px; accent-color: var(--primary); flex: none; }
+body.admin .ad-aviso { margin: 0; padding: 12px 14px; border-radius: 14px; background: var(--cream); color: var(--ink-2); font-size: .9375rem; font-weight: 700; line-height: 1.45; }
+
+/* escolhas curtas em botões (em vez de lista suspensa): rádio escondido, pílula visível */
+body.admin .ad-opts { display: flex; flex-wrap: wrap; gap: 6px; }
+body.admin .ad-opts label { position: relative; }
+body.admin .ad-opts input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+body.admin .ad-opts span { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; padding: 0 14px; border-radius: 12px; border: 1px solid rgba(74, 40, 20, .18);
+  background: #fff; font: 800 .9375rem var(--font); color: var(--ink-2); transition: background-color .2s, color .2s, border-color .2s; }
+body.admin .ad-opts input:hover + span { border-color: rgba(74, 40, 20, .35); color: var(--ink); }
+body.admin .ad-opts input:checked + span { background: var(--ink); border-color: var(--ink); color: #fff; }
+body.admin .ad-opts input:focus-visible + span { outline: 3px solid var(--primary-500); outline-offset: 2px; }
+body.admin .ad-opts span img { width: 1.25em; height: 1.25em; }
+body.admin .ad-opts span i { width: 10px; height: 10px; border-radius: 3px; background: var(--c); flex: none; }
+body.admin .ad-opts input:checked + span i { box-shadow: 0 0 0 2px #fff; }
+
+/* foto: prévia quadrada + botão; sem foto, uma pata discreta */
+body.admin .ad-foto { display: flex; gap: 16px; align-items: center; }
+body.admin .ad-foto-ph { width: 96px; height: 96px; flex: none; border-radius: 18px; background: #F3ECE2; color: rgba(74, 40, 20, .2); display: grid; place-items: center; overflow: hidden; }
+body.admin .ad-foto-ph svg { width: 40%; }
+body.admin .ad-foto-ph img { width: 100%; height: 100%; object-fit: cover; }
+body.admin .ad-foto-t { display: grid; gap: 4px; min-width: 0; }
+body.admin .ad-foto-t b { font-weight: 800; }
+body.admin .ad-foto-t span { font-size: .9375rem; color: var(--ink-2); line-height: 1.4; }
+body.admin .ad-foto-b { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+body.admin label.btn { cursor: pointer; }
+
+/* miniatura na lista: foto redonda quando houver */
+body.admin .thumb.foto { background: none; padding: 0; border-radius: 50%; overflow: hidden; }
+body.admin .thumb.foto img { width: 46px; height: 46px; object-fit: cover; }
+
+/* "Desfazer" no aviso escuro: texto claro (o azul do .btn-ghost some no fundo escuro) */
+body.admin .toast .btn-ghost { color: #FFD9A8; text-decoration: underline; text-underline-offset: 3px; }
+body.admin .toast .btn-ghost:hover { background: rgba(255, 255, 255, .12); color: #fff; }
+body.admin .toast .btn-ghost:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+
+/* Pets: cartão "Precisa de atenção" — cada item filtra a lista */
+body.admin .ad-aten ul { list-style: none; margin: 0; padding: 0; display: grid; }
+body.admin .ad-aten li + li { border-top: 1px solid var(--line); }
+body.admin .ad-aten li.ok { padding: 10px 0; color: var(--ink-2); font-weight: 700; }
+body.admin .ad-aten button { width: calc(100% + 16px); margin: 0 -8px; display: grid; grid-template-columns: 22px minmax(0, 1fr) 16px; align-items: center; gap: 10px; min-height: 48px; padding: 8px;
+  border: 0; border-radius: 12px; background: none; cursor: pointer; text-align: left; font: 700 1rem var(--font); color: var(--ink); transition: background-color .2s; }
+body.admin .ad-aten button:hover { background: var(--cream); }
+body.admin .ad-aten button[aria-pressed="true"] { background: #fff; box-shadow: inset 0 0 0 2px var(--ink); }
+body.admin .ad-aten button svg { width: 22px; height: 22px; fill: none; stroke: var(--primary); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+body.admin .ad-aten button svg.chev { width: 16px; height: 16px; stroke: var(--ink-2); stroke-width: 2.6; }
+body.admin .ad-list-h { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; }
+
+/* linha inteira clicável (abre Editar) */
+body.admin .ad-rowbtn { width: 100%; background: none; border: 0; border-bottom: 1px solid var(--line); cursor: pointer; text-align: left; font: inherit; color: inherit; border-radius: 0; transition: background-color .2s; }
+body.admin .glist > .ad-rowbtn:last-child { border-bottom: 0; }
+body.admin .ad-rowbtn:hover { background: linear-gradient(90deg, transparent, var(--cream) 8%, var(--cream) 92%, transparent); }
+body.admin .ad-rowbtn:focus-visible { outline: 3px solid var(--primary-500); outline-offset: -3px; border-radius: 12px; }
+body.admin .ad-rowbtn .txt { display: block; min-width: 0; }
+body.admin .ad-rowbtn .tags { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+body.admin .ad-rowbtn .go { display: inline-flex; align-items: center; gap: 4px; font-weight: 800; color: var(--primary); font-size: .9375rem; }
+body.admin .ad-rowbtn .go svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+@media (max-width: 679px) { body.admin .ad-rowbtn { grid-template-columns: 46px 1fr auto; } body.admin .ad-rowbtn .go { font-size: 0; } body.admin .ad-rowbtn .go svg { width: 20px; height: 20px; } }
+
+/* ícones de espécie em aquarela: redondos, com um contorno leve */
+body.admin .thumb.ic img, body.admin .ad-opts span img { border-radius: 50%; box-shadow: 0 0 0 1px rgba(74, 40, 20, .15); }
+
+/* ícone de espécie do tamanho de um emoji, na mesma linha do nome; a coluna da esquerda só aparece quando há foto */
+body.admin .t1 .ic-cao, body.admin .t2 .ic-cao { margin-right: .35em; }
+body.admin .t2 .pet { white-space: nowrap; }
+body.admin .t2 .cdot { display: inline-block; width: 9px; height: 9px; border-radius: 3px; margin-right: 6px; vertical-align: .05em; }
+body.admin .arow.sem-thumb { grid-template-columns: minmax(0, 1fr) auto; }
+@media (max-width: 679px) {
+  body.admin .arow.sem-thumb { grid-template-columns: minmax(0, 1fr) auto; }
+  body.admin .arow.sem-thumb .acts { grid-column: auto; margin: 0; }
+  body.admin .arow.sem-thumb .acts .amt { margin-left: 0; }
+}
+body.admin .ad-opts span img { width: 1.15em; height: 1.15em; }
+
+/* escolha entre 2 ou 3 opções: barra segmentada branca, cada opção ocupa a sua parte (igual ao "Cães e gatos / Cães / Gatos" do site) */
+body.admin .ad-seg { display: flex; gap: 4px; padding: 4px; border-radius: 14px; background: #fff; border: 1px solid rgba(74, 40, 20, .18); }
+body.admin .ad-seg label { position: relative; flex: 1; min-width: 0; }
+body.admin .ad-seg input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+body.admin .ad-seg span { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 12px; border-radius: 10px;
+  font: 800 1rem var(--font); color: var(--ink-2); white-space: nowrap; transition: background-color .2s, color .2s; }
+body.admin .ad-seg input:hover + span { background: var(--cream); color: var(--ink); }
+body.admin .ad-seg input:checked + span { background: var(--primary); color: #fff; }
+body.admin .ad-seg input:focus-visible + span { outline: 3px solid var(--primary-500); outline-offset: 1px; }
+body.admin .ad-seg span img { width: 1.15em; height: 1.15em; border-radius: 50%; box-shadow: 0 0 0 1px rgba(74, 40, 20, .15); }
+body.admin .ad-seg input:checked + span img { box-shadow: 0 0 0 2px #fff; }
+body.admin .ad-sec .field { gap: 8px; }
+body.admin .ad-sec .ad-row2 { gap: 14px 20px; }
+
+/* lista de escolha (Situação): mesmo botão e mesma lista do "Selecione o mês", alinhados à esquerda */
+body.admin .ad-sel { position: relative; }
+body.admin .ad-sel .pdrop-btn { justify-content: space-between; min-height: 52px; padding: 0 16px; border-radius: 14px; background: #fff; border: 1px solid rgba(74, 40, 20, .18); font: 800 1.0625rem var(--font); color: var(--ink); }
+body.admin .ad-sel .pdrop-btn:hover { background: var(--cream); }
+body.admin .ad-sel .pdrop-btn > span { display: inline-flex; align-items: center; gap: 10px; }
+body.admin .ad-sel .pdrop-list { left: 0; transform: none; top: calc(100% + 6px); width: 100%; }
+body.admin .ad-sel i { width: 12px; height: 12px; border-radius: 4px; flex: none; }
+body.admin .ad-sel .pdrop-list li[role=option] { justify-content: flex-start; }
+body.admin .ad-sel .pdrop-list li[aria-selected="true"] i { box-shadow: 0 0 0 2px #fff; }
+body.admin .ad-sel .pdrop-list { background: #fff; -webkit-backdrop-filter: none; backdrop-filter: none; box-shadow: 0 2px 6px rgba(74, 40, 20, .1), 0 18px 40px -12px rgba(74, 40, 20, .35); }
+
+/* entrar: mesmo creme, cartão branco com sombra, título em serifa, campos e botão azul da área do administrador */
+body.auth { padding-bottom: 0 !important; background: var(--cream); }
+body.auth .lg-wrap { min-height: calc(100dvh - 34px); display: grid; place-items: center; align-content: center; gap: 14px; padding: 28px 16px 40px; }
+body.auth .lg-card { width: min(500px, 100%); display: grid; gap: 20px; padding: 28px 24px; background: #fff; border-radius: var(--card-r); border: 1px solid rgba(74, 40, 20, .06);
+  box-shadow: 0 1px 2px rgba(74, 40, 20, .06), 0 18px 44px -18px rgba(74, 40, 20, .3); }
+@media (min-width: 560px) { body.auth .lg-card { padding: 36px 36px 32px; } }
+body.auth .lg-logo { justify-self: center; display: block; }
+body.auth .lg-logo img { height: 5.5rem; width: auto; display: block; }
+body.auth .lg-h { display: grid; gap: 4px; text-align: center; }
+body.auth .lg-h h1 { font-family: var(--serif); font-weight: 700; font-size: clamp(1.625rem, 6vw, 2rem); line-height: 1.15; color: var(--primary); text-transform: none; letter-spacing: 0; margin: 0; }
+body.auth .lg-h p { margin: 0; font-size: 1.0625rem; color: var(--ink-2); }
+body.auth form { display: grid; gap: 16px; }
+body.auth .field input { min-height: 52px; padding: 0 16px; font-size: 1.0625rem; font-weight: 700; color: var(--ink); width: 100%; }
+body.auth .field input:focus-visible { outline: 3px solid var(--primary-500); outline-offset: 1px; border-color: transparent; }
+body.auth .field input[aria-invalid="true"] { border-color: #B3261E; }
+body.auth .lg-senha { position: relative; }
+body.auth .lg-senha input { padding-right: 104px; }
+body.auth .lg-senha button { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); min-height: 40px; padding: 0 12px; border: 0; border-radius: 10px; background: var(--cream); color: var(--primary); font: 800 .9375rem var(--font); cursor: pointer; }
+body.auth .lg-senha button:hover { background: var(--cream-2); }
+body.auth .lg-senha button:focus-visible { outline: 3px solid var(--primary-500); outline-offset: 1px; }
+body.auth .lg-erro { margin: 0; display: flex; gap: 8px; align-items: flex-start; padding: 10px 12px; border-radius: 12px; background: #FDECEA; color: #8C1D18; font-weight: 700; font-size: .9375rem; }
+body.auth .lg-erro svg { width: 20px; height: 20px; flex: none; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; }
+body.auth .lg-entrar { width: 100%; min-height: 54px; font-size: 1.0625rem; }
+body.auth .lg-help { margin: 0; text-align: center; font-size: .9375rem; line-height: 1.5; color: var(--ink-2); }
+body.auth .lg-voltar { justify-self: center; }
+
+/* Despesas: categorias na coluna da direita, dentro do cartão do total (como "Para onde foi o dinheiro" no site) */
+body.admin .ad-sub { font-family: var(--font); font-size: 1rem; font-weight: 800; color: var(--ink-2); margin: 16px 0 6px; padding-top: 14px; border-top: 1px solid var(--line); text-transform: none; letter-spacing: 0; }
+body.admin .ad-cats { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+body.admin .ad-cats button { width: calc(100% + 16px); margin: 0 -8px; padding: 8px; min-height: 48px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 12px; align-items: baseline;
+  border: 0; border-radius: 12px; background: none; cursor: pointer; text-align: left; font: inherit; color: var(--ink); transition: background-color .2s, opacity .2s; }
+body.admin .ad-cats button:hover { background: var(--cream); }
+body.admin .ad-cats button[aria-pressed="true"] { background: #fff; box-shadow: inset 0 0 0 2px var(--ink); }
+body.admin .ad-cats button.off { opacity: .45; }
+body.admin .ad-cats .n { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 1rem; overflow-wrap: anywhere; }
+body.admin .ad-cats .n i { width: 10px; height: 10px; border-radius: 3px; flex: none; }
+body.admin .ad-cats .v { font-weight: 800; font-size: 1rem; white-space: nowrap; font-variant-numeric: tabular-nums; }
+body.admin .ad-cats .t { grid-column: 1 / -1; height: 8px; border-radius: 99px; background: rgba(74, 40, 20, .06); overflow: hidden; }
+body.admin .ad-cats .t b { display: block; height: 100%; border-radius: 99px; }
+
+/* ação que apaga ou cancela: vermelha, separada à esquerda, longe do "Salvar" */
+body.admin .ad-perigo { background: none; color: #B3261E; border: 0; margin-right: auto; padding: 0 12px; }
+body.admin .ad-perigo:hover { background: #FDECEA; }
+body.admin .ad-perigo-cheio { background: #B3261E; color: #fff; }
+body.admin .ad-perigo-cheio:hover { background: #8C1D18; }
+body.admin .ad-rowbtn .acts { display: flex; align-items: center; gap: 14px; }
+body.admin .ad-rowbtn.void .t1, body.admin .ad-rowbtn.void .amt { text-decoration: line-through; color: var(--ink-2); }
+@media (max-width: 559px) { body.admin .ad-dlg-f { flex-wrap: wrap; } body.admin .ad-dlg-f .ad-perigo { flex-basis: 100%; order: 3; } }
+body.admin .ad-row2 { align-items: start; }
+
+/* página com o título dentro da coluna da esquerda (Despesas): a coluna da direita começa na altura do título */
+body.admin .split.ad-topo { padding-top: 24px; }
+@media (min-width: 900px) { body.admin .split.ad-topo { padding-top: 32px; } }
+body.admin .split.ad-topo .ahead { padding: 0 0 4px; }
+/* no celular e no tablet: título primeiro, depois mês/ação/resumo, depois a lista */
+@media (max-width: 1099px) {
+  body.admin .split.ad-topo > section { display: contents; }
+  body.admin .split.ad-topo .ahead { order: -2; }
+  body.admin .split.ad-topo > aside { order: -1; }
+}
+
+/* Pets: a etiqueta da situação fica na mesma linha do nome, logo à direita */
+body.admin .ad-rowbtn .t1 { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 10px; }
+body.admin .ad-rowbtn .t1 .nm { display: inline-flex; align-items: center; }
+body.admin .ad-rowbtn .t1 .tags { margin-top: 0; font-weight: 800; }
+body.admin .ad-rowbtn .t2 { margin-top: 2px; }
+/* Pets: etiqueta da situação à direita, em cima do "Editar" */
+body.admin .ad-rowbtn .lado { display: grid; justify-items: end; gap: 6px; text-align: right; }
+body.admin .ad-rowbtn .lado .tags { margin: 0; justify-content: flex-end; }
+
+/* Pets: tabela. Computador: colunas alinhadas; celular: cada pet vira um bloco (nome, espécie, situação) */
+body.admin .ad-th, body.admin .ad-tr { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr) minmax(0, 1.9fr) 5rem 20px; gap: 14px; align-items: center; }
+body.admin .ad-th { padding: 14px 0 10px; border-bottom: 1px solid var(--line); font-size: .9375rem; font-weight: 800; color: var(--ink-2); }
+body.admin .ad-tr { width: 100%; min-height: 60px; padding: 10px 0; border: 0; border-bottom: 1px solid var(--line); background: none; cursor: pointer; text-align: left; font: inherit; color: var(--ink); transition: background-color .2s; }
+body.admin .glist > .ad-tr:last-child { border-bottom: 0; }
+body.admin .ad-tr:hover { background: linear-gradient(90deg, transparent, var(--cream) 4%, var(--cream) 96%, transparent); }
+body.admin .ad-tr:focus-visible { outline: 3px solid var(--primary-500); outline-offset: -3px; border-radius: 10px; }
+body.admin .ad-tr .c-pet { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; min-width: 0; }
+body.admin .ad-tr .c-pet b { font-weight: 800; font-size: 1.0625rem; }
+body.admin .ad-tr .c-pet .ft { width: 1.6em; height: 1.6em; border-radius: 50%; object-fit: cover; }
+body.admin .ad-tr .c-esp { font-weight: 700; color: var(--ink-2); }
+body.admin .ad-tr .c-sit { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; min-width: 0; }
+body.admin .ad-tr .c-sit > i { width: 10px; height: 10px; border-radius: 3px; flex: none; }
+body.admin .ad-tr .c-sit b { font-weight: 800; }
+body.admin .ad-tr .c-sit small { font-size: .9375rem; font-weight: 700; color: var(--ink-2); }
+body.admin .ad-tr .tag { font-style: normal; font-size: .8125rem; font-weight: 800; padding: 2px 8px; border-radius: 99px; background: var(--cream-2); color: var(--ink-2); white-space: nowrap; }
+body.admin .ad-tr .tag.lar { background: var(--pink-100); color: var(--accent); }
+body.admin .ad-tr .c-cast { font-weight: 800; }
+body.admin .ad-tr .c-cast.nao { color: var(--orange-700); }
+body.admin .ad-tr .c-go svg { width: 18px; height: 18px; fill: none; stroke: var(--primary); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+@media (max-width: 679px) {
+  body.admin .ad-th { display: none; }
+  body.admin .ad-tr { grid-template-columns: minmax(0, 1fr) 20px; gap: 2px 10px; padding: 12px 0; }
+  body.admin .ad-tr .c-pet { grid-column: 1; grid-row: 1; }
+  body.admin .ad-tr .c-go { grid-column: 2; grid-row: 1 / span 3; }
+  body.admin .ad-tr .c-esp { grid-column: 1; font-size: .9375rem; }
+  body.admin .ad-tr .c-esp::after { content: attr(data-c); }
+  body.admin .ad-tr .c-cast { display: none; }
+  body.admin .ad-tr .c-sit { grid-column: 1; }
+}
+/* situação: o tempo ("há 2 meses", "em out/2026") menor e embaixo, para a coluna não ficar larga */
+body.admin .ad-tr .c-sit > span { display: grid; line-height: 1.25; }
+body.admin .ad-tr .c-sit small { font-size: .8125rem; font-weight: 700; color: var(--ink-2); }
+body.admin .ad-tr .c-sit > i { align-self: flex-start; margin-top: .4em; }
+body.admin .ad-tr .c-sit > span { font-weight: 700; }
+/* situação como etiqueta na cor dela (fundo claro da mesma cor, texto na cor cheia) e o tempo pequeno embaixo */
+body.admin .ad-tr .c-sit > span { display: grid; justify-items: start; gap: 3px; }
+body.admin .ad-tr .sit-b { font-style: normal; font-size: .875rem; font-weight: 800; line-height: 1.3; padding: 3px 10px; border-radius: 99px; white-space: nowrap;
+  color: var(--c); background: color-mix(in srgb, var(--c) 12%, #fff); }
+body.admin .ad-tr .c-sit small { padding-left: 2px; }
+
+/* Pets: filtro de situação como lista de escolha, à direita da busca */
+body.admin .ad-filtro { flex: 0 1 19rem; min-width: 14rem; }
+body.admin .ad-filtro .ad-sel .pdrop-btn { min-height: 48px; font-size: 1rem; }
+body.admin .ad-sel .qt { display: inline-block; min-width: 2ch; margin-right: 6px; font-weight: 800; color: var(--ink); font-variant-numeric: tabular-nums; }
+body.admin .ad-sel .pdrop-list li[aria-selected="true"] .qt { color: #fff; }
+@media (max-width: 559px) { body.admin .ad-filtro { flex-basis: 100%; } }
+body.auth .lg-logo img { height: 4.5rem; }
+body.auth .lg-logo .marca b { font-size: 1.75rem; }
+body.auth .lg-logo .marca small { font-size: .8125rem; }

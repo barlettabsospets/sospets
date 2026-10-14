@@ -1,26 +1,17 @@
-@import "tailwindcss";
+/* Estilos globais. Ordem igual à do protótipo: tokens, base, tema, público e páginas.
+   Sem o preflight do Tailwind: o base.css do protótipo já tem o reset dele.
+   O CSS do protótipo fica fora de camadas e por isso vence os utilitários do Tailwind;
+   para mudar um componente do protótipo, use ajustes.css. */
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
+@import "./estilos/tokens.css";
+@import "./estilos/base.css";
+@import "./estilos/tema.css";
+@import "./estilos/publico.css";
+@import "./estilos/transparencia.css";
+@import "./estilos/animais.css";
+@import "./estilos/despesas.css";
+@import "./estilos/admin.css";
+@import "./estilos/ajustes.css";

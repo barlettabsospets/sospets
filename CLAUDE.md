@@ -53,6 +53,10 @@ Antes de dizer que uma tarefa está pronta, rode lint, typecheck e os testes, e 
 - Fontes locais (Fraunces, Nunito, Barlow Condensed). Sem Google Fonts.
 - Mobile-first, a partir de 360 px. Acessibilidade WCAG 2.1 AA.
 - Gráficos em SVG próprio, sem biblioteca de gráficos.
+- **Estilos:** os CSS do protótipo são copiados como estão para `app/estilos/` por `scripts/portar-estilos.mjs` (não edite esses arquivos; rode o script de novo se o protótipo mudar). Tokens em `app/estilos/tokens.css` (`@theme`). Ajustes do app só em `app/estilos/ajustes.css`. Use as classes do protótipo nos componentes; o CSS dele vence os utilitários do Tailwind.
+- **Três layouts raiz** (cada um com o `<body>` do protótipo): `(publico)` = `body.pub`, `(admin)` = `body.pub.admin`, login = `body.pub.admin.auth`. A 404 global é `app/global-not-found.tsx`.
+- **Páginas públicas** leem por funções `'use cache'` em `lib/dados/publico.ts` (cliente sem cookies, `cacheLife` de 5 min, `cacheTag("publico")`). Server Actions do admin chamam `updateTag("publico")`.
+- Componentes de UI em `components/ui`, com testes de teclado e ARIA (`*.test.tsx`, jsdom).
 
 ## Código
 

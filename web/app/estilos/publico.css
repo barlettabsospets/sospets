@@ -1,0 +1,260 @@
+/* Gerado por scripts/portar-estilos.mjs a partir de sospets-design/sospets-kit/design/publico.css.
+   Não edite: ajustes do app vão em ajustes.css. */
+/* SOS Pets DF Águas Claras: base das páginas públicas (Prestação de contas, Animais, Despesas).
+   Carrega depois de tokens.css, styles.css e theme4.css; cada página tem o seu CSS depois deste.
+   Mobile primeiro (320–430 px). Página inteira, letras que crescem com a tela, cabeçalho com abas,
+   cartões com sombra, seletor de período próprio e listas clicáveis.
+   Cores com função: azul = caixa/institucional, verde = entrou, coral = saiu, rosa = animais/detalhe humano. */
+.tp { padding-bottom: 8px; }
+.tp h1, .tp h2, .tp h3 { text-transform: none; letter-spacing: 0; }
+.tp .num { font-family: var(--font); font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; white-space: nowrap; line-height: 1.05; }
+
+/* cabeçalho */
+.tp-head { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; padding: 24px 0 18px; }
+.tp-head h1 { font-family: var(--serif); font-weight: 700; font-size: clamp(2.25rem, 10vw, 3.5rem); line-height: 1; color: var(--primary); letter-spacing: -0.015em; }
+.tp-head .sub { margin-top: 8px; font-size: 1.125rem; line-height: 1.5; color: var(--ink-2); max-width: 34em; }
+.tp-period { display: grid; gap: 6px; }
+.tp-period .lab { font-size: .9375rem; font-weight: 800; color: var(--ink-2); }
+@media (min-width: 900px) { .tp-head { grid-template-columns: minmax(0, 1fr) 340px; align-items: end; padding-top: 36px; } }
+
+/* grade do painel */
+.tp-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--gap); }
+.tp-grid > * { min-width: 0; }
+@media (min-width: 900px) { .tp-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); --gap: 22px; } }
+
+/* cartão: uma moldura só, sem cartão dentro de cartão */
+.card { background: var(--surface); border-radius: var(--card-r); padding: 20px; display: flex; flex-direction: column; gap: 14px;
+  border: 1px solid rgba(74, 40, 20, .06);
+  box-shadow: 0 1px 2px rgba(74, 40, 20, .06), 0 12px 32px -14px rgba(74, 40, 20, .22);
+  transition: transform .35s var(--ease), box-shadow .35s var(--ease); }
+/* movimento contido: o cartão não se mexe; só a sombra fica um pouco mais funda no hover */
+@media (hover: hover) { .card:hover { box-shadow: 0 2px 4px rgba(74, 40, 20, .07), 0 18px 40px -16px rgba(74, 40, 20, .28); } }
+@media (min-width: 900px) { .card { padding: 24px; } }
+.card-h { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px; }
+.card-h h2 { font-family: var(--font); font-size: 1.25rem; font-weight: 800; color: var(--ink); line-height: 1.3; }
+.card-h .meta { font-size: 1rem; font-weight: 700; color: var(--ink-2); }
+.card .foot { margin-top: auto; }
+.tp-more { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-weight: 800; font-size: 1rem; color: var(--primary); text-decoration: none; }
+.tp-more:hover { text-decoration: underline; }
+.tp-more svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+
+/* 1. saldo: o único cartão com cor cheia */
+:is(.c-saldo, .c-hero) { background: linear-gradient(150deg, #1D5592 0%, var(--primary) 55%, #0E3159 100%); border: 0; box-shadow: 0 2px 4px rgba(19, 64, 116, .2), 0 18px 40px -16px rgba(19, 64, 116, .65); color: #fff; position: relative; overflow: hidden; isolation: isolate; container-type: inline-size; justify-content: space-between; min-height: 200px; }
+:is(.c-saldo, .c-hero) .card-h h2 { color: #fff; }
+:is(.c-saldo, .c-hero) .card-h .meta { color: rgba(255, 255, 255, .8); }
+:is(.c-saldo, .c-hero) .big { font-size: clamp(2.5rem, 15cqw, 3.75rem); color: #fff; }
+:is(.c-saldo, .c-hero) .note { font-size: 1rem; line-height: 1.45; color: rgba(255, 255, 255, .85); max-width: 22em; }
+:is(.c-saldo, .c-hero) .shape { position: absolute; z-index: -1; right: -70px; top: -80px; width: 190px; height: 170px; border-radius: 58% 42% 55% 45% / 50% 55% 45% 50%; background: rgba(255, 255, 255, .09); }
+:is(.c-saldo, .c-hero) .paw { position: absolute; z-index: -1; right: 22px; top: 18px; width: 40px; color: #fff; opacity: .22; transform: rotate(14deg); }
+
+
+
+.tp-catlist { list-style: none; margin: 0; padding: 0; display: grid; }
+.tp-catlist li { display: grid; grid-template-columns: 12px minmax(0, 1fr) auto auto; align-items: center; gap: 10px; padding: 10px 0; border-top: 1px solid var(--line); font-size: .9375rem; }
+.tp-catlist li:first-child { border-top: 0; }
+.tp-catlist i { width: 12px; height: 12px; border-radius: 4px; }
+.tp-catlist .n { font-weight: 700; overflow-wrap: anywhere; }
+.tp-catlist .v { font-weight: 800; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.tp-catlist li.none { display: block; color: var(--ink-2); font-weight: 700; }
+.tp-catlist .p { font-weight: 700; color: var(--ink-2); font-size: .875rem; min-width: 3ch; text-align: right; }
+
+/* 5. últimas despesas: tabela no desktop, registro empilhado no celular */
+.tp-rows { display: grid; }
+.tp-rows .hd { display: none; }
+.tp-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 14px; padding: 12px 0; border-top: 1px solid var(--line); align-items: baseline; }
+.tp-rows .hd + .tp-row { border-top: 0; }
+.tp-row .t1 { font-weight: 800; font-size: 1.0625rem; line-height: 1.35; }
+.tp-row .cat, .tp-row .dt { font-size: 1rem; color: var(--ink-2); font-weight: 700; }
+.tp-row .cat { grid-column: 1; }
+.tp-row .dt { display: none; }
+.tp-row .cat::after { content: " · " attr(data-d); }
+.tp-row .amt { grid-column: 2; grid-row: 1; font-weight: 800; font-size: 1.0625rem; white-space: nowrap; font-variant-numeric: tabular-nums; text-align: right; }
+@media (min-width: 640px) {
+  .tp-rows .hd, .tp-row { grid-template-columns: minmax(0, 2fr) minmax(0, 1.2fr) 4.5rem 7.5rem; gap: 14px; align-items: center; }
+  .tp-rows .hd { display: grid; padding: 0 0 10px; font-size: 1rem; font-weight: 800; color: var(--ink-2); border-bottom: 1px solid var(--line); }
+  .tp-rows .hd span:last-child { text-align: right; }
+  .tp-row .cat { grid-column: auto; } .tp-row .cat::after { content: none; }
+  .tp-row .dt { display: block; }
+  .tp-row .amt { grid-column: auto; grid-row: auto; }
+}
+
+.tp-split { display: flex; height: 10px; border-radius: 99px; overflow: hidden; gap: 2px; }
+.tp-split i { display: block; height: 100%; background: var(--primary); } .tp-split i + i { background: var(--pink); }
+.tp-split-l { display: flex; justify-content: space-between; gap: 12px; font-size: 1rem; font-weight: 700; color: var(--ink-2); }
+.tp-split-l span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; background: var(--primary); }
+.tp-split-l span + span::before { background: var(--pink); }
+.tp-sub-h { font-family: var(--font); font-size: 1rem; font-weight: 800; color: var(--ink); margin-top: 4px; padding-top: 12px; border-top: 1px solid var(--line); }
+.tp-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0; }
+.tp-stats div { background: linear-gradient(180deg, #FFF8EE, var(--cream)); box-shadow: inset 0 0 0 1px rgba(74, 40, 20, .05); border-radius: 14px; padding: 12px 14px; display: grid; gap: 2px; align-content: start; }
+.tp-stats dt { font-size: 1rem; font-weight: 700; color: var(--ink-2); order: 2; }
+.tp-stats dd { margin: 0; font-size: 1.75rem; order: 1; }
+
+
+.tp .tip { max-width: 220px; }
+.site-foot { margin-top: 80px; }
+
+/* ===== v8: tela cheia, cabeçalho, seletor próprio e gráficos clicáveis ===== */
+/* a página ocupa a tela toda: sem moldura e sem limite de largura */
+html:has(body.pub) { background: var(--cream); }
+body.pub { margin: 0; border-radius: 0; }
+body.pub .wrap { max-width: none; padding-inline: clamp(16px, 3.2vw, 56px); }
+
+/* letras acompanham a tela: 16 px no celular, até 20 px em telas largas (tudo na página usa rem) */
+html:has(body.pub) { font-size: clamp(16px, 0.5vw + 10.5px, 20px); }
+
+/* cabeçalho com abas: logo grande à esquerda, abas no centro, botão à direita.
+   A aba ativa tem a cor da página e se funde com ela, com um traço azul em cima. */
+.thead { background: #fff; border-bottom: 1px solid rgba(74, 40, 20, .1); position: relative; z-index: 30; }
+/* as abas encostam na divisória: sem o respiro de 24 px que o .wrap ganha no theme4.css */
+body.pub .thead .th-in { padding-bottom: 0; }
+.th-in { display: grid; grid-template-columns: auto 1fr auto; grid-template-areas: "brand . admin" "tabs tabs tabs"; align-items: center; column-gap: 16px; padding-top: 10px; }
+.th-brand { grid-area: brand; display: block; padding-bottom: 6px; }
+.th-brand img { height: 4.75rem; width: auto; display: block; }
+.th-tabs { grid-area: tabs; display: flex; gap: 6px; align-self: end; margin-bottom: -1px; }
+.th-tabs a { position: relative; flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 52px; padding: 0 12px;
+  border: 1px solid transparent; border-bottom: 0; border-radius: 18px 18px 0 0; text-decoration: none; font-weight: 800; font-size: 1rem; color: var(--ink-2);
+  transition: background-color .2s, color .2s; }
+.th-tabs a svg { width: 1.25em; height: 1.25em; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; opacity: .75; }
+.th-tabs a:not([aria-current]) { background: linear-gradient(180deg, #FBF6EF, #F6EEE3); border-color: rgba(74, 40, 20, .06); }
+.th-tabs a:hover:not([aria-current]) { color: var(--ink); background: linear-gradient(180deg, #FFF8EE, #FBEFDF); }
+.th-tabs a:focus-visible { outline: 3px solid var(--primary-500); outline-offset: -3px; }
+.th-tabs a[aria-current="page"] { background: var(--cream); color: var(--primary); border-color: rgba(74, 40, 20, .1); box-shadow: inset 0 3px 0 var(--primary); }
+.th-tabs a[aria-current="page"] svg { opacity: 1; }
+/* cantos curvos por fora da aba ativa, como uma aba de pasta */
+.th-tabs a[aria-current="page"]::before, .th-tabs a[aria-current="page"]::after { content: ""; position: absolute; bottom: 0; width: 14px; height: 14px; pointer-events: none;
+  border: 0 solid rgba(74, 40, 20, .1); box-shadow: 0 0 0 14px var(--cream); clip-path: inset(0); }
+.th-tabs a[aria-current="page"]::before { left: -14px; border-width: 0 1px 1px 0; border-bottom-right-radius: 14px; }
+.th-tabs a[aria-current="page"]::after { right: -14px; border-width: 0 0 1px 1px; border-bottom-left-radius: 14px; }
+.th-tabs .short { display: none; }
+@media (max-width: 599px) { .th-tabs .full { display: none; } .th-tabs .short { display: inline; } .th-tabs a { gap: 6px; padding: 0 6px; } }
+@media (max-width: 359px) { .th-tabs a svg { display: none; } }
+
+/* botão do administrador: discreto, só contorno (é para poucas pessoas; as abas são o principal) */
+.th-admin { grid-area: admin; display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; min-width: 44px; padding: 0 16px; border-radius: 12px;
+  background: #fff; color: var(--primary); border: 1.5px solid rgba(19, 64, 116, .3); font-weight: 800; font-size: .9375rem; text-decoration: none; white-space: nowrap;
+  transition: background-color .2s, border-color .2s; }
+.th-admin:hover { background: var(--cream); border-color: var(--primary); }
+.th-admin:focus-visible { outline: 3px solid var(--primary-500); outline-offset: 3px; }
+/* o cadeado acompanha a altura das maiúsculas: sobe um pouco porque a caixa do texto inclui acento e descendentes */
+.th-admin svg { width: 1.125em; height: 1.125em; position: relative; top: -0.09em; flex: none; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+@media (max-width: 599px) { .th-admin { padding: 0; } .th-admin svg { top: 0; } .th-admin span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; } }
+
+/* telas maiores: tudo numa linha e tudo alinhado pela base, onde as abas encostam na página.
+   O botão fica centrado na altura das abas; o logo encosta embaixo como as abas. */
+@media (min-width: 900px) {
+  .th-in { grid-template-columns: 1fr auto 1fr; grid-template-areas: "brand tabs admin"; align-items: end; column-gap: 32px; padding-top: 12px; }
+  .th-brand { justify-self: start; padding-bottom: 8px; } .th-brand img { height: 4.75rem; }
+  .th-tabs { justify-self: center; gap: 8px; }
+  .th-tabs a { flex: none; min-height: 56px; padding: 0 26px; font-size: 1.0625rem; }
+  .th-admin { justify-self: end; align-self: center; }
+}
+
+/* seletor de período: setas + lista própria */
+.pbar { display: flex; align-items: center; gap: 6px; width: 100%; max-width: 380px; padding: 5px; border-radius: 999px; background: #fff;
+  box-shadow: 0 1px 2px rgba(74, 40, 20, .08), 0 10px 26px -14px rgba(74, 40, 20, .35); border: 1px solid rgba(74, 40, 20, .08); }
+.pbar .pbtn { width: 44px; height: 44px; flex: none; border-radius: 50%; border: 0; background: var(--cream); color: var(--primary); display: grid; place-items: center; cursor: pointer; transition: background-color .2s; }
+.pbar .pbtn:hover:not([disabled]) { background: var(--cream-2); }
+.pbar .pbtn[disabled] { opacity: .35; cursor: default; }
+.pbar .pbtn svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.pdrop { position: relative; flex: 1; min-width: 0; }
+.pdrop-btn { width: 100%; min-height: 44px; border: 0; border-radius: 999px; background: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 0 10px;
+  font: 800 1.0625rem var(--font); color: var(--ink); }
+.pdrop-btn:hover { background: var(--cream); }
+.pdrop-btn span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pdrop-btn svg { width: 18px; height: 18px; flex: none; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; transition: transform .2s; }
+.pdrop-btn[aria-expanded="true"] svg { transform: rotate(180deg); }
+.pdrop-list { position: absolute; z-index: 40; top: calc(100% + 12px); left: 50%; transform: translateX(-50%); width: max(100%, 17rem); max-height: min(60vh, 30rem); overflow-y: auto;
+  margin: 0; padding: 8px; list-style: none; background: #fff; border-radius: 20px; border: 1px solid rgba(74, 40, 20, .08);
+  box-shadow: 0 4px 10px rgba(74, 40, 20, .08), 0 24px 50px -16px rgba(74, 40, 20, .4); animation: dropIn .18s var(--ease); }
+.pdrop-list:focus { outline: none; }
+@keyframes dropIn { from { opacity: 0; transform: translate(-50%, -6px); } }
+.pdrop-list li[role=option] { min-height: 44px; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 0 14px; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 1rem; color: var(--ink); }
+.pdrop-list li[role=option] small { flex: none; white-space: nowrap; line-height: 1.4; font-size: .8125rem; font-weight: 800; color: var(--green-700); background: var(--green-100); padding: 2px 8px; border-radius: 99px; }
+.pdrop-list li.act, .pdrop-list li[role=option]:hover { background: var(--cream); }
+.pdrop-list li[aria-selected="true"] { background: var(--primary); color: #fff; }
+.pdrop-list li[aria-selected="true"] small { background: rgba(255, 255, 255, .2); color: #fff; }
+/* o mês escolhido continua legível com o mouse em cima ou com o foco do teclado */
+.pdrop-list li[role=option][aria-selected="true"]:hover, .pdrop-list li[role=option][aria-selected="true"].act { background: #0E3158; color: #fff; }
+.pdrop-list li.grp { padding: 12px 14px 4px; font-size: .8125rem; font-weight: 800; letter-spacing: .06em; color: var(--ink-2); border-top: 1px solid var(--line); margin-top: 6px; }
+
+/* rosca e legenda clicáveis */
+.tp-catlist li { display: block; padding: 0; }
+.tp-catlist button { width: 100%; min-height: 48px; display: grid; grid-template-columns: 12px minmax(0, 1fr) auto auto; align-items: center; gap: 10px; padding: 8px 8px; margin: 0 -8px; width: calc(100% + 16px);
+  border: 0; border-radius: 12px; background: none; cursor: pointer; text-align: left; font: inherit; font-size: 1rem; color: var(--ink); transition: background-color .2s, opacity .2s; }
+.tp-catlist button:hover { background: var(--cream); }
+.tp-catlist button[aria-pressed="true"] { background: var(--cream); box-shadow: inset 0 0 0 2px var(--cream-2); }
+.tp-catlist button.off { opacity: .45; }
+.tp-row .amt { font-family: var(--font); letter-spacing: -0.01em; }
+
+/* ===== v10: links no canto inferior direito; animais em dois grupos ===== */
+.card-foot { margin-top: auto; display: flex; justify-content: flex-end; padding-top: 4px; }
+.tp details.alt.foot { margin-top: auto; }
+.tp details.alt.foot summary { width: fit-content; margin-left: auto; list-style: none; cursor: pointer; }
+.tp details.alt.foot summary .off { display: none; }
+.tp details.alt.foot[open] summary .on { display: none; } .tp details.alt.foot[open] summary .off { display: inline; }
+.tp details.alt.foot summary::-webkit-details-marker { display: none; }
+.tp details.alt.foot summary svg { transition: transform .2s; }
+.tp details.alt.foot[open] summary svg { transform: rotate(90deg); }
+.tp-toggle[hidden] { display: none; }
+
+.tp-ani-grp { display: grid; gap: 10px; }
+.tp-ani-grp .tp-sub-h { border-top: 0; padding-top: 0; margin-top: 2px; display: flex; align-items: center; gap: 10px; font-size: .9375rem; font-weight: 800; color: var(--ink-2); }
+.tp-ani-grp .tp-sub-h::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+.tp-stats div { padding: 14px 16px; gap: 4px; }
+.tp-stats dd { font-size: 2rem; line-height: 1; }
+.tp-stats dt { font-size: 1rem; font-weight: 700; color: var(--ink); line-height: 1.3; }
+/* um traço de cor diz o tipo: eventos do período em rosa, situação em azul (verde é reservado para "entrou") */
+.tp-stats .ev { box-shadow: inset 3px 0 0 var(--pink), inset 0 0 0 1px rgba(74, 40, 20, .05); }
+.tp-stats .sn { box-shadow: inset 3px 0 0 var(--primary-500), inset 0 0 0 1px rgba(74, 40, 20, .05); }
+
+/* ===== v11: coluna Animal em Últimas despesas ===== */
+.tp-row .ani { grid-column: 1; display: inline-flex; align-items: center; gap: 6px; width: fit-content; font-size: .9375rem; font-weight: 800; color: var(--pink-700);
+  background: var(--pink-100); padding: 2px 10px 2px 8px; border-radius: 99px; }
+.tp-row .ani svg { width: 1em; height: 1em; fill: currentColor; }
+.tp-row .ani.none { background: none; padding: 0; color: var(--ink-2); font-weight: 700; }
+.tp-row .ani + .cat { margin-top: 2px; }
+@media (min-width: 640px) {
+  .tp-rows .hd, .tp-row { grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr) minmax(0, 1.5fr) 4.5rem 7rem; }
+  .tp-row .ani { grid-column: auto; }
+  .tp-row .ani + .cat { margin-top: 0; }
+}
+
+/* ===== v12: números de Animais clicáveis; período centralizado ===== */
+.tp-stats button { font: inherit; text-align: left; cursor: pointer; border: 0; background: linear-gradient(180deg, #FFF8EE, var(--cream)); border-radius: 14px; padding: 14px 16px;
+  display: grid; gap: 4px; align-content: start; color: var(--ink); transition: background-color .2s, opacity .2s, box-shadow .2s; min-height: 48px; }
+.tp-stats button b { font-size: 2rem; line-height: 1; }
+.tp-stats button span { font-size: 1rem; font-weight: 700; line-height: 1.3; }
+.tp-stats button.ev { box-shadow: inset 3px 0 0 var(--pink), inset 0 0 0 1px rgba(74, 40, 20, .05); }
+.tp-stats button.sn { box-shadow: inset 3px 0 0 var(--primary-500), inset 0 0 0 1px rgba(74, 40, 20, .05); }
+.tp-stats button:hover { background: var(--cream-2); }
+.tp-stats button[aria-pressed="true"].ev { background: var(--pink-100); box-shadow: inset 3px 0 0 var(--pink), inset 0 0 0 2px var(--pink); }
+.tp-stats button[aria-pressed="true"].sn { background: var(--blue-100); box-shadow: inset 3px 0 0 var(--primary-500), inset 0 0 0 2px var(--primary-500); }
+.tp-stats button.off { opacity: .55; }
+.tp-split.empty { background: var(--cream-2); }
+.tp-split i { transition: width .3s ease-out; }
+
+.tp-period { justify-items: center; text-align: center; }
+.tp-period .pbar { margin-inline: auto; }
+@media (max-width: 899px) { .tp-period { justify-self: stretch; } }
+@media (max-width: 379px) { .pdrop-btn { font-size: 1rem; padding: 0 4px; gap: 4px; } .pbar { gap: 4px; padding: 4px; } }
+.tp-row .ani .emo { font-size: 1.05em; line-height: 1; font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif; }
+/* ícones de espécie (cachorro e gato) no lugar dos emojis, no tamanho que o emoji tinha */
+.ic-cao { display: inline-block; flex: none; width: 1.15em; height: 1.15em; vertical-align: -0.2em; border-radius: 50%; box-shadow: 0 0 0 1px rgba(74, 40, 20, .15); }
+
+/* botão pequeno para limpar uma seleção ("Ver todos os animais", "Limpar filtros") */
+.tp-ani-clear { align-self: center; border: 0; background: var(--cream); color: var(--primary); font: 800 .9375rem var(--font); padding: 0 14px; min-height: 40px; border-radius: 99px; cursor: pointer; }
+.tp-ani-clear:hover { background: var(--cream-2); }
+.tp-ani-clear[hidden] { display: none; }
+
+/* legenda de gráfico: quadradinho de cor + nome da série */
+.tp-legend { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 1rem; font-weight: 800; }
+.tp-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; background: var(--in); }
+.tp-legend .o i { background: var(--out); }
+
+/* marca: o desenho (cão e gato) com o nome escrito em texto embaixo, "SOS Pets" e "DF Águas Claras" */
+.th-brand, .lg-logo { display: grid; justify-items: center; gap: 0; text-decoration: none; }
+.th-brand img { height: 3.25rem !important; width: auto; display: block; }
+.marca { display: grid; justify-items: center; line-height: 1; }
+.marca b { font-family: var(--serif); font-weight: 700; font-size: 1.3rem; color: #6B4A35; letter-spacing: -0.01em; }
+.marca small { margin-top: 2px; font-family: var(--font); font-weight: 800; font-size: .625rem; letter-spacing: .04em; color: #7A5A44; white-space: nowrap; }
+@media (min-width: 900px) { .th-brand img { height: 3.5rem !important; } .marca b { font-size: 1.4rem; } .marca small { font-size: .6875rem; } }
