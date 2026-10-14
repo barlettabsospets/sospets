@@ -1,2 +1,7 @@
 /* Ajustes do app sobre o CSS portado do protótipo (os outros arquivos desta pasta são gerados).
    Cada ajuste com um comentário dizendo por quê. */
+
+/* "Sair" é um botão de formulário (Server Action) no lugar do link do protótipo:
+   o form não ocupa espaço na grade do cabeçalho e o botão herda a fonte como o link. */
+form.th-sair { display: contents; }
+button.th-admin { font-family: inherit; cursor: pointer; }

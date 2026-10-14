@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { sair } from "@/lib/auth/acoes";
 import {
   IconeContribuicoes, IconeDespesas, IconeMais, IconeMembros, IconePetsAdmin, IconeSair,
 } from "./icones";
@@ -30,11 +30,12 @@ export function CabecalhoAdmin() {
         <nav className="th-tabs" aria-label="Área do administrador">
           <Abas />
         </nav>
-        {/* TODO(T3.2): sair de verdade (Server Action que encerra a sessão) */}
-        <Link className="th-admin" href="/entrar">
-          <IconeSair />
-          <span>Sair</span>
-        </Link>
+        <form className="th-sair" action={sair}>
+          <button className="th-admin" type="submit">
+            <IconeSair />
+            <span>Sair</span>
+          </button>
+        </form>
       </div>
     </header>
   );

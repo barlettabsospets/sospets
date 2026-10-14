@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = { themeColor: "#FFF4E3" };
 
 // Layout raiz da área do administrador (body.pub.admin, como no protótipo).
-// TODO(T3.2): o proxy manda para /entrar quem não tiver sessão.
+// Só administradores chegam aqui: o proxy manda os outros para /entrar.
 export default function LayoutAdmin({ children }: LayoutProps<"/">) {
   return (
     <html lang="pt-BR">
