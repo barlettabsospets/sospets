@@ -1,0 +1,112 @@
+/* Gerado por scripts/portar-estilos.mjs a partir de sospets-design/sospets-kit/design/transparencia.css.
+   Não edite: ajustes do app vão em ajustes.css. */
+/* SOS Pets DF Águas Claras: página Prestação de contas. Carrega depois de publico.css.
+   Grade do painel, resumo (entrou − saiu = sobrou), gráfico mês a mês, rosca de categorias,
+   destaque do card de Animais e campanhas. */
+
+@media (min-width: 900px) {
+  .c-saldo { grid-column: span 5; } .c-resumo { grid-column: span 7; }
+  .c-fluxo { grid-column: span 7; } .c-cats { grid-column: span 5; }
+  .c-ult { grid-column: span 7; } .c-ani { grid-column: span 5; }
+  .c-camp { grid-column: 1 / -1; }
+}
+@media (min-width: 1200px) {
+  .c-saldo { grid-column: span 4; } .c-resumo { grid-column: span 8; }
+  .c-fluxo { grid-column: span 8; } .c-cats { grid-column: span 4; }
+  .c-ult { grid-column: span 8; } .c-ani { grid-column: span 4; }
+}
+/* 2. resumo do período: três números que fecham a conta (entrou − saiu = sobrou) */
+.tp-sum { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; margin: 0; }
+.tp-sum > div { background: linear-gradient(180deg, #FFF8EE, var(--cream)); box-shadow: inset 0 0 0 1px rgba(74, 40, 20, .05); border-radius: 16px; padding: 14px 16px; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 2px 12px; }
+.tp-sum dt { font-weight: 800; font-size: 1.0625rem; display: flex; align-items: center; gap: 8px; }
+.tp-sum dt i { width: 10px; height: 10px; border-radius: 3px; background: var(--in); flex: none; }
+.tp-sum .o dt i { background: var(--out); } .tp-sum .s dt i { background: var(--primary); }
+.tp-sum dd { margin: 0; }
+.tp-sum .v { grid-column: 2; grid-row: 1 / span 2; font-size: 1.5rem; text-align: right; }
+.tp-sum .d { font-size: 1rem; color: var(--ink-2); font-weight: 700; }
+@media (max-width: 359px) { .tp-sum > div { grid-template-columns: minmax(0, 1fr); } .tp-sum .v { grid-column: 1; grid-row: auto; text-align: left; } }
+@media (min-width: 600px) {
+  .tp-sum { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .tp-sum > div { grid-template-columns: minmax(0, 1fr); align-content: start; gap: 6px; padding: 16px 18px; container-type: inline-size; }
+  .tp-sum .v { grid-column: 1; grid-row: auto; text-align: left; font-size: clamp(1.25rem, 15cqw, 1.875rem); }
+}
+.c-resumo .result { font-size: 1rem; line-height: 1.45; color: var(--ink-2); }
+.c-resumo .result b { color: var(--ink); font-weight: 800; }
+.tp-usebar { display: flex; height: 10px; border-radius: 99px; overflow: hidden; background: var(--cream-2); gap: 2px; }
+.tp-usebar i { display: block; height: 100%; background: var(--out); transition: width .7s var(--ease); }
+.tp-usebar i + i { background: var(--primary); }
+/* 3. fluxo: entrou acima da linha, saiu abaixo */
+#mensal { display: block; width: 100%; height: auto; overflow: visible; }
+#mensal text { font-family: var(--font); font-size: .875rem; font-weight: 700; fill: var(--ink-2); }
+/* barras crescem a partir da linha do zero */
+#mensal .bar-a, #mensal .bar-g { transform-box: fill-box; transform-origin: bottom; animation: barUp .6s var(--ease) both; }
+#mensal.still .bar-a, #mensal.still .bar-g { animation: none; }
+@keyframes barUp { from { transform: scaleY(0); } }
+#mensal .grid { stroke: var(--line); stroke-width: 1; }
+#mensal .zero { stroke: rgba(42, 24, 16, .45); stroke-width: 1; }
+#mensal .bar-a { fill: var(--in); } #mensal .bar-g { fill: var(--out); }
+#mensal g.m { cursor: pointer; transition: opacity .25s; }
+#mensal g.m:focus-visible { outline: none; }
+#mensal rect.hit { fill: transparent; transition: fill .2s; }
+#mensal g.m:hover rect.hit, #mensal g.m:focus-visible rect.hit { fill: rgba(19, 64, 116, .06); }
+#mensal g.m.sel rect.hit { fill: rgba(19, 64, 116, .05); }
+#mensal g.m:focus-visible rect.hit { stroke: var(--primary-500); stroke-width: 2; }
+#mensal g.m.sel text { fill: var(--primary); font-weight: 800; }
+#mensal .uline { fill: var(--primary); }
+#mensal text.yr { font-size: .75rem; font-weight: 700; }
+.tp details.alt { margin-top: 0; }
+.tp details.alt summary { font-weight: 800; font-size: .9375rem; }
+.tp-tablewrap { overflow-x: auto; }
+.tp table.ct td:not(:first-child), .tp table.ct th:not(:first-child) { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+/* 4. para onde foi: rosca com o total no meio e a legenda com valores */
+.tp-donut { position: relative; width: min(15rem, 78%); aspect-ratio: 1; margin: 4px auto 0; }
+.tp-donut svg { width: 100%; height: 100%; transform: rotate(-90deg); display: block; animation: donutIn .5s ease-out both; }
+@keyframes donutIn { from { opacity: 0; } }
+.tp-donut .mid { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; gap: 2px; }
+.tp-donut .mid span { font-size: .9375rem; font-weight: 800; color: var(--ink-2); }
+.tp-donut .mid b { font-size: 1.375rem; }
+/* 6. animais */
+.tp-ani-lead { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.tp-ani-lead b { font-size: 2.75rem; color: var(--primary); }
+.tp-ani-lead span { font-weight: 800; font-size: 1.125rem; }
+.c-ani .note { font-size: .875rem; line-height: 1.45; color: var(--ink-2); }
+/* 7. campanhas */
+.tp-camps { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
+@media (min-width: 700px) { .tp-camps { grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); } }
+.tp-camp { background: linear-gradient(180deg, #FFF8EE, var(--cream)); box-shadow: inset 0 0 0 1px rgba(74, 40, 20, .05); border-radius: 18px; padding: 14px; display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 14px; align-items: start; }
+.tp-camp .body { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; min-width: 0; }
+.tp-camp .ph { width: 88px; aspect-ratio: 1; border-radius: 14px; object-fit: cover; display: grid; place-content: center; justify-items: center; gap: 2px;
+  background: linear-gradient(150deg, #F2A25C, var(--orange)); color: rgba(255, 255, 255, .92); box-shadow: 0 6px 14px -8px rgba(154, 79, 13, .6); }
+.tp-camp .ph svg { width: 34px; height: 34px; }
+.tp-camp .ph span { font-size: .75rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
+.tp-camp.closed .ph { filter: grayscale(.6); }
+@media (max-width: 399px) { .tp-camp { grid-template-columns: 64px minmax(0, 1fr); gap: 12px; } .tp-camp .ph { width: 64px; border-radius: 12px; } .tp-camp .ph svg { width: 26px; height: 26px; } .tp-camp .ph span { display: none; } }
+@media (min-width: 700px) { .tp-camp { grid-template-columns: 112px minmax(0, 1fr); padding: 16px; gap: 18px; } .tp-camp .ph { width: 112px; } }
+.tp-camp .top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 6px 10px; }
+.tp-camp h3 { font-family: var(--font); font-size: 1.125rem; font-weight: 800; line-height: 1.3; color: var(--ink); }
+.tp-camp .desc { font-size: 1rem; color: var(--ink-2); line-height: 1.45; }
+.tp-camp .raised { font-size: 1rem; color: var(--ink-2); } .tp-camp .raised b { font-size: 1.375rem; color: var(--ink); margin-right: 4px; }
+.tp-camp .prog { height: 8px; background: #fff; }
+.tp-camp .prog i { background: var(--primary-500); }
+.tp-camp .nums { font-size: 1rem; color: var(--ink-2); }
+.tp-camp .nums b { color: var(--ink); }
+.tp-camp .chip-off { background: #fff; }
+.tp-camp.closed { opacity: .85; }
+.tp-camps[hidden] { display: none; }
+.tp-toggle { align-self: flex-start; border: 0; background: none; padding: 0; cursor: pointer; font-family: var(--font); }
+.tp-toggle svg { width: 18px; height: 18px; }
+@media (prefers-reduced-motion: reduce) { #mensal .bar-a, #mensal .bar-g, .tp-donut svg { animation: none; } }
+.tp-donut .seg { cursor: pointer; transition: opacity .25s, stroke-width .25s; }
+.tp-donut .seg.off { opacity: .25; }
+.tp-donut.still svg { animation: none; }
+.tp-donut .mid { pointer-events: none; padding: 0 22%; }
+.tp-donut .mid span { line-height: 1.25; }
+.tp-ani-lead { align-items: baseline; }
+.c-ani .card-h { align-items: center; min-height: 40px; }
+
+/* topo: título e frase no mesmo tamanho da página Despesas (.dp-h), seletor de período à direita */
+.tp-head-min { padding: 24px 0 14px; }
+@media (min-width: 900px) { .tp-head-min { grid-template-columns: minmax(0, 1fr) 340px; padding-top: 32px; } }
+.tp-h { display: grid; gap: 4px; }
+.tp-head .tp-h h1 { font-family: var(--serif); font-weight: 700; font-size: clamp(1.75rem, 6vw, 2.25rem); line-height: 1.1; color: var(--primary); letter-spacing: 0; }
+.tp-h p { font-size: 1.0625rem; color: var(--ink-2); max-width: 40em; }
