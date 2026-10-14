@@ -264,12 +264,12 @@ Cada tela segue o arquivo correspondente do protótipo: layout, textos, estados 
 Formato: `[ ]` a fazer, `[x]` feito. **Dep.** = precisa de outra tarefa antes. Cada tarefa termina com algo que dá para conferir.
 
 ### Fase 0: preparação (comece por aqui)
-- [ ] **T0.1** Criar os projetos `sospets-homolog` e `sospets-prod` no Supabase (região São Paulo). Guardar as chaves num gerenciador de senhas, nunca no repositório.
+- [x] **T0.1** Criar os projetos `sospets-homolog` e `sospets-prod` no Supabase (região São Paulo). Guardar as chaves num gerenciador de senhas, nunca no repositório.
 - [ ] **T0.2** Criar o branch `develop` a partir do `main` e proteger os dois no GitHub (merge só por PR).
-- [ ] **T0.3** Criar o app em `web/`: Next.js + TypeScript + Tailwind v4 + ESLint. Rodar `npm run dev` e ver a página inicial. *Dep.: nenhuma*
-- [ ] **T0.4** Instalar a Supabase CLI, rodar `supabase init` dentro de `web/` e `supabase link` com o projeto de homologação.
-- [ ] **T0.5** Criar `web/.env.example` com as variáveis da seção 4, `web/.env.local` (no `.gitignore`) e os clientes em `lib/supabase/` (server, browser, middleware). *Dep.: T0.3, T0.4*
-- [ ] **T0.6** Configurar Vitest e um teste de exemplo passando. *Dep.: T0.3*
+- [x] **T0.3** Criar o app em `web/`: Next.js + TypeScript + Tailwind v4 + ESLint. Rodar `npm run dev` e ver a página inicial. *Dep.: nenhuma*
+- [x] **T0.4** Instalar a Supabase CLI, rodar `supabase init` dentro de `web/` e `supabase link` com o projeto de homologação.
+- [x] **T0.5** Criar `web/.env.example` com as variáveis da seção 4, `web/.env.local` (no `.gitignore`) e os clientes em `lib/supabase/` (server, browser, middleware). *Dep.: T0.3, T0.4*
+- [x] **T0.6** Configurar Vitest e um teste de exemplo passando. *Dep.: T0.3*
 
 ### Fase 1: banco de dados
 - [ ] **T1.1** Migration: enums e tabelas da seção 5, com chaves estrangeiras, `check (valor > 0)` e o índice único de contribuição por membro e mês. *Dep.: T0.4*
