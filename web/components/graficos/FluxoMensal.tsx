@@ -65,7 +65,8 @@ export function FluxoMensal({
   const B = Math.round(longo ? fs + 22 : fs * 2 + 20);
   const ph = H - T - B;
   const base = T + ph;
-  const { topo, linhas } = escalaDoGrafico(Math.max(0, ...visiveis.flatMap((m) => [m.entrou, m.saiu])), estreito);
+  // escala pelos meses todos (não só os visíveis): não muda ao trocar de mês, como no protótipo
+  const { topo, linhas } = escalaDoGrafico(Math.max(0, ...meses.flatMap((m) => [m.entrou, m.saiu])), estreito);
   const h = (v: number) => (v / topo) * ph;
   const gw = visiveis.length ? (W - L - R) / visiveis.length : W;
   const bw = Math.max(6, Math.min(28, Math.floor((gw - 8) / 2)));

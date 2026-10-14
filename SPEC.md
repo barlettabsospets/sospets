@@ -320,7 +320,7 @@ Formato: `[ ]` a fazer, `[x]` feito. **Dep.** = precisa de outra tarefa antes. C
 - [ ] **T3.4** Página "esqueci minha senha" (e-mail do Supabase em português). *Dep.: T3.1*
 
 ### Fase 4: páginas públicas
-- [ ] **T4.1** `/` Prestação de contas, lendo `pub_resumo_mensal`, `pub_gasto_categoria_mes`, `pub_despesas`, `pub_pets` e `pub_campanhas`. Conferir os números contra o protótipo, mês a mês. *Dep.: T1.10, T2.4–T2.6*
+- [x] **T4.1** `/` Prestação de contas, lendo `pub_resumo_mensal`, `pub_gasto_categoria_mes`, `pub_despesas`, `pub_pets` e `pub_campanhas`. Conferir os números contra o protótipo, mês a mês. *Dep.: T1.10, T2.4–T2.6*
 - [ ] **T4.2** `/pets`, igual a `animais.html`. *Dep.: T4.1*
 - [ ] **T4.3** `/despesas`, igual a `despesas.html`. *Dep.: T4.1*
 - [ ] **T4.4** Cache: ISR de 5 min + `revalidatePath` quando o admin salva. *Dep.: T4.1*

@@ -58,6 +58,19 @@ describe("fatiasDaRosca", () => {
     ]);
   });
 
+  it("'Outras (...)' segue a coluna ordem das categorias, não o valor", () => {
+    // pelo valor, transporte (300) vem antes de lar temporário (240); pela ordem do protótipo, depois
+    const porValor = [
+      ...ranking.slice(0, 5).map((c, i) => ({ ...c, ordem: i })),
+      { nome: "Vacinas", cor: "#7A5BA6", ordem: 5 },
+      { nome: "Transporte", cor: "#8C9A2B", ordem: 7 },
+      { nome: "Lar temporário", cor: "#A8432F", ordem: 6 },
+      { nome: "Outros", cor: "#CFC3B4", ordem: 8 },
+    ];
+    const periodo = new Map([["Castração", 1650], ["Vacinas", 404], ["Transporte", 300], ["Lar temporário", 240], ["Outros", 100]]);
+    expect(fatiasDaRosca(periodo, porValor).at(-1)?.nome).toBe("Outras (vacinas, lar temporário, transporte, outros)");
+  });
+
   it("sem gastos, nenhuma fatia", () => {
     expect(fatiasDaRosca(new Map(), ranking)).toEqual([]);
   });

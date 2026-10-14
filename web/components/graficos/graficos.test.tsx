@@ -72,6 +72,17 @@ describe("FluxoMensal", () => {
     expect(screen.getByTestId("periodo")).toHaveTextContent("2026-05");
   });
 
+  it("no celular, a mesma escala do protótipo (R$ 600 e R$ 1.200), mesmo vendo só 3 meses", () => {
+    vi.mocked(window.matchMedia).mockReturnValueOnce({ matches: true, addEventListener() {}, removeEventListener() {} } as unknown as MediaQueryList);
+    const original = Element.prototype.getBoundingClientRect;
+    Element.prototype.getBoundingClientRect = () => ({ width: 330, height: 260, top: 0, left: 0, right: 330, bottom: 260, x: 0, y: 0, toJSON() {} });
+    const { container } = render(<Painel />);
+    expect(screen.getAllByRole("button", { name: /^Ver / })).toHaveLength(3);
+    const rotulos = [...container.querySelectorAll('svg#mensal text[text-anchor="end"]')].map((t) => t.textContent);
+    expect(rotulos).toEqual(["R$ 600", "R$ 1.200"]);
+    Element.prototype.getBoundingClientRect = original;
+  });
+
   it("mês antigo escolhido puxa a janela e a tabela segue", () => {
     render(<Painel inicial="2026-02" />);
     expect(screen.getAllByRole("button", { name: /^Ver / })[0]).toHaveAccessibleName(/^Ver fevereiro/);
