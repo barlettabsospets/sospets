@@ -131,13 +131,13 @@ export type PetPublico = PetDoPainel & {
   foto_path: string | null;
 };
 
-// pub_pets: só os visíveis no site, sem o local.
+// pub_pets: só os visíveis no site, sem o local, do cadastro mais recente para o mais antigo.
 export async function lerPets(): Promise<PetPublico[]> {
   "use cache";
   cacheLife({ stale: 300, revalidate: 300, expire: 86400 });
   cacheTag(ETIQUETA_PUBLICO);
 
-  const { data, error } = await cliente().from("pub_pets").select("*").order("entrou_em").order("nome");
+  const { data, error } = await cliente().from("pub_pets").select("*").order("criado_em", { ascending: false }).order("nome");
   falhou("pub_pets", error);
   return (data ?? []).map((r) => ({
     id: r.id!,

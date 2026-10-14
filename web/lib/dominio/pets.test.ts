@@ -3,7 +3,7 @@ import { join } from "node:path";
 import vm from "node:vm";
 import { describe, expect, it } from "vitest";
 import { type Mes, listaDeMeses } from "./meses";
-import { acompanhado, contarGrupo, contarTopo, naFilaDeCastracao, situacaoPet } from "./pets";
+import { acompanhado, contarGrupo, contarTopo, naFilaDeCastracao, saidaDaRua, situacaoPet } from "./pets";
 
 // dados.js do protótipo: os mesmos pets e a mesma situacaoPet() que a página usa
 type PetPrototipo = { n: string; ent: string; lar?: string; ado?: string; obito?: string; cast?: string };
@@ -93,5 +93,14 @@ describe("cartão Pets da Prestação de contas: mesmos números do index.html",
     expect(contarGrupo(pets, "adotados", "2026-01", "2026-10").total).toBe(soma(ADO));
     expect(contarTopo(pets, true, "2026-10")).toEqual({ total: 48, caes: 14, gatos: 34 });
     expect(contarTopo(pets, false, "2026-10").total).toBe(LAR[9].length + RUA[9].length);
+  });
+});
+
+describe("saidaDaRua", () => {
+  it("é o primeiro mês entre lar temporário e adoção, como saidaRua() do animais.html", () => {
+    for (const p of prototipo.PETS) {
+      const esperado = [p.lar, p.ado].filter(Boolean).sort()[0] ?? null;
+      expect(saidaDaRua(doBanco(p)), p.n).toBe(esperado);
+    }
   });
 });

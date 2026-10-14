@@ -322,7 +322,7 @@ Formato: `[ ]` a fazer, `[x]` feito. **Dep.** = precisa de outra tarefa antes. C
 
 ### Fase 4: páginas públicas
 - [x] **T4.1** `/` Prestação de contas, lendo `pub_resumo_mensal`, `pub_gasto_categoria_mes`, `pub_despesas`, `pub_pets` e `pub_campanhas`. Conferir os números contra o protótipo, mês a mês. *Dep.: T1.10, T2.4–T2.6*
-- [ ] **T4.2** `/pets`, igual a `animais.html`. *Dep.: T4.1*
+- [x] **T4.2** `/pets`, igual a `animais.html`. *Dep.: T4.1*
 - [ ] **T4.3** `/despesas`, igual a `despesas.html`. *Dep.: T4.1*
 - [ ] **T4.4** Cache: ISR de 5 min + `revalidatePath` quando o admin salva. *Dep.: T4.1*
 
@@ -363,3 +363,4 @@ Cada tela usa Server Actions para gravar, valida com Zod e mostra o toast do pro
 - [x] **Seed:** gerado por `web/scripts/gerar-seed.mjs` a partir do protótipo. A Campanha Stuart fica com R$ 1.200 arrecadados e **R$ 0 gastos**: no protótipo ela tem R$ 980 gastos, mas nenhuma despesa de agosto a outubro é do Stuart, e mudar essas despesas quebraria os totais públicos.
 - [x] **Senha esquecida (T3.4):** segue o protótipo ("peça a redefinição a quem administra o sistema"): quem administra gera uma senha temporária com `scripts/adicionar-admin.ts --senha-temporaria` e a pessoa troca em `/entrar/nova-senha`. O link "Esqueci minha senha" fica para quando houver envio de e-mail próprio (o SMTP gratuito do Supabase só entrega para membros da organização).
 - [x] **Administradores:** criados no painel com senha temporária (sem convite por e-mail), ligados com `scripts/adicionar-admin.ts`. Passo a passo no README.
+- [x] **Ordem do catálogo de Pets:** do cadastro mais recente para o mais antigo (`criado_em`), como no protótipo, em que um pet novo entra no topo. Por isso `pub_pets` tem `criado_em`, e o seed grava os pets na ordem de `dados.js`.
