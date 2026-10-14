@@ -22,10 +22,17 @@ npm run dev            # app local
 npm run lint
 npm run typecheck
 npm test               # Vitest
-supabase test db       # testes pgTAP das regras de acesso
+supabase db push --dry-run   # mostra o que seria aplicado no projeto linkado
 supabase db push       # aplica as migrations no projeto linkado (confira qual antes!)
+supabase db query --linked "select ..."   # consulta no projeto linkado
 supabase gen types typescript --linked > lib/supabase/tipos.ts
 ```
+
+**Sem Docker no dia a dia.** O Docker deixa o Codespace lento, então o banco de trabalho é o `sospets-homolog` (dados fictícios, pode ser zerado), não um banco local. Migration nova: `db push --dry-run`, `db push`, e conferir com `db query --linked`. Os testes pgTAP (`supabase/tests/`) não rodam com `--linked` (a CLI não tem permissão no schema `extensions`); eles rodam no GitHub Actions (T7.1) ou, se precisar, num banco local.
+
+**Banco local, só se precisar** (`supabase start`, `supabase test db`): avise antes, porque é lento. No Codespace, o Docker vem com uma regra de firewall antiga que bloqueia a rede entre containers; depois de cada reinício, rode uma vez `sudo iptables-legacy -I DOCKER-USER -i br-+ -o br-+ -j ACCEPT`. Ao terminar, `supabase stop`.
+
+O seed é gerado: edite `scripts/gerar-seed.mjs` e rode `node scripts/gerar-seed.mjs`; não edite o `seed.sql` à mão.
 
 Antes de dizer que uma tarefa está pronta, rode lint, typecheck e os testes, e diga o resultado.
 

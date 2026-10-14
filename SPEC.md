@@ -293,16 +293,16 @@ Formato: `[ ]` a fazer, `[x]` feito. **Dep.** = precisa de outra tarefa antes. C
 - [x] **T0.6** Configurar Vitest e um teste de exemplo passando. *Dep.: T0.3*
 
 ### Fase 1: banco de dados
-- [ ] **T1.1** Migration: enums e tabelas da seção 5, com chaves estrangeiras, `check (valor > 0)` e o índice único de contribuição por membro e mês. *Dep.: T0.4*
-- [ ] **T1.2** Migration: triggers de `atualizado_em`. *Dep.: T1.1*
-- [ ] **T1.3** Migration: função `situacao_pet(pet, mes)` em SQL. *Dep.: T1.1*
-- [ ] **T1.4** Migration: `eh_admin()` e RLS em todas as tabelas (admin lê e escreve; `anon` não lê nada). *Dep.: T1.1*
-- [ ] **T1.5** Migration: as 6 views públicas da seção 6 com `grant select to anon`. *Dep.: T1.3, T1.4*
-- [ ] **T1.6** Migration: trigger de `historico` em contribuições, despesas, pets, membros, campanhas e categorias, com `resumo` legível ("Despesa criada: Ração para gatos de rua"). *Dep.: T1.1*
-- [ ] **T1.7** `seed.sql` com os dados fictícios de `dados.js` e `app.js` (48 pets, despesas de ago a out, campanhas Stuart e Nelson, categorias com cores). Gerar despesas e contribuições de jan a jul que somem exatamente os valores `IN`, `OUT` e `CNT` do `index.html`. Criar 24 membros fictícios. *Dep.: T1.1*
-- [ ] **T1.8** Testes pgTAP: `anon` não lê tabelas privadas; `anon` lê as views; `pub_pets` não tem `local` nem pets ocultos; canceladas não somam; admin escreve; usuário logado que não é admin não escreve. *Dep.: T1.5, T1.7*
-- [ ] **T1.9** Aplicar tudo em homologação (`supabase db push` + seed) e conferir no painel. *Dep.: T1.8*
-- [ ] **T1.10** Gerar os tipos TypeScript (`supabase gen types typescript`) em `lib/supabase/tipos.ts`. *Dep.: T1.9*
+- [x] **T1.1** Migration: enums e tabelas da seção 5, com chaves estrangeiras, `check (valor > 0)` e o índice único de contribuição por membro e mês. *Dep.: T0.4*
+- [x] **T1.2** Migration: triggers de `atualizado_em`. *Dep.: T1.1*
+- [x] **T1.3** Migration: função `situacao_pet(pet, mes)` em SQL. *Dep.: T1.1*
+- [x] **T1.4** Migration: `eh_admin()` e RLS em todas as tabelas (admin lê e escreve; `anon` não lê nada). *Dep.: T1.1*
+- [x] **T1.5** Migration: as 6 views públicas da seção 6 com `grant select to anon`. *Dep.: T1.3, T1.4*
+- [x] **T1.6** Migration: trigger de `historico` em contribuições, despesas, pets, membros, campanhas e categorias, com `resumo` legível ("Despesa criada: Ração para gatos de rua"). *Dep.: T1.1*
+- [x] **T1.7** `seed.sql` com os dados fictícios de `dados.js` e `app.js` (48 pets, despesas de ago a out, campanhas Stuart e Nelson, categorias com cores). Gerar despesas e contribuições de jan a jul que somem exatamente os valores `IN`, `OUT` e `CNT` do `index.html`. Criar 24 membros fictícios. *Dep.: T1.1*
+- [x] **T1.8** Testes pgTAP: `anon` não lê tabelas privadas; `anon` lê as views; `pub_pets` não tem `local` nem pets ocultos; canceladas não somam; admin escreve; usuário logado que não é admin não escreve. *Dep.: T1.5, T1.7*
+- [x] **T1.9** Aplicar tudo em homologação (`supabase db push` + seed) e conferir no painel. *Dep.: T1.8*
+- [x] **T1.10** Gerar os tipos TypeScript (`supabase gen types typescript`) em `lib/supabase/tipos.ts`. *Dep.: T1.9*
 - [ ] **T1.11** Importar a planilha real: script em `web/scripts/importar-planilha.ts` que lê o `.xlsx` de `web/dados-reais/` (pasta fora do git) e grava em pets, membros, contribuições, despesas, campanhas e categorias. Mostra um relatório antes de gravar (quantas linhas, totais por mês, linhas com problema). Rodar primeiro num banco local ou em homologação, conferir os totais com a planilha e só depois, com pedido explícito, em produção. *Dep.: T1.9*
 
 ### Fase 2: base do front-end
@@ -357,3 +357,4 @@ Cada tela usa Server Actions para gravar, valida com Zod e mostra o toast do pro
 - [x] **Administradores:** 3 pessoas (Barbara + duas).
 - [x] **Dados reais:** importar da planilha Excel (T1.11).
 - [x] **Planos:** Supabase e Vercel gratuitos, com as compensações de T6.7 e T6.8.
+- [x] **Seed:** gerado por `web/scripts/gerar-seed.mjs` a partir do protótipo. A Campanha Stuart fica com R$ 1.200 arrecadados e **R$ 0 gastos**: no protótipo ela tem R$ 980 gastos, mas nenhuma despesa de agosto a outubro é do Stuart, e mudar essas despesas quebraria os totais públicos.
