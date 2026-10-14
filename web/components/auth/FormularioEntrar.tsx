@@ -3,6 +3,7 @@
 import { type FormEvent, useActionState, useEffect, useRef, useState } from "react";
 import { entrar, type EstadoDoLogin } from "@/lib/auth/acoes";
 import { MSG_CAMPOS_VAZIOS } from "@/lib/auth/mensagens";
+import { useHidratado } from "@/components/ui/useHidratado";
 
 // Formulário do login.html: erro em caixa vermelha (role="alert"), campo com problema
 // marcado com aria-invalid e com o foco, e "Mostrar/Esconder" senha.
@@ -10,6 +11,8 @@ export function FormularioEntrar({ proximo, avisoInicial }: { proximo?: string; 
   const [estado, enviar, enviando] = useActionState<EstadoDoLogin, FormData>(entrar, { erro: avisoInicial ?? null });
   const [erroLocal, setErroLocal] = useState<{ erro: string; campo: "email" | "senha" } | null>(null);
   const [verSenha, setVerSenha] = useState(false);
+  // "Mostrar" só aparece quando já funciona (antes disso, o clique se perderia)
+  const hidratado = useHidratado();
   const email = useRef<HTMLInputElement>(null);
   const senha = useRef<HTMLInputElement>(null);
 
@@ -63,17 +66,19 @@ export function FormularioEntrar({ proximo, avisoInicial }: { proximo?: string; 
             aria-invalid={erro?.campo === "senha" ? true : undefined}
           />
           {/* mostrar a senha ajuda quem digita no celular */}
-          <button
-            type="button"
-            aria-pressed={verSenha}
-            aria-controls="senha"
-            onClick={() => {
-              setVerSenha(!verSenha);
-              senha.current?.focus();
-            }}
-          >
-            {verSenha ? "Esconder" : "Mostrar"}
-          </button>
+          {hidratado && (
+            <button
+              type="button"
+              aria-pressed={verSenha}
+              aria-controls="senha"
+              onClick={() => {
+                setVerSenha(!verSenha);
+                senha.current?.focus();
+              }}
+            >
+              {verSenha ? "Esconder" : "Mostrar"}
+            </button>
+          )}
         </div>
       </div>
       <p className="lg-erro" id="erro" role="alert" hidden={!erro}>
