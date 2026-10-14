@@ -218,7 +218,7 @@ O repositório no GitHub é **público**: qualquer pessoa vê o código, **todo 
 
 **O `seed.sql` e os testes usam só dados fictícios.** Nomes de membros no seed são inventados.
 
-**Antes de cada commit:**
+**Antes de cada commit:** rode `scripts/conferir-commit.sh` (faz os passos 1 a 3 e falha se achar algo) e confira à mão o que ele não vê, como nomes de pessoas reais.
 1. Conferir o e-mail do autor: `git config user.email` deve ser o endereço `noreply` do GitHub, nunca o e-mail pessoal.
 2. Ver a lista do que vai entrar (`git diff --cached --name-only`): nenhum `.env*` além do `.env.example`, nenhum `.xlsx`, `.csv`, `.dump` ou `.sql` fora de `web/supabase/`.
 3. Procurar segredos no diff (`git diff --cached`): textos começando com `eyJhbGci`, `sb_secret_`, `sb_publishable_`, `ghp_`, `ghu_`, `password=` ou `postgres://…:senha@`.
