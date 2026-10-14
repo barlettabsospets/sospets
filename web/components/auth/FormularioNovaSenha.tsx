@@ -2,11 +2,14 @@
 
 import { useActionState, useEffect, useRef, useState } from "react";
 import { type EstadoDaNovaSenha, salvarNovaSenha } from "@/lib/auth/acoes";
+import { useHidratado } from "@/components/ui/useHidratado";
 
 // Tela "Nova senha" (depois do link de convite ou de redefinição), no visual do login.
 export function FormularioNovaSenha({ avisoInicial }: { avisoInicial?: string | null }) {
   const [estado, enviar, enviando] = useActionState<EstadoDaNovaSenha, FormData>(salvarNovaSenha, { erro: avisoInicial ?? null });
   const [verSenha, setVerSenha] = useState(false);
+  // "Mostrar" só aparece quando já funciona (antes disso, o clique se perderia)
+  const hidratado = useHidratado();
   const senha = useRef<HTMLInputElement>(null);
   const repetir = useRef<HTMLInputElement>(null);
 
@@ -29,9 +32,11 @@ export function FormularioNovaSenha({ avisoInicial }: { avisoInicial?: string | 
             aria-describedby="senha-dica"
             aria-invalid={estado.campo === "senha" ? true : undefined}
           />
-          <button type="button" aria-pressed={verSenha} aria-controls="senha repetir" onClick={() => setVerSenha(!verSenha)}>
+          {hidratado && (
+            <button type="button" aria-pressed={verSenha} aria-controls="senha repetir" onClick={() => setVerSenha(!verSenha)}>
             {verSenha ? "Esconder" : "Mostrar"}
           </button>
+          )}
         </div>
         <span className="hint" id="senha-dica">Pelo menos 8 caracteres.</span>
       </div>

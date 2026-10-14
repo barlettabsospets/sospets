@@ -249,6 +249,7 @@ Cada tela segue o arquivo correspondente do protótipo: layout, textos, estados 
 | `/admin/membros` | `admin-membros.html` | Ativos/inativos, novo membro, valor próprio ou padrão, alterar valor padrão (com opção de aplicar a todos) |
 | `/admin/campanhas` | `admin-campanhas.html` | Lista com arrecadado/gasto/meta, nova/editar, encerrar |
 | `/admin/mais` | `admin-mais.html` | Exportar CSV (doações, despesas, pets), categorias (adicionar, renomear, desativar), configurações, histórico de alterações |
+| `/admin/conta` | *(não existe no protótipo)* | Minha conta: trocar a própria senha e o próprio e-mail |
 
 **Comportamentos comuns:** listas de 10 em 10 com a mesma paginação; "Desfazer" no toast após marcar contribuição ou cancelar; diálogos `<dialog>` nativos; números em BRL (`pt-BR`).
 
@@ -335,6 +336,8 @@ Cada tela usa Server Actions para gravar, valida com Zod e mostra o toast do pro
 - [ ] **T5.6** Storage: buckets `pets` e `campanhas` com política de escrita só para admin; redimensionar a foto antes de enviar. *Dep.: T1.4*
 - [ ] **T5.7** `/admin/pets`: tabela, filtro por situação no mês, busca, "Precisa de atenção", criar/editar com foto, ocultar do site. *Dep.: T5.6*
 - [ ] **T5.8** `/admin/mais` (parte de exportação e histórico): exportar CSV e histórico de alterações paginado. *Dep.: T1.6, T5.3*
+- [ ] **T5.9** `/admin/conta` (Minha conta): trocar a senha (pedindo a senha atual) e o e-mail. Não existe no protótipo: propor o visual no estilo das telas do admin e aprovar antes de implementar. Trocar o e-mail exige confirmação pelo e-mail novo, que só chega com envio de e-mail próprio (SMTP); até lá, quem administra troca pelo painel do Supabase. Link para a página no cabeçalho do admin e em "Mais". *Dep.: T3.2*
+- [ ] **T5.10** Saudação no admin: "Olá, Ana Exemplo!", com o nome de `administradores`. Não existe no protótipo: propor onde fica (cabeçalho ou topo de Contribuições) e aprovar antes. *Dep.: T3.2*
 
 ### Fase 6: deploy
 - [ ] **T6.1** Criar o projeto na Vercel com *Root Directory* = `web`. *Dep.: T0.3*
@@ -348,7 +351,7 @@ Cada tela usa Server Actions para gravar, valida com Zod e mostra o toast do pro
 
 ### Fase 7: qualidade
 - [ ] **T7.1** GitHub Actions: lint, typecheck, Vitest e pgTAP em todo PR. *Dep.: T1.8, T2.2*
-- [ ] **T7.2** Playwright: visitante vê a Prestação de contas; admin entra, registra uma despesa e ela aparece no site. *Dep.: T6.4*
+- [ ] **T7.2** Playwright: visitante vê a Prestação de contas; admin entra, registra uma despesa e ela aparece no site. Já existe a base (`web/e2e/`, `npm run test:e2e`) com os testes do login. *Dep.: T6.4*
 - [ ] **T7.3** Auditoria de acessibilidade (teclado, contraste, leitor de tela) nas 10 telas. *Dep.: Fases 4 e 5*
 - [ ] **T7.4** Teste em celular real (Android e iPhone) em homologação. *Dep.: T6.4*
 
