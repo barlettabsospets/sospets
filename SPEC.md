@@ -314,9 +314,9 @@ Formato: `[ ]` a fazer, `[x]` feito. **Dep.** = precisa de outra tarefa antes. C
 - [x] **T2.6** Gráficos SVG (`components/graficos`): barras mensais clicáveis, rosca com legenda, barras por categoria. *Dep.: T2.1*
 
 ### Fase 3: login
-- [ ] **T3.1** Página `/entrar` igual a `login.html`, com login por e-mail e senha no Supabase Auth e mensagens de erro em português. *Dep.: T0.5, T2.5*
-- [ ] **T3.2** Middleware protegendo `/admin/*`; botão "Sair". *Dep.: T3.1*
-- [ ] **T3.3** Desligar o cadastro público no Supabase (nos dois projetos) e criar os 3 administradores (Barbara + duas pessoas) em homologação. Documentar no README como convidar um administrador. *Dep.: T1.9*
+- [x] **T3.1** Página `/entrar` igual a `login.html`, com login por e-mail e senha no Supabase Auth e mensagens de erro em português. *Dep.: T0.5, T2.5*
+- [x] **T3.2** Middleware protegendo `/admin/*`; botão "Sair". *Dep.: T3.1*
+- [x] **T3.3** Desligar o cadastro público no Supabase (nos dois projetos) e criar os 3 administradores (Barbara + duas pessoas) em homologação. Documentar no README como convidar um administrador. *Dep.: T1.9*
 - [ ] **T3.4** Página "esqueci minha senha" (e-mail do Supabase em português). *Dep.: T3.1*
 
 ### Fase 4: páginas públicas
@@ -358,3 +358,5 @@ Cada tela usa Server Actions para gravar, valida com Zod e mostra o toast do pro
 - [x] **Dados reais:** importar da planilha Excel (T1.11).
 - [x] **Planos:** Supabase e Vercel gratuitos, com as compensações de T6.7 e T6.8.
 - [x] **Seed:** gerado por `web/scripts/gerar-seed.mjs` a partir do protótipo. A Campanha Stuart fica com R$ 1.200 arrecadados e **R$ 0 gastos**: no protótipo ela tem R$ 980 gastos, mas nenhuma despesa de agosto a outubro é do Stuart, e mudar essas despesas quebraria os totais públicos.
+- [x] **Senha esquecida (T3.4):** segue o protótipo ("peça a redefinição a quem administra o sistema"): quem administra gera uma senha temporária com `scripts/adicionar-admin.ts --senha-temporaria` e a pessoa troca em `/entrar/nova-senha`. O link "Esqueci minha senha" fica para quando houver envio de e-mail próprio (o SMTP gratuito do Supabase só entrega para membros da organização).
+- [x] **Administradores:** criados no painel com senha temporária (sem convite por e-mail), ligados com `scripts/adicionar-admin.ts`. Passo a passo no README.
