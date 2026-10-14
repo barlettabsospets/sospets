@@ -545,6 +545,7 @@ export type Database = {
           adotado_em: string | null
           castrado: Database["public"]["Enums"]["castracao"] | null
           castrado_em: string | null
+          criado_em: string | null
           entrou_em: string | null
           especie: Database["public"]["Enums"]["especie_pet"] | null
           faixa_idade: Database["public"]["Enums"]["faixa_idade"] | null
@@ -565,6 +566,7 @@ export type Database = {
           adotado_em?: string | null
           castrado?: Database["public"]["Enums"]["castracao"] | null
           castrado_em?: string | null
+          criado_em?: string | null
           entrou_em?: string | null
           especie?: Database["public"]["Enums"]["especie_pet"] | null
           faixa_idade?: Database["public"]["Enums"]["faixa_idade"] | null
@@ -585,6 +587,7 @@ export type Database = {
           adotado_em?: string | null
           castrado?: Database["public"]["Enums"]["castracao"] | null
           castrado_em?: string | null
+          criado_em?: string | null
           entrou_em?: string | null
           especie?: Database["public"]["Enums"]["especie_pet"] | null
           faixa_idade?: Database["public"]["Enums"]["faixa_idade"] | null
