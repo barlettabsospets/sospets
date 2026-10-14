@@ -218,7 +218,7 @@ O repositório no GitHub é **público**: qualquer pessoa vê o código, **todo 
 
 **O `seed.sql` e os testes usam só dados fictícios.** Nomes de membros no seed são inventados.
 
-**Antes de cada commit:**
+**Antes de cada commit:** rode `scripts/conferir-commit.sh` (faz os passos 1 a 3 e falha se achar algo) e confira à mão o que ele não vê, como nomes de pessoas reais.
 1. Conferir o e-mail do autor: `git config user.email` deve ser o endereço `noreply` do GitHub, nunca o e-mail pessoal.
 2. Ver a lista do que vai entrar (`git diff --cached --name-only`): nenhum `.env*` além do `.env.example`, nenhum `.xlsx`, `.csv`, `.dump` ou `.sql` fora de `web/supabase/`.
 3. Procurar segredos no diff (`git diff --cached`): textos começando com `eyJhbGci`, `sb_secret_`, `sb_publishable_`, `ghp_`, `ghu_`, `password=` ou `postgres://…:senha@`.
@@ -321,7 +321,7 @@ Formato: `[ ]` a fazer, `[x]` feito. **Dep.** = precisa de outra tarefa antes. C
 - [ ] **T3.4** Página "esqueci minha senha" (e-mail do Supabase em português). *Dep.: T3.1*
 
 ### Fase 4: páginas públicas
-- [ ] **T4.1** `/` Prestação de contas, lendo `pub_resumo_mensal`, `pub_gasto_categoria_mes`, `pub_despesas`, `pub_pets` e `pub_campanhas`. Conferir os números contra o protótipo, mês a mês. *Dep.: T1.10, T2.4–T2.6*
+- [x] **T4.1** `/` Prestação de contas, lendo `pub_resumo_mensal`, `pub_gasto_categoria_mes`, `pub_despesas`, `pub_pets` e `pub_campanhas`. Conferir os números contra o protótipo, mês a mês. *Dep.: T1.10, T2.4–T2.6*
 - [ ] **T4.2** `/pets`, igual a `animais.html`. *Dep.: T4.1*
 - [ ] **T4.3** `/despesas`, igual a `despesas.html`. *Dep.: T4.1*
 - [ ] **T4.4** Cache: ISR de 5 min + `revalidatePath` quando o admin salva. *Dep.: T4.1*

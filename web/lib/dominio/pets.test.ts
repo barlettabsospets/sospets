@@ -3,7 +3,7 @@ import { join } from "node:path";
 import vm from "node:vm";
 import { describe, expect, it } from "vitest";
 import { type Mes, listaDeMeses } from "./meses";
-import { acompanhado, naFilaDeCastracao, situacaoPet } from "./pets";
+import { acompanhado, contarGrupo, contarTopo, naFilaDeCastracao, situacaoPet } from "./pets";
 
 // dados.js do protótipo: os mesmos pets e a mesma situacaoPet() que a página usa
 type PetPrototipo = { n: string; ent: string; lar?: string; ado?: string; obito?: string; cast?: string };
@@ -64,5 +64,34 @@ describe("contagens de outubro de 2026, como no protótipo", () => {
     const amora = doBanco(prototipo.PETS.find((p) => p.n === "Amora")!); // castrada em 2026-10
     expect(naFilaDeCastracao(amora, "2026-09")).toBe(true);
     expect(naFilaDeCastracao(amora, "2026-10")).toBe(false);
+  });
+});
+
+describe("cartão Pets da Prestação de contas: mesmos números do index.html", () => {
+  // o protótipo calcula CAS, ADO, LAR, RUA e CAES assim (index.html)
+  const MESES_2026 = Array.from({ length: 10 }, (_, i) => `2026-${String(i + 1).padStart(2, "0")}` as Mes);
+  const pets = prototipo.PETS.map((p) => ({ ...doBanco(p), especie: (p as { e?: string }).e as "cachorro" | "gato" }));
+  const proto = (f: (p: PetPrototipo & { e?: string }, ym: string) => boolean) => MESES_2026.map((ym) => prototipo.PETS.filter((p) => f(p, ym)));
+  const CAS = proto((p, ym) => p.cast === ym);
+  const ADO = proto((p, ym) => p.ado === ym);
+  const LAR = proto((p, ym) => prototipo.situacaoPet(p, ym) === "lar");
+  const RUA = proto((p, ym) => prototipo.situacaoPet(p, ym) === "rua");
+  const caes = (l: (PetPrototipo & { e?: string })[]) => l.filter((p) => p.e === "cachorro").length;
+
+  it("cada mês: castrados, adotados, lar e rua, com cães e gatos", () => {
+    MESES_2026.forEach((mes, i) => {
+      for (const [grupo, esperado] of [["castrados", CAS[i]], ["adotados", ADO[i]], ["lar", LAR[i]], ["rua", RUA[i]]] as const) {
+        const c = contarGrupo(pets, grupo, mes, mes);
+        expect(c, `${grupo} em ${mes}`).toEqual({ total: esperado.length, caes: caes(esperado), gatos: esperado.length - caes(esperado) });
+      }
+    });
+  });
+
+  it("desde o início: eventos somados desde janeiro e situação de hoje", () => {
+    const soma = (l: unknown[][]) => l.reduce((t, x) => t + x.length, 0);
+    expect(contarGrupo(pets, "castrados", "2026-01", "2026-10").total).toBe(soma(CAS));
+    expect(contarGrupo(pets, "adotados", "2026-01", "2026-10").total).toBe(soma(ADO));
+    expect(contarTopo(pets, true, "2026-10")).toEqual({ total: 48, caes: 14, gatos: 34 });
+    expect(contarTopo(pets, false, "2026-10").total).toBe(LAR[9].length + RUA[9].length);
   });
 });

@@ -39,3 +39,40 @@ export function naFilaDeCastracao(
   const castradoNoMes = pet.castrado === "sim" && (pet.castrado_em === null || paraMes(pet.castrado_em) <= mes);
   return !castradoNoMes;
 }
+
+// --- cartão "Pets" da Prestação de contas --------------------------------------------
+
+export type PetDoPainel = DatasDoPet & { especie: "cachorro" | "gato"; castrado_em: string | null };
+
+export type GrupoDePets = "castrados" | "adotados" | "lar" | "rua";
+
+export type Contagem = { total: number; caes: number; gatos: number };
+
+const contar = (pets: PetDoPainel[]): Contagem => {
+  const caes = pets.filter((p) => p.especie === "cachorro").length;
+  return { total: pets.length, caes, gatos: pets.length - caes };
+};
+
+const entre = (data: string | null, inicio: Mes, fim: Mes) =>
+  data !== null && paraMes(data) >= inicio && paraMes(data) <= fim;
+
+// Quantos pets em cada grupo, como no cartão do protótipo:
+// castrados e adotados são o que aconteceu no período (de inicio a fim);
+// lar temporário e rua são a situação no fim do período.
+export function contarGrupo(pets: PetDoPainel[], grupo: GrupoDePets, inicio: Mes, fim: Mes): Contagem {
+  switch (grupo) {
+    case "castrados":
+      return contar(pets.filter((p) => entre(p.castrado_em, inicio, fim)));
+    case "adotados":
+      return contar(pets.filter((p) => entre(p.adotado_em, inicio, fim)));
+    case "lar":
+    case "rua":
+      return contar(pets.filter((p) => situacaoPet(p, fim) === grupo));
+  }
+}
+
+// Número grande do cartão: "desde o início" = todos que já passaram pelo grupo;
+// num mês = acompanhados (rua + lar) no fim dele.
+export function contarTopo(pets: PetDoPainel[], desdeOInicio: boolean, fim: Mes): Contagem {
+  return contar(desdeOInicio ? pets : pets.filter((p) => acompanhado(p, fim)));
+}

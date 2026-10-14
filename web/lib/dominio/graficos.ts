@@ -27,18 +27,18 @@ export type Fatia = { nome: string; valor: number; cor: string };
 export const COR_OUTRAS = "#CFC3B4";
 
 // Rosca: as `quantas` maiores categorias de sempre, cada uma com a sua cor, e o resto
-// somado em "Outras (lar temporário, transporte)". Só entram fatias com valor.
-// ranking: categorias da maior para a menor, considerando todo o período.
+// somado em "Outras (vacinas, lar temporário)". Só entram fatias com valor.
+// ranking: categorias da maior para a menor, considerando todo o período;
+// ordem: a coluna categorias.ordem, que define a ordem dentro de "Outras (...)".
 export function fatiasDaRosca(
   doPeriodo: Map<string, number>,
-  ranking: { nome: string; cor: string }[],
+  ranking: { nome: string; cor: string; ordem?: number }[],
   quantas = 5,
 ): Fatia[] {
   const principais = ranking.slice(0, quantas);
   const nomesPrincipais = new Set(principais.map((c) => c.nome));
   const resto = [...doPeriodo].filter(([nome, v]) => !nomesPrincipais.has(nome) && v > 0);
-  // ordem do ranking, para "Outras (...)" listar sempre igual
-  const ordem = new Map(ranking.map((c, i) => [c.nome, i]));
+  const ordem = new Map(ranking.map((c, i) => [c.nome, c.ordem ?? i]));
   resto.sort((a, b) => (ordem.get(a[0]) ?? 99) - (ordem.get(b[0]) ?? 99));
 
   const fatias: Fatia[] = principais.map((c) => ({ nome: c.nome, valor: doPeriodo.get(c.nome) ?? 0, cor: c.cor }));
