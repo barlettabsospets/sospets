@@ -148,7 +148,7 @@ const CAES = { cas: porMes((p, ym) => caoS(p) && p.cast === ym), ado: porMes((p,
 const ULT = DESPESAS.slice().sort((a, b) => b.d.localeCompare(a.d)).slice(0, 5).map(r => [r.d.slice(8) + '/' + r.d.slice(5, 7), r.t, r.c, r.v, r.a]);
 const ESPECIE = Object.fromEntries(PETS.map(p => [p.n, p.e]));
 // a rosca mostra as 5 maiores categorias de sempre, cada uma com uma cor fixa (validada para daltonismo nesta ordem); o resto vira "Outras"
-const TOP = 5, CORES = ['#DB7838', '#2D5F9A', '#C2477A', '#D4A017', '#2A9D8F'], COR_OUTRAS = '#CFC3B4';
+const TOP = 5, CORES = ['#DB7838', '#2D5F9A', '#C2477A', '#D4A017', '#2A9D8F']; // COR_OUTRAS vem do dados.js
 const LAST = IN.length - 1;
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const sum = a => a.reduce((x, y) => x + y, 0);

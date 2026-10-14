@@ -1,0 +1,4 @@
+# planilha com dados reais (nomes de membros): nunca no git
+web/dados-reais/
+*.xlsx
+*.xls
