@@ -207,6 +207,27 @@ Se um pet oculto tiver despesa, `pub_despesas` mostra "Vários pets" no lugar do
 
 **Storage:** bucket `pets` e bucket `campanhas`, leitura pública, escrita só para admin. Fotos redimensionadas no envio (máximo 1600 px, WebP).
 
+### Repositório público
+
+O repositório no GitHub é **público**: qualquer pessoa vê o código, **todo o histórico de commits**, os PRs e os logs do GitHub Actions. A segurança vem do RLS e de manter os segredos fora do git, não de esconder o código.
+
+**Nunca entra no git (nem em commit antigo, PR, issue ou log):**
+- **Segredos:** `.env.local` e qualquer `.env` preenchido, `SUPABASE_SERVICE_ROLE_KEY`, chaves `sb_secret_…`, senhas do banco, tokens do GitHub, da Vercel ou do Supabase (`supabase login`). Só o `.env.example` vazio vai para o git.
+- **Dados reais:** a planilha (`web/dados-reais/`, `*.xlsx`), nomes, e-mails e telefones de membros, doadores e administradores, contribuições individuais, `pets.local`, exportações CSV do admin, `pg_dump` e qualquer backup do banco.
+- **Prints e cópias de produção** em PRs e issues. Para exemplo, use dados do `seed.sql`, que são fictícios.
+
+**O `seed.sql` e os testes usam só dados fictícios.** Nomes de membros no seed são inventados.
+
+**Antes de cada commit:**
+1. Conferir o e-mail do autor: `git config user.email` deve ser o endereço `noreply` do GitHub, nunca o e-mail pessoal.
+2. Ver a lista do que vai entrar (`git diff --cached --name-only`): nenhum `.env*` além do `.env.example`, nenhum `.xlsx`, `.csv`, `.dump` ou `.sql` fora de `web/supabase/`.
+3. Procurar segredos no diff (`git diff --cached`): textos começando com `eyJhbGci`, `sb_secret_`, `sb_publishable_`, `ghp_`, `ghu_`, `password=` ou `postgres://…:senha@`.
+4. Se algo aparecer, tirar do commit e colocar no `.gitignore` antes de seguir.
+
+**GitHub Actions:** os logs são públicos. Segredos só em *GitHub Secrets*, e nunca impressos (`echo`) nos passos. O backup de produção (T6.8) roda e fica **num repositório privado separado**, porque artefatos de repositório público podem ser baixados por qualquer pessoa.
+
+**Se um segredo vazar:** considere-o comprometido. Primeiro **troque a chave ou a senha** no Supabase, na Vercel ou no GitHub; só depois limpe o histórico. Apagar o commit não basta, porque robôs copiam chaves de repositórios públicos em minutos.
+
 ## 7. Telas
 
 Cada tela segue o arquivo correspondente do protótipo: layout, textos, estados vazios e comportamento. **Se o protótipo e este spec divergirem num detalhe visual, vale o protótipo.**
@@ -264,12 +285,12 @@ Cada tela segue o arquivo correspondente do protótipo: layout, textos, estados 
 Formato: `[ ]` a fazer, `[x]` feito. **Dep.** = precisa de outra tarefa antes. Cada tarefa termina com algo que dá para conferir.
 
 ### Fase 0: preparação (comece por aqui)
-- [ ] **T0.1** Criar os projetos `sospets-homolog` e `sospets-prod` no Supabase (região São Paulo). Guardar as chaves num gerenciador de senhas, nunca no repositório.
-- [ ] **T0.2** Criar o branch `develop` a partir do `main` e proteger os dois no GitHub (merge só por PR).
-- [ ] **T0.3** Criar o app em `web/`: Next.js + TypeScript + Tailwind v4 + ESLint. Rodar `npm run dev` e ver a página inicial. *Dep.: nenhuma*
-- [ ] **T0.4** Instalar a Supabase CLI, rodar `supabase init` dentro de `web/` e `supabase link` com o projeto de homologação.
-- [ ] **T0.5** Criar `web/.env.example` com as variáveis da seção 4, `web/.env.local` (no `.gitignore`) e os clientes em `lib/supabase/` (server, browser, middleware). *Dep.: T0.3, T0.4*
-- [ ] **T0.6** Configurar Vitest e um teste de exemplo passando. *Dep.: T0.3*
+- [x] **T0.1** Criar os projetos `sospets-homolog` e `sospets-prod` no Supabase (região São Paulo). Guardar as chaves num gerenciador de senhas, nunca no repositório.
+- [x] **T0.2** Criar o branch `develop` a partir do `main` e proteger os dois no GitHub (merge só por PR).
+- [x] **T0.3** Criar o app em `web/`: Next.js + TypeScript + Tailwind v4 + ESLint. Rodar `npm run dev` e ver a página inicial. *Dep.: nenhuma*
+- [x] **T0.4** Instalar a Supabase CLI, rodar `supabase init` dentro de `web/` e `supabase link` com o projeto de homologação.
+- [x] **T0.5** Criar `web/.env.example` com as variáveis da seção 4, `web/.env.local` (no `.gitignore`) e os clientes em `lib/supabase/` (server, browser, middleware). *Dep.: T0.3, T0.4*
+- [x] **T0.6** Configurar Vitest e um teste de exemplo passando. *Dep.: T0.3*
 
 ### Fase 1: banco de dados
 - [ ] **T1.1** Migration: enums e tabelas da seção 5, com chaves estrangeiras, `check (valor > 0)` e o índice único de contribuição por membro e mês. *Dep.: T0.4*

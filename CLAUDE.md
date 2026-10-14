@@ -36,6 +36,7 @@ Antes de dizer que uma tarefa está pronta, rode lint, typecheck e os testes, e 
 3. **Produção é intocável sem pedido explícito.** Não rode `db push`, `seed` nem SQL contra `sospets-prod` sem a pessoa pedir naquela conversa. Antes de qualquer `supabase db push`, mostre qual projeto está linkado.
 4. **`SUPABASE_SERVICE_ROLE_KEY` só no servidor.** Nunca com prefixo `NEXT_PUBLIC_`, nunca em Client Component, nunca no git.
 5. **Nada é apagado.** Despesas e contribuições são canceladas (`cancelada_em` + motivo); categorias são desativadas.
+6. **O repositório é público.** Antes de todo commit, siga a lista "Repositório público" da seção 6 do SPEC: e-mail `noreply`, nenhum segredo, nenhum dado real, nenhum backup. Na dúvida, não commite e pergunte.
 
 ## Design
 
