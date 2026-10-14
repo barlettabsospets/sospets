@@ -2,6 +2,7 @@
   "name": "web",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -9,7 +10,8 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "importar": "node scripts/importar-planilha.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
@@ -25,6 +27,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.4.0",
+    "exceljs": "^4.4.0",
     "supabase": "^2.120.0",
     "tailwindcss": "^4",
     "typescript": "^5",
