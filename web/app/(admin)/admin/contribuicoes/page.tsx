@@ -19,6 +19,7 @@ async function Contribuicoes() {
       mesAtual={mesAtual()}
       dadosDesde={config.dadosDesde}
       padrao={config.valorPadrao}
+      avisoMeses={config.avisoMeses}
     />
   );
 }

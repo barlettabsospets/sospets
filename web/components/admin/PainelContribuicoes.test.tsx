@@ -32,7 +32,7 @@ const MEMBROS: Membro[] = [
 ];
 const c = (id: string, membroId: string | null, competencia: string, valor = 20): Contribuicao =>
   ({ id, membroId, competencia: competencia as Contribuicao["competencia"], valor, registradaEm: `${competencia}-07` });
-const CONTRIBUICOES = [c("1", "a", "2026-10"), c("2", "c", "2026-09"), c("3", null, "2026-10", 50)];
+const CONTRIBUICOES = [c("1", "a", "2026-10"), c("2", "c", "2026-09"), c("4", "b", "2026-07"), c("3", null, "2026-10", 50)];
 
 const montar = () =>
   render(
@@ -44,6 +44,7 @@ const montar = () =>
         mesAtual="2026-10"
         dadosDesde="2026-08"
         padrao={20}
+        avisoMeses={3}
       />
     </ProvedorDeToast>,
   );
@@ -61,7 +62,10 @@ describe("PainelContribuicoes", () => {
     montar();
     expect(screen.getByLabelText("Valor de Bruno Teste")).toHaveValue("30,00");
     const carla = screen.getByText("Carla Modelo").closest(".row") as HTMLElement;
-    expect(within(carla).getByText("Contribuiu no mês anterior")).toBeInTheDocument();
+    expect(within(carla).getByText("Contribuiu no mês anterior").tagName).toBe("SMALL");
+    // sem contribuir desde julho, vendo outubro: passou do aviso de 3 meses
+    const bruno = screen.getByText("Bruno Teste").closest(".row") as HTMLElement;
+    expect(within(bruno).getByText("Sem contribuir há 3 meses")).toHaveClass("chip", "chip-warn");
   });
 
   it("Contribuiu grava o valor digitado, e o Desfazer do aviso cancela", async () => {

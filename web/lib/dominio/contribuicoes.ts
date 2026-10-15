@@ -20,6 +20,8 @@ export type LinhaDoMes = {
   sugerido: number;
   contribuicao: Contribuicao | null;
   nota: string;
+  // passou do limite de "Mais" (aviso_meses): a nota aparece em destaque
+  alerta: boolean;
 };
 
 // Texto embaixo do nome de quem ainda não contribuiu no mês, como no protótipo:
@@ -30,12 +32,18 @@ export function notaSemContribuir(ultima: Mes | null, mes: Mes): string {
   return meses <= 1 ? "Contribuiu no mês anterior" : `Sem contribuir há ${meses} meses`;
 }
 
+// Destaque de quem está sem contribuir há aviso_meses ou mais (com 3: "mais de 2 meses").
+// Quem nunca contribuiu não entra: pode ser um membro novo.
+export const passouDoAviso = (ultima: Mes | null, mes: Mes, avisoMeses: number) =>
+  ultima !== null && mesesEntre(ultima, mes) >= avisoMeses;
+
 // A lista do mês: membros ativos e também os inativos que contribuíram nesse mês.
 export function linhasDoMes(
   membros: Membro[],
   contribuicoes: Contribuicao[],
   mes: Mes,
   padrao: number,
+  avisoMeses: number,
 ): LinhaDoMes[] {
   const doMes = new Map<string, Contribuicao>();
   const ultima = new Map<string, Mes>();
@@ -51,6 +59,7 @@ export function linhasDoMes(
       sugerido: valorDoMembro(m, padrao),
       contribuicao: doMes.get(m.id) ?? null,
       nota: notaSemContribuir(ultima.get(m.id) ?? null, mes),
+      alerta: passouDoAviso(ultima.get(m.id) ?? null, mes, avisoMeses),
     }));
 }
 

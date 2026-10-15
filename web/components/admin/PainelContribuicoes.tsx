@@ -53,7 +53,9 @@ function Linha({
         {c ? (
           <span className="chip chip-ok" style={{ marginTop: 4 }}><Certo />Pago em {diaEMes(c.registradaEm)}</span>
         ) : (
-          <small>{linha.nota}</small>
+          linha.alerta
+            ? <span className="chip chip-warn" style={{ marginTop: 4 }}>{linha.nota}</span>
+            : <small>{linha.nota}</small>
         )}
       </div>
       <div className="actions">
@@ -86,7 +88,7 @@ function Linha({
 // Tela Contribuições (admin-contribuicoes.html): escolher o mês, marcar quem contribuiu
 // (com "Desfazer"), resumo do mês e doação avulsa.
 export function PainelContribuicoes({
-  membros, contribuicoes, campanhas, mesAtual, dadosDesde, padrao,
+  membros, contribuicoes, campanhas, mesAtual, dadosDesde, padrao, avisoMeses,
 }: {
   membros: Membro[];
   contribuicoes: Contribuicao[];
@@ -94,6 +96,7 @@ export function PainelContribuicoes({
   mesAtual: Mes;
   dadosDesde: Mes;
   padrao: number;
+  avisoMeses: number;
 }) {
   const toast = useToast();
   const [, iniciar] = useTransition();
@@ -130,7 +133,7 @@ export function PainelContribuicoes({
     etiqueta: m === mesAtual ? "mês atual" : undefined,
   }));
 
-  const linhas = linhasDoMes(membros, contribuicoes, mes, padrao);
+  const linhas = linhasDoMes(membros, contribuicoes, mes, padrao, avisoMeses);
   const total = linhas.length;
   const pagos = linhas.filter((l) => l.contribuicao).length;
   const falta = total - pagos;
