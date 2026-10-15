@@ -328,7 +328,7 @@ Formato: `[ ]` a fazer, `[x]` feito. **Dep.** = precisa de outra tarefa antes. C
 
 ### Fase 5: área do administrador
 Cada tela usa Server Actions para gravar, valida com Zod e mostra o toast do protótipo.
-- [ ] **T5.1** `/admin/membros`: listar, criar, editar, ativar/desativar, valor padrão. *Dep.: T3.2*
+- [x] **T5.1** `/admin/membros`: listar, criar, editar, ativar/desativar, valor padrão. *Dep.: T3.2*
 - [ ] **T5.2** `/admin/contribuicoes`: marcar e desmarcar por mês (com Desfazer), doação avulsa, resumo do mês, aviso de "sem contribuir". *Dep.: T5.1*
 - [ ] **T5.3** `/admin/mais` (parte de categorias e configurações): categorias e configurações. *Dep.: T3.2*
 - [ ] **T5.4** `/admin/campanhas`: criar, editar, encerrar, foto. *Dep.: T3.2*

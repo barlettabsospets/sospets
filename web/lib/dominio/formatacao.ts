@@ -15,6 +15,18 @@ export function formatarInteiro(n: number): string {
   return inteiro.format(Math.round(n));
 }
 
+// Valor digitado no campo de reais: "1.234,50" → 1234.5; vazio ou inválido → 0 (parseMoney do protótipo).
+export function lerReais(texto: string): number {
+  const n = parseFloat(texto.replace(/\./g, "").replace(",", "."));
+  return Number.isNaN(n) ? 0 : n;
+}
+
+// Valor para pôr no campo de reais: 20 → "20,00".
+export const reaisNoCampo = (valor: number) => valor.toFixed(2).replace(".", ",");
+
+// Busca sem acento e sem maiúsculas: "sao" acha "São".
+export const semAcento = (t: string) => t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+
 // Porcentagem inteira, como pct() do protótipo; 0 quando não há base.
 export function porcentagem(parte: number, total: number): number {
   return total ? Math.round((parte / total) * 100) : 0;

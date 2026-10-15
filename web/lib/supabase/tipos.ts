@@ -618,6 +618,10 @@ export type Database = {
       }
     }
     Functions: {
+      alterar_valor_padrao: {
+        Args: { p_fixar: boolean; p_liberar?: string[]; p_valor: number }
+        Returns: string[]
+      }
       eh_admin: { Args: never; Returns: boolean }
       eh_inicio_do_mes: { Args: { d: string }; Returns: boolean }
       resumo_historico: {

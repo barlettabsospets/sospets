@@ -3,7 +3,7 @@
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { SeletorDePeriodo } from "@/components/ui/SeletorDePeriodo";
 import type { CampanhaPublica, PetPublico } from "@/lib/dados/publico";
-import { capitalizar, formatarBRL, mesAbreviado, mesPorExtenso, nomeDoMes, porcentagem } from "@/lib/dominio/formatacao";
+import { capitalizar, formatarBRL, mesAbreviado, mesPorExtenso, nomeDoMes, porcentagem, semAcento } from "@/lib/dominio/formatacao";
 import { type Mes, listaDeMeses, mesesEntre, paraMes } from "@/lib/dominio/meses";
 import { naFilaDeCastracao, saidaDaRua, type SituacaoPet, situacaoPet } from "@/lib/dominio/pets";
 
@@ -13,8 +13,6 @@ type Filtro =
   | "rua" | "lar" | "adotado" | "fila" | "precisa"
   | "ev:ent" | "ev:saida" | "ev:ado" | "ev:cast";
 
-// busca sem acento e sem maiúsculas: "sao" acha "São"
-const semAcento = (t: string) => t.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 const plural = (n: number, um: string, varios: string) => `${n} ${n === 1 ? um : varios}`;
 const genero = (p: PetPublico, m: string, f: string) => (p.sexo === "f" ? f : m);
 const tempo = (n: number) => (n <= 0 ? "desde este mês" : n === 1 ? "há 1 mês" : `há ${n} meses`);
