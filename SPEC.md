@@ -329,7 +329,7 @@ Formato: `[ ]` a fazer, `[x]` feito. **Dep.** = precisa de outra tarefa antes. C
 ### Fase 5: área do administrador
 Cada tela usa Server Actions para gravar, valida com Zod e mostra o toast do protótipo.
 - [x] **T5.1** `/admin/membros`: listar, criar, editar, ativar/desativar, valor padrão. *Dep.: T3.2*
-- [ ] **T5.2** `/admin/contribuicoes`: marcar e desmarcar por mês (com Desfazer), doação avulsa, resumo do mês, aviso de "sem contribuir". *Dep.: T5.1*
+- [x] **T5.2** `/admin/contribuicoes`: marcar e desmarcar por mês (com Desfazer), doação avulsa, resumo do mês, aviso de "sem contribuir". *Dep.: T5.1*
 - [ ] **T5.3** `/admin/mais` (parte de categorias e configurações): categorias e configurações. *Dep.: T3.2*
 - [ ] **T5.4** `/admin/campanhas`: criar, editar, encerrar, foto. *Dep.: T3.2*
 - [ ] **T5.5** `/admin/despesas`: criar, editar, cancelar com motivo, filtro por categoria, ligar a pet e campanha. *Dep.: T5.3, T5.4*
@@ -365,3 +365,5 @@ Cada tela usa Server Actions para gravar, valida com Zod e mostra o toast do pro
 - [x] **Administradores:** criados no painel com senha temporária (sem convite por e-mail), ligados com `scripts/adicionar-admin.ts`. Passo a passo no README.
 - [x] **Ordem do catálogo de Pets:** do cadastro mais recente para o mais antigo (`criado_em`), como no protótipo, em que um pet novo entra no topo. Por isso `pub_pets` tem `criado_em`, e o seed grava os pets na ordem de `dados.js`.
 - [x] **Página Despesas:** o seletor mostra os meses que têm despesa, e a nota "Registros detalhados a partir de…" usa o primeiro deles (no protótipo, "agosto de 2026" fixo). Com o seed, que tem despesas desde janeiro, aparece "janeiro de 2026".
+- [x] **Tela Contribuições (T5.2):** a lista mostra os membros ativos e também os inativos que contribuíram no mês (no protótipo aparecem todos os 24, inclusive a inativa). O campo de valor sugere o valor do membro (próprio ou padrão). "Arrecadado no mês" soma membros e doações avulsas, como o "Entrou" do site. "Pago em" é o dia em que a contribuição foi registrada. A nota conta os meses até o mês escolhido, como no protótipo ("Sem contribuir há 3 meses" para quem contribuiu em julho, vendo outubro); quem nunca contribuiu mostra "Ainda não contribuiu". "Desfazer" cancela a contribuição com o motivo "Desfeita na tela de Contribuições".
+- [x] **Destaque de "sem contribuir" (15/10, Barbara):** quem está sem contribuir há `aviso_meses` ou mais (padrão 3, ou seja, "mais de 2 meses") tem a nota na etiqueta `chip-warn` do protótipo, no lugar do texto simples. Quem nunca contribuiu não é destacado. Mudar o limite em "Mais" muda o destaque.

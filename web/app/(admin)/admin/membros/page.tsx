@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { ListaMembros } from "@/components/admin/ListaMembros";
-import { lerMembros, lerValorPadrao } from "@/lib/dados/admin";
+import { lerConfiguracoes, lerMembros } from "@/lib/dados/admin";
 
 export const metadata: Metadata = { title: "Membros" };
 
 // os dados dependem da sessão (cookies), então ficam dentro do <Suspense>
 async function Membros() {
-  const [membros, padrao] = await Promise.all([lerMembros(), lerValorPadrao()]);
-  return <ListaMembros membros={membros} padrao={padrao} />;
+  const [membros, config] = await Promise.all([lerMembros(), lerConfiguracoes()]);
+  return <ListaMembros membros={membros} padrao={config.valorPadrao} />;
 }
 
 // Membros (admin-membros.html).
