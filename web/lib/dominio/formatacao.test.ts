@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
-  capitalizar, formatarBRL, formatarInteiro, mesAbreviado, mesPorExtenso, nomeDoMes, porcentagem,
+  capitalizar, formatarBRL, formatarInteiro, lerReais, mesAbreviado, mesPorExtenso, nomeDoMes, porcentagem,
+  reaisNoCampo, semAcento,
 } from "./formatacao";
 
 describe("formatarBRL", () => {
@@ -39,5 +40,29 @@ describe("meses na tela", () => {
     expect(mesAbreviado("2026-10")).toBe("out/2026");
     expect(nomeDoMes("2026-03")).toBe("março");
     expect(capitalizar(mesPorExtenso("2026-03"))).toBe("Março de 2026");
+  });
+});
+
+describe("campo de reais", () => {
+  it("lerReais entende vírgula e ponto de milhar, como o parseMoney do protótipo", () => {
+    expect(lerReais("20,00")).toBe(20);
+    expect(lerReais("1.234,50")).toBe(1234.5);
+    expect(lerReais("30")).toBe(30);
+  });
+
+  it("lerReais devolve 0 para vazio ou texto", () => {
+    expect(lerReais("")).toBe(0);
+    expect(lerReais("abc")).toBe(0);
+  });
+
+  it("reaisNoCampo põe duas casas e vírgula", () => {
+    expect(reaisNoCampo(20)).toBe("20,00");
+    expect(reaisNoCampo(12.5)).toBe("12,50");
+  });
+});
+
+describe("semAcento", () => {
+  it("tira acentos e maiúsculas", () => {
+    expect(semAcento("Úrsula Fictícia")).toBe("ursula ficticia");
   });
 });

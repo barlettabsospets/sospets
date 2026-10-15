@@ -5,11 +5,9 @@ import { IconeEspecie } from "@/components/ui/IconeEspecie";
 import { SeletorDePeriodo } from "@/components/ui/SeletorDePeriodo";
 import type { DespesaPublica } from "@/lib/dados/publico";
 import { chaveDoPet, porCategoria, porPet, somarDespesas as somar } from "@/lib/dominio/despesas";
-import { capitalizar, formatarBRL, mesPorExtenso, nomeDoMes } from "@/lib/dominio/formatacao";
+import { capitalizar, formatarBRL, mesPorExtenso, nomeDoMes, semAcento } from "@/lib/dominio/formatacao";
 import { type Mes, paraMes } from "@/lib/dominio/meses";
 
-// busca sem acento e sem maiúsculas: "racao" acha "Ração"
-const semAcento = (t: string) => t.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 const plural = (n: number, um: string, varios: string) => `${n} ${n === 1 ? um : varios}`;
 // "2026-10-06" → "06/10"
 const diaMes = (data: string) => `${data.slice(8, 10)}/${data.slice(5, 7)}`;
