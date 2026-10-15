@@ -30,3 +30,11 @@ body.admin .ad-foco-previas figure { margin: 0; display: grid; gap: 4px; justify
 body.admin .ad-foco-previas img { width: 96px; object-fit: cover; border-radius: 12px; background: #F3ECE2; }
 body.admin .ad-foco-previas img.redondo { width: 56px; border-radius: 50%; }
 body.admin .ad-foco-previas figcaption { font-size: .8125rem; color: var(--ink-2); }
+
+/* Rolagem das janelas (pedido da Barbara, 15/10): no protótipo a janela simples rola inteira, e a barra
+   de rolagem do navegador ocupa a borda e deixa o canto de cima quadrado. Aqui a janela fica fixa,
+   recortada pelo arredondado, e quem rola é o formulário de dentro, com uma barra fina na cor da tinta.
+   A janela grande (.ad-dlg, Despesas e Pets) já rola só no meio; ganha a mesma barra. */
+body.admin dialog:not(.ad-dlg) { padding: 0; overflow: hidden; max-height: calc(100dvh - 32px); }
+body.admin dialog:not(.ad-dlg) > form { padding: 24px; max-height: calc(100dvh - 32px); overflow-y: auto; overscroll-behavior: contain; }
+body.admin dialog:not(.ad-dlg) > form, body.admin .ad-dlg-b { scrollbar-width: thin; scrollbar-color: rgba(74, 40, 20, .28) transparent; }
