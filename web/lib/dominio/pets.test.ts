@@ -3,10 +3,13 @@ import { join } from "node:path";
 import vm from "node:vm";
 import { describe, expect, it } from "vitest";
 import { type Mes, listaDeMeses } from "./meses";
-import { acompanhado, contarGrupo, contarTopo, naFilaDeCastracao, saidaDaRua, situacaoPet } from "./pets";
+import {
+  acompanhado, castradoNoMes, contarGrupo, contarTopo, dataDaCastracao, datasDaSituacao, desdeDaSituacao,
+  type FiltroDoAdmin, naFilaDeCastracao, passaNoFiltro, saidaDaRua, situacaoPet, tempoDesde,
+} from "./pets";
 
 // dados.js do protótipo: os mesmos pets e a mesma situacaoPet() que a página usa
-type PetPrototipo = { n: string; ent: string; lar?: string; ado?: string; obito?: string; cast?: string };
+type PetPrototipo = { n: string; ent: string; lar?: string; ado?: string; obito?: string; cast?: string; precisaLar?: boolean; nec?: string };
 const prototipo = vm.runInNewContext(
   readFileSync(join(__dirname, "../../../sospets-design/sospets-kit/design/dados.js"), "utf8") +
     "\n;({ PETS, situacaoPet })",
@@ -19,6 +22,8 @@ const doBanco = (p: PetPrototipo) => ({
   obito_em: p.obito ? `${p.obito}-01` : null,
   castrado: (p.cast ? "sim" : "nao_sei") as "sim" | "nao_sei",
   castrado_em: p.cast ? `${p.cast}-01` : null,
+  precisa_lar: !!p.precisaLar,
+  necessidade: p.nec ?? null,
 });
 
 describe("situacaoPet", () => {
@@ -102,5 +107,84 @@ describe("saidaDaRua", () => {
       const esperado = [p.lar, p.ado].filter(Boolean).sort()[0] ?? null;
       expect(saidaDaRua(doBanco(p)), p.n).toBe(esperado);
     }
+  });
+});
+
+describe("tela Pets do admin", () => {
+  // os filtros de admin-animais.html (FILTRO), escritos sobre os dados do protótipo
+  const st = (p: PetPrototipo, ym: string) => prototipo.situacaoPet(p, ym);
+  const castNo = (p: PetPrototipo, ym: string) => !!p.cast && p.cast <= ym;
+  const FILTRO: Record<FiltroDoAdmin, (p: PetPrototipo, ym: string) => boolean> = {
+    rua: (p, ym) => st(p, ym) === "rua",
+    lar: (p, ym) => st(p, ym) === "lar",
+    adotado: (p, ym) => st(p, ym) === "adotado",
+    falecido: (p, ym) => st(p, ym) === "falecido",
+    fila: (p, ym) => ["rua", "lar"].includes(st(p, ym) ?? "") && !castNo(p, ym),
+    precisa: (p, ym) => st(p, ym) === "rua" && !!p.precisaLar,
+    nec: (p, ym) => !!p.nec && ["rua", "lar"].includes(st(p, ym) ?? ""),
+  };
+
+  it("os filtros dão o mesmo resultado do protótipo para os 48 pets em todos os meses", () => {
+    const meses = listaDeMeses("2026-01", "2026-10");
+    for (const f of Object.keys(FILTRO) as FiltroDoAdmin[]) {
+      for (const mes of meses) {
+        const nossos = prototipo.PETS.filter((p) => passaNoFiltro(doBanco(p), f, mes)).map((p) => p.n);
+        const deles = prototipo.PETS.filter((p) => FILTRO[f](p, mes)).map((p) => p.n);
+        expect(nossos, `${f} em ${mes}`).toEqual(deles);
+      }
+    }
+    // o protótipo tem gente nestes filtros no mês atual (não tem falecido nem pet com necessidade)
+    for (const f of ["rua", "lar", "adotado", "fila", "precisa"] as const) {
+      expect(prototipo.PETS.some((p) => FILTRO[f](p, "2026-10")), f).toBe(true);
+    }
+  });
+
+  it("necessidade e falecido", () => {
+    const pet = {
+      entrou_em: "2026-01-01", lar_em: null, adotado_em: null, obito_em: null,
+      castrado: "nao" as const, castrado_em: null, precisa_lar: false, necessidade: "Precisa de cirurgia",
+    };
+    expect(passaNoFiltro(pet, "nec", "2026-10")).toBe(true);
+    expect(passaNoFiltro({ ...pet, necessidade: null }, "nec", "2026-10")).toBe(false);
+    const falecido = { ...pet, obito_em: "2026-08-01" };
+    expect(passaNoFiltro(falecido, "nec", "2026-10")).toBe(false);
+    expect(passaNoFiltro(falecido, "falecido", "2026-10")).toBe(true);
+    expect(passaNoFiltro(falecido, "fila", "2026-10")).toBe(false);
+    expect(passaNoFiltro(falecido, "rua", "2026-07")).toBe(true);
+  });
+
+  it("castrado só conta a partir do mês da castração", () => {
+    const pet = { entrou_em: "2026-01-01", lar_em: null, adotado_em: null, obito_em: null, castrado: "sim" as const, castrado_em: "2026-05-01" };
+    expect(castradoNoMes(pet, "2026-04")).toBe(false);
+    expect(castradoNoMes(pet, "2026-05")).toBe(true);
+    expect(castradoNoMes({ ...pet, castrado_em: null }, "2026-01")).toBe(true);
+    expect(castradoNoMes({ ...pet, castrado: "nao_sei" }, "2026-10")).toBe(false);
+  });
+
+  it("a situação escolhida vira datas, como o salvar do protótipo", () => {
+    const atuais = { lar_em: "2026-03-01", adotado_em: "2026-06-01", obito_em: null };
+    expect(datasDaSituacao("rua", "2026-10-01", atuais)).toEqual({ lar_em: null, adotado_em: null, obito_em: null });
+    expect(datasDaSituacao("lar", "2026-09-01", atuais)).toEqual({ lar_em: "2026-09-01", adotado_em: null, obito_em: null });
+    expect(datasDaSituacao("adotado", "2026-10-01", atuais)).toEqual({ lar_em: "2026-03-01", adotado_em: "2026-10-01", obito_em: null });
+    expect(datasDaSituacao("falecido", "2026-10-01", atuais)).toEqual({ lar_em: "2026-03-01", adotado_em: "2026-06-01", obito_em: "2026-10-01" });
+    // e a situação calculada pelas datas novas é a escolhida
+    for (const s of ["rua", "lar", "adotado", "falecido"] as const) {
+      const datas = datasDaSituacao(s, "2026-10-01", atuais);
+      expect(situacaoPet({ entrou_em: "2026-01-01", ...datas }, "2026-10")).toBe(s);
+    }
+  });
+
+  it("desde e castração ao abrir e salvar", () => {
+    const pet = { entrou_em: "2026-01-01", lar_em: "2026-03-01", adotado_em: null, obito_em: null };
+    expect(desdeDaSituacao(pet, "lar")).toBe("2026-03-01");
+    expect(desdeDaSituacao(pet, "rua")).toBeNull();
+    expect(dataDaCastracao("sim", null, false, "2026-10")).toBe("2026-10-01");
+    expect(dataDaCastracao("sim", "2026-02-01", true, "2026-10")).toBe("2026-02-01");
+    expect(dataDaCastracao("sim", null, true, "2026-10")).toBeNull();
+    expect(dataDaCastracao("nao", "2026-02-01", true, "2026-10")).toBeNull();
+  });
+
+  it("tempo desde", () => {
+    expect([0, 1, 4].map(tempoDesde)).toEqual(["desde este mês", "há 1 mês", "há 4 meses"]);
   });
 });

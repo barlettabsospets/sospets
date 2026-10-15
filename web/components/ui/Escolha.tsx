@@ -1,8 +1,10 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { useListaSuspensa } from "./useListaSuspensa";
 
-export type OpcaoDeEscolha = { valor: string; rotulo: string; cor?: string };
+// rótulo pode ter marcação, como a quantidade em negrito do filtro de Pets ("<b class=\"qt\">12</b>Na rua")
+export type OpcaoDeEscolha = { valor: string; rotulo: ReactNode; cor?: string };
 
 const Ponto = ({ cor }: { cor?: string }) => (cor ? <i style={{ background: cor }} aria-hidden="true" /> : null);
 

@@ -185,3 +185,39 @@ export async function lerPetsParaEscolha(): Promise<PetParaEscolha[]> {
   falhou("pets", error);
   return data ?? [];
 }
+
+// Pet na tela Pets do admin: tudo de pets, inclusive o local e o "oculto" (só a equipe vê).
+export type PetDoAdmin = {
+  id: string;
+  nome: string;
+  especie: "cachorro" | "gato";
+  sexo: "f" | "m";
+  faixa_idade: "filhote" | "adulto";
+  entrou_em: string;
+  lar_em: string | null;
+  adotado_em: string | null;
+  obito_em: string | null;
+  castrado: "sim" | "nao" | "nao_sei";
+  castrado_em: string | null;
+  vacinado: boolean;
+  vermifugado: boolean;
+  fiv_felv_testado: boolean;
+  precisa_lar: boolean;
+  necessidade: string | null;
+  local: string | null;
+  oculto: boolean;
+  foto_path: string | null;
+  foto_foco: Foco;
+};
+
+// do cadastro mais recente para o mais antigo, como o catálogo (pet novo entra no topo)
+export async function lerPetsDoAdmin(): Promise<PetDoAdmin[]> {
+  const supabase = await cliente();
+  const { data, error } = await supabase
+    .from("pets")
+    .select("id, nome, especie, sexo, faixa_idade, entrou_em, lar_em, adotado_em, obito_em, castrado, castrado_em, vacinado, vermifugado, fiv_felv_testado, precisa_lar, necessidade, local, oculto, foto_path, foto_foco_x, foto_foco_y")
+    .order("criado_em", { ascending: false })
+    .order("nome");
+  falhou("pets", error);
+  return (data ?? []).map(({ foto_foco_x, foto_foco_y, ...p }) => ({ ...p, foto_foco: { x: foto_foco_x, y: foto_foco_y } }));
+}
