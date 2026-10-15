@@ -35,13 +35,13 @@ export async function lerMembros(): Promise<Membro[]> {
   }));
 }
 
-export type Configuracoes = { dadosDesde: Mes; valorPadrao: number; avisoMeses: number };
+export type Configuracoes = { dadosDesde: Mes; dataDesde: string; valorPadrao: number; avisoMeses: number };
 
 export async function lerConfiguracoes(): Promise<Configuracoes> {
   const supabase = await cliente();
   const { data, error } = await supabase.from("configuracoes").select("dados_desde, valor_padrao, aviso_meses").single();
   falhou("configuracoes", error);
-  return { dadosDesde: paraMes(data!.dados_desde), valorPadrao: Number(data!.valor_padrao), avisoMeses: data!.aviso_meses };
+  return { dadosDesde: paraMes(data!.dados_desde), dataDesde: data!.dados_desde, valorPadrao: Number(data!.valor_padrao), avisoMeses: data!.aviso_meses };
 }
 
 // Contribuições não canceladas, de todos os meses (a tela troca de mês sem ir ao servidor).
@@ -75,5 +75,15 @@ export async function lerCampanhasAbertas(): Promise<CampanhaAberta[]> {
   const supabase = await cliente();
   const { data, error } = await supabase.from("campanhas").select("id, nome").eq("situacao", "em_andamento").order("inicio", { ascending: false });
   falhou("campanhas", error);
+  return data ?? [];
+}
+
+export type Categoria = { id: string; nome: string; cor: string };
+
+// categorias ativas, na ordem da tabela (Outros por último no seed)
+export async function lerCategorias(): Promise<Categoria[]> {
+  const supabase = await cliente();
+  const { data, error } = await supabase.from("categorias").select("id, nome, cor").eq("ativa", true).order("ordem").order("nome");
+  falhou("categorias", error);
   return data ?? [];
 }
