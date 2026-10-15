@@ -6,6 +6,8 @@ const nextConfig: NextConfig = {
   experimental: {
     // 404 global: o app tem um layout raiz por área (público, admin, login)
     globalNotFound: true,
+    // a foto vai junto com o formulário (até 1 MB, o limite do bucket), mais os outros campos
+    serverActions: { bodySizeLimit: "2mb" },
   },
   partialPrefetching: true,
   turbopack: {

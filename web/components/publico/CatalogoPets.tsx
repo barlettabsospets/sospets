@@ -1,6 +1,7 @@
 "use client";
 
 import { type ReactNode, useEffect, useRef, useState } from "react";
+import { Foto } from "@/components/ui/Foto";
 import { SeletorDePeriodo } from "@/components/ui/SeletorDePeriodo";
 import type { CampanhaPublica, PetPublico } from "@/lib/dados/publico";
 import { capitalizar, formatarBRL, mesAbreviado, mesPorExtenso, nomeDoMes, porcentagem, semAcento } from "@/lib/dominio/formatacao";
@@ -32,9 +33,10 @@ const Pata = () => (
 );
 const Seta = () => <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7" /></svg>;
 
-// TODO(T5.6): foto do Storage quando foto_path existir
-const Avatar = ({ grande }: { grande?: boolean }) => (
-  <span className={grande ? "av lg" : "av"} aria-hidden="true"><Pata /></span>
+const Avatar = ({ pet, grande }: { pet: PetPublico; grande?: boolean }) => (
+  <span className={grande ? "av lg" : "av"} aria-hidden="true">
+    {pet.foto_path ? <Foto bucket="pets" caminho={pet.foto_path} alt="" /> : <Pata />}
+  </span>
 );
 
 // Página Pets (animais.html): quem precisa de ajuda, catálogo com busca e filtros,
@@ -222,8 +224,11 @@ function CartaoDoPet({ pet, situacao, mesAtual }: { pet: PetPublico; situacao: S
   const castrado = pet.castrado === "sim";
   return (
     <article className="an-card">
-      {/* TODO(T5.6): foto do Storage quando foto_path existir */}
-      <div className="ph" role="img" aria-label="Ainda sem foto"><Pata /></div>
+      {pet.foto_path ? (
+        <Foto className="ph" bucket="pets" caminho={pet.foto_path} alt={`Foto de ${pet.nome}`} />
+      ) : (
+        <div className="ph" role="img" aria-label="Ainda sem foto"><Pata /></div>
+      )}
       <div className="body">
         <h3>{pet.nome}</h3>
         <span className={`chip ${CHIP[situacao][0]}`}>
@@ -265,7 +270,7 @@ function Ajuda({ pets, campanhas, mesAtual, aoVer }: { pets: PetPublico[]; campa
         <div className="an-avs">
           {precisa.slice(0, max).map((p) => (
             <button key={p.id} type="button" className="an-av" aria-label={`Ver ${p.nome} no catálogo`} onClick={aoVer}>
-              <Avatar />
+              <Avatar pet={p} />
               <b>{p.nome}</b>
             </button>
           ))}
@@ -294,7 +299,7 @@ function Ajuda({ pets, campanhas, mesAtual, aoVer }: { pets: PetPublico[]; campa
                 </>
               )}
             </div>
-            <Avatar grande />
+            <Avatar pet={comNecessidade} grande />
           </>
         )}
       </div>

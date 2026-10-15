@@ -3,6 +3,7 @@
 import { refresh, updateTag } from "next/cache";
 import { z } from "zod";
 import { ETIQUETA_PUBLICO } from "@/lib/dados/publico";
+import { apagarFoto, enviarFoto, FotoDoFormulario, MSG_FOTO } from "./fotos";
 import { criarClienteServidor } from "@/lib/supabase/server";
 import type { Resultado } from "./membros";
 
@@ -24,19 +25,38 @@ const DadosDaCampanha = z.object({
   meta: z.number().positive().max(9_999_999).transform((v) => Math.round(v * 100) / 100).nullable(),
   inicio: z.iso.date(),
   situacao: Situacao,
+  foto: FotoDoFormulario,
 });
 
-// Cria (sem id) ou altera uma campanha.
+// Cria (sem id) ou altera uma campanha, com a foto (ausente = mantém; null = tira).
 export async function salvarCampanha(entrada: z.input<typeof DadosDaCampanha>): Promise<Resultado> {
   const lido = DadosDaCampanha.safeParse(entrada);
   if (!lido.success) return { ok: false, erro: "Confira o nome, a meta e a data de início." };
-  const { id, ...campos } = lido.data;
+  const { id, foto, ...campos } = lido.data;
 
   const supabase = await criarClienteServidor();
+  // foto que sai: a atual, quando for trocada ou tirada
+  let antiga: string | null = null;
+  if (id && foto !== undefined) {
+    const { data, error } = await supabase.from("campanhas").select("foto_path").eq("id", id).single();
+    if (error) return { ok: false, erro: MSG_ERRO };
+    antiga = data.foto_path;
+  }
+  let nova: string | null = null;
+  if (foto) {
+    nova = await enviarFoto(supabase, "campanhas", foto);
+    if (!nova) return { ok: false, erro: MSG_FOTO };
+  }
+
+  const linha = foto === undefined ? campos : { ...campos, foto_path: nova };
   const { error } = id
-    ? await supabase.from("campanhas").update(campos).eq("id", id)
-    : await supabase.from("campanhas").insert(campos);
-  if (error) return { ok: false, erro: MSG_ERRO };
+    ? await supabase.from("campanhas").update(linha).eq("id", id)
+    : await supabase.from("campanhas").insert(linha);
+  if (error) {
+    await apagarFoto(supabase, "campanhas", nova);
+    return { ok: false, erro: MSG_ERRO };
+  }
+  await apagarFoto(supabase, "campanhas", antiga);
 
   salvou();
   return { ok: true, dados: null };
