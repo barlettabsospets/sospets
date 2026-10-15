@@ -2,7 +2,9 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import vm from "node:vm";
 import { describe, expect, it } from "vitest";
-import { type DespesaParaSomar, porCategoria, porPet, somarDespesas } from "./despesas";
+import {
+  categoriasDoMes, type DespesaParaSomar, opcoesDoFormulario, porCategoria, porPet, resumoDoMes, somarDespesas, textoDaQuantidade,
+} from "./despesas";
 
 // dados.js do protótipo: as despesas de agosto a outubro que a página Despesas mostra
 type DespesaPrototipo = { d: string; t: string; c: string; v: number; a: string };
@@ -45,5 +47,28 @@ describe("página Despesas: mesmos números do despesas.html", () => {
       ["Vários pets", 120],
     ]);
     expect(porPet(doMes("2026-09")).at(-1)).toMatchObject({ chave: "", nome: "Vários pets", total: 180 });
+  });
+});
+
+describe("tela Despesas do admin", () => {
+  const d = (categoria: string, valor: number, cancelada: string | null = null) => ({ categoria, cor: `#${categoria.length}00000`, valor, cancelada });
+  const outubro = [d("Ração", 120), d("Ração", 0.1), d("Castração", 200), d("Exames", 80, "lançada em duplicidade")];
+
+  it("resumo sem as canceladas", () => {
+    expect(resumoDoMes(outubro)).toEqual({ total: 320.1, quantidade: 3, canceladas: 1 });
+    expect(textoDaQuantidade(resumoDoMes(outubro))).toBe("3 despesas · 1 cancelada");
+    expect(textoDaQuantidade({ quantidade: 1, canceladas: 0 })).toBe("1 despesa");
+  });
+
+  it("por categoria: só canceladas aparece com R$ 0, no fim", () => {
+    expect(categoriasDoMes(outubro).map((c) => [c.categoria, c.total])).toEqual([
+      ["Castração", 200], ["Ração", 120.1], ["Exames", 0],
+    ]);
+  });
+
+  it("opções: as ativas e a atual, mesmo desativada", () => {
+    const cats = [{ id: "a", ativa: true }, { id: "b", ativa: false }, { id: "c", ativa: false }];
+    expect(opcoesDoFormulario(cats, (c) => c.ativa, null).map((c) => c.id)).toEqual(["a"]);
+    expect(opcoesDoFormulario(cats, (c) => c.ativa, "b").map((c) => c.id)).toEqual(["a", "b"]);
   });
 });

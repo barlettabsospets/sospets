@@ -124,3 +124,59 @@ export async function lerCampanhasDoAdmin(): Promise<CampanhaDoAdmin[]> {
     gasto: Number(c.gasto),
   }));
 }
+
+export type DespesaDoAdmin = {
+  id: string;
+  data: string;
+  descricao: string;
+  valor: number;
+  categoriaId: string;
+  categoria: string;
+  cor: string;
+  petId: string | null;
+  pet: string | null;
+  especie: "cachorro" | "gato" | null;
+  campanhaId: string | null;
+  // motivo, quando cancelada
+  cancelada: string | null;
+};
+
+// Todas as despesas, inclusive as canceladas (aparecem riscadas), da mais recente para a mais antiga.
+export async function lerDespesasDoAdmin(): Promise<DespesaDoAdmin[]> {
+  const supabase = await cliente();
+  const todas: DespesaDoAdmin[] = [];
+  for (let de = 0; ; de += 1000) {
+    const { data, error } = await supabase
+      .from("despesas")
+      .select("id, data, descricao, valor, categoria_id, pet_id, campanha_id, cancelada_em, motivo_cancelamento, categorias(nome, cor), pets(nome, especie)")
+      .order("data", { ascending: false })
+      .order("criado_em", { ascending: false })
+      .range(de, de + 999);
+    falhou("despesas", error);
+    todas.push(...(data ?? []).map((d) => ({
+      id: d.id,
+      data: d.data,
+      descricao: d.descricao,
+      valor: Number(d.valor),
+      categoriaId: d.categoria_id,
+      categoria: d.categorias.nome,
+      cor: d.categorias.cor,
+      petId: d.pet_id,
+      pet: d.pets?.nome ?? null,
+      especie: d.pets?.especie ?? null,
+      campanhaId: d.campanha_id,
+      cancelada: d.cancelada_em ? (d.motivo_cancelamento ?? "") : null,
+    })));
+    if (!data || data.length < 1000) return todas;
+  }
+}
+
+export type PetParaEscolha = { id: string; nome: string };
+
+// todos os pets (também os ocultos do site), em ordem alfabética, para "Pet (opcional)"
+export async function lerPetsParaEscolha(): Promise<PetParaEscolha[]> {
+  const supabase = await cliente();
+  const { data, error } = await supabase.from("pets").select("id, nome").order("nome");
+  falhou("pets", error);
+  return data ?? [];
+}
