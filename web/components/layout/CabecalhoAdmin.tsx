@@ -10,12 +10,12 @@ const ABAS = [
   { href: "/admin/despesas", rotulo: "Despesas", Icone: IconeDespesas },
   { href: "/admin/pets", rotulo: "Pets", Icone: IconePetsAdmin },
   { href: "/admin/membros", rotulo: "Membros", Icone: IconeMembros },
-  { href: "/admin/mais", rotulo: "Mais", Icone: IconeMais },
+  { href: "/admin/mais", rotulo: "Mais", Icone: IconeMais, tambem: ["/admin/campanhas"] },
 ];
 
 const Abas = () =>
-  ABAS.map(({ href, rotulo, Icone }) => (
-    <LinkDaAba key={href} href={href}>
+  ABAS.map(({ href, rotulo, Icone, tambem }) => (
+    <LinkDaAba key={href} href={href} tambem={tambem}>
       <Icone />
       <span>{rotulo}</span>
     </LinkDaAba>

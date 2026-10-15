@@ -87,3 +87,34 @@ export async function lerCategorias(): Promise<Categoria[]> {
   falhou("categorias", error);
   return data ?? [];
 }
+
+export type CampanhaDoAdmin = {
+  id: string;
+  nome: string;
+  descricao: string | null;
+  meta: number | null;
+  inicio: string;
+  aberta: boolean;
+  arrecadado: number;
+  gasto: number;
+};
+
+// todas as campanhas, das mais novas para as mais antigas, com os totais na hora (sem o cache público)
+export async function lerCampanhasDoAdmin(): Promise<CampanhaDoAdmin[]> {
+  const supabase = await cliente();
+  const { data, error } = await supabase
+    .from("pub_campanhas")
+    .select("id, nome, descricao, meta, inicio, situacao, arrecadado, gasto")
+    .order("inicio", { ascending: false });
+  falhou("pub_campanhas", error);
+  return (data ?? []).map((c) => ({
+    id: c.id!,
+    nome: c.nome!,
+    descricao: c.descricao,
+    meta: c.meta === null ? null : Number(c.meta),
+    inicio: c.inicio!,
+    aberta: c.situacao === "em_andamento",
+    arrecadado: Number(c.arrecadado),
+    gasto: Number(c.gasto),
+  }));
+}
