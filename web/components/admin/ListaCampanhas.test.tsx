@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { ProvedorDeToast } from "@/components/ui/Toast";
@@ -29,8 +29,8 @@ afterEach(() => {
 });
 
 const CAMPANHAS: CampanhaDoAdmin[] = [
-  { id: "s", nome: "Campanha Stuart (exemplo)", descricao: "Tratamento do Stuart.", meta: 2000, inicio: "2026-08-10", aberta: true, fotoPath: null, arrecadado: 1200, gasto: 980 },
-  { id: "n", nome: "Campanha Nelson (exemplo)", descricao: null, meta: null, inicio: "2026-03-02", aberta: false, fotoPath: "nelson.webp", arrecadado: 640, gasto: 640 },
+  { id: "s", nome: "Campanha Stuart (exemplo)", descricao: "Tratamento do Stuart.", meta: 2000, inicio: "2026-08-10", aberta: true, fotoPath: null, fotoFoco: { x: 50, y: 50 }, arrecadado: 1200, gasto: 980 },
+  { id: "n", nome: "Campanha Nelson (exemplo)", descricao: null, meta: null, inicio: "2026-03-02", aberta: false, fotoPath: "nelson.webp", fotoFoco: { x: 40, y: 20 }, arrecadado: 640, gasto: 640 },
 ];
 
 const montar = () =>
@@ -72,6 +72,7 @@ describe("ListaCampanhas", () => {
     await u.click(within(janela).getByRole("button", { name: "Salvar campanha" }));
     expect(acoes.salvarCampanha).toHaveBeenCalledWith({
       id: "s", nome: "Campanha Stuart (exemplo)", descricao: "Tratamento do Stuart.", meta: null, inicio: "2026-08-10", situacao: "em_andamento",
+      foco: { x: 50, y: 50 },
     });
     expect(await screen.findByText("Campanha atualizada.")).toBeInTheDocument();
   });
@@ -100,6 +101,37 @@ describe("ListaCampanhas", () => {
     await u.click(within(janela).getByRole("button", { name: "Salvar campanha" }));
     const enviada = acoes.salvarCampanha.mock.lastCall![0 as never] as { foto: Blob };
     expect(enviada.foto.type).toBe("image/webp");
+  });
+
+  it("ajeitar: a foto nova abre o painel; o ponto principal muda as prévias e vai junto ao salvar", async () => {
+    const u = userEvent.setup();
+    montar();
+    await u.click(within(cartao("Campanha Nelson (exemplo)")).getByRole("button", { name: "Editar" }));
+    const janela = screen.getByRole("dialog", { name: "Editar campanha" });
+    // a foto atual já vem com o ponto salvo, e o painel só abre com "Ajeitar"
+    expect(janela.querySelector(".ad-foto-ph img")).toHaveStyle({ objectPosition: "40% 20%" });
+    expect(within(janela).queryByRole("group", { name: "Ajeitar a foto" })).not.toBeInTheDocument();
+    await u.click(within(janela).getByRole("button", { name: "Ajeitar" }));
+    let painel = within(janela).getByRole("group", { name: "Ajeitar a foto" });
+    expect(within(painel).getByRole("slider", { name: "Ponto principal, da esquerda para a direita" })).toHaveValue("40");
+    expect(within(painel).getByText("Campanha")).toBeInTheDocument();
+
+    // foto nova: volta para o centro e o painel continua aberto
+    await u.upload(within(janela).getByLabelText("Trocar foto"), new File(["jpeg"], "mel.jpg", { type: "image/jpeg" }));
+    painel = await within(janela).findByRole("group", { name: "Ajeitar a foto" });
+    const vertical = within(painel).getByRole("slider", { name: "Ponto principal, de cima para baixo" });
+    expect(vertical).toHaveValue("50");
+    // as setas do teclado são do próprio navegador (o jsdom não simula); aqui, o valor direto
+    fireEvent.change(vertical, { target: { value: "30" } });
+    expect(vertical).toHaveValue("30");
+    expect(vertical).toHaveAttribute("aria-valuetext", "30%");
+    expect(painel.querySelector("figure img")).toHaveStyle({ objectPosition: "50% 30%" });
+
+    await u.click(within(painel).getByRole("button", { name: "Pronto" }));
+    expect(within(janela).queryByRole("group", { name: "Ajeitar a foto" })).not.toBeInTheDocument();
+    expect(within(janela).getByRole("button", { name: "Ajeitar" })).toHaveFocus();
+    await u.click(within(janela).getByRole("button", { name: "Salvar campanha" }));
+    expect(acoes.salvarCampanha).toHaveBeenLastCalledWith(expect.objectContaining({ id: "n", foco: { x: 50, y: 30 }, foto: expect.any(Blob) }));
   });
 
   it("não salva enquanto a foto escolhida ainda está sendo reduzida", async () => {

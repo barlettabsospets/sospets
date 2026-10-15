@@ -3,7 +3,7 @@
 import { refresh, updateTag } from "next/cache";
 import { z } from "zod";
 import { ETIQUETA_PUBLICO } from "@/lib/dados/publico";
-import { apagarFoto, enviarFoto, FotoDoFormulario, MSG_FOTO } from "./fotos";
+import { apagarFoto, enviarFoto, FocoDaFoto, FotoDoFormulario, MSG_FOTO } from "./fotos";
 import { criarClienteServidor } from "@/lib/supabase/server";
 import type { Resultado } from "./membros";
 
@@ -26,13 +26,15 @@ const DadosDaCampanha = z.object({
   inicio: z.iso.date(),
   situacao: Situacao,
   foto: FotoDoFormulario,
+  foco: FocoDaFoto,
 });
 
 // Cria (sem id) ou altera uma campanha, com a foto (ausente = mantém; null = tira).
 export async function salvarCampanha(entrada: z.input<typeof DadosDaCampanha>): Promise<Resultado> {
   const lido = DadosDaCampanha.safeParse(entrada);
   if (!lido.success) return { ok: false, erro: "Confira o nome, a meta e a data de início." };
-  const { id, foto, ...campos } = lido.data;
+  const { id, foto, foco, ...resto } = lido.data;
+  const campos = { ...resto, foto_foco_x: foco.x, foto_foco_y: foco.y };
 
   const supabase = await criarClienteServidor();
   // foto que sai: a atual, quando for trocada ou tirada

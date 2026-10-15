@@ -35,7 +35,7 @@ const Seta = () => <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7
 
 const Avatar = ({ pet, grande }: { pet: PetPublico; grande?: boolean }) => (
   <span className={grande ? "av lg" : "av"} aria-hidden="true">
-    {pet.foto_path ? <Foto bucket="pets" caminho={pet.foto_path} alt="" /> : <Pata />}
+    {pet.foto_path ? <Foto bucket="pets" caminho={pet.foto_path} foco={pet.foto_foco} alt="" /> : <Pata />}
   </span>
 );
 
@@ -225,7 +225,7 @@ function CartaoDoPet({ pet, situacao, mesAtual }: { pet: PetPublico; situacao: S
   return (
     <article className="an-card">
       {pet.foto_path ? (
-        <Foto className="ph" bucket="pets" caminho={pet.foto_path} alt={`Foto de ${pet.nome}`} />
+        <Foto className="ph" bucket="pets" caminho={pet.foto_path} foco={pet.foto_foco} alt={`Foto de ${pet.nome}`} />
       ) : (
         <div className="ph" role="img" aria-label="Ainda sem foto"><Pata /></div>
       )}

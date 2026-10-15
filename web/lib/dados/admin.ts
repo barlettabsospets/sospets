@@ -1,5 +1,6 @@
 import { connection } from "next/server";
 import { type Contribuicao, diaEmBrasilia } from "@/lib/dominio/contribuicoes";
+import type { Foco } from "@/lib/dominio/fotos";
 import type { Membro } from "@/lib/dominio/membros";
 import { type Mes, paraMes } from "@/lib/dominio/meses";
 import { criarClienteServidor } from "@/lib/supabase/server";
@@ -102,6 +103,7 @@ export type CampanhaDoAdmin = {
   inicio: string;
   aberta: boolean;
   fotoPath: string | null;
+  fotoFoco: Foco;
   arrecadado: number;
   gasto: number;
 };
@@ -111,7 +113,7 @@ export async function lerCampanhasDoAdmin(): Promise<CampanhaDoAdmin[]> {
   const supabase = await cliente();
   const { data, error } = await supabase
     .from("pub_campanhas")
-    .select("id, nome, descricao, meta, inicio, situacao, foto_path, arrecadado, gasto")
+    .select("id, nome, descricao, meta, inicio, situacao, foto_path, foto_foco_x, foto_foco_y, arrecadado, gasto")
     .order("inicio", { ascending: false });
   falhou("pub_campanhas", error);
   return (data ?? []).map((c) => ({
@@ -122,6 +124,7 @@ export async function lerCampanhasDoAdmin(): Promise<CampanhaDoAdmin[]> {
     inicio: c.inicio!,
     aberta: c.situacao === "em_andamento",
     fotoPath: c.foto_path,
+    fotoFoco: { x: c.foto_foco_x ?? 50, y: c.foto_foco_y ?? 50 },
     arrecadado: Number(c.arrecadado),
     gasto: Number(c.gasto),
   }));

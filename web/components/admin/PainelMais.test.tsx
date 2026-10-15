@@ -34,7 +34,7 @@ const montar = () =>
         ]}
         campanhas={[{
           id: "c", nome: "Campanha Exemplo", descricao: null, meta: null, inicio: "2026-09-01",
-          aberta: true, fotoPath: null, arrecadado: 300, gasto: 120,
+          aberta: true, fotoPath: null, fotoFoco: { x: 50, y: 50 }, arrecadado: 300, gasto: 120,
         }]}
         dataDesde="2026-01-01"
         avisoMeses={3}

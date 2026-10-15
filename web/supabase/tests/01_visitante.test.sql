@@ -2,7 +2,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = public, extensions;
-select plan(26);
+select plan(28);
 
 -- guarda, antes de virar anon, os textos privados que nunca podem aparecer
 create temporary table privados as
@@ -41,6 +41,8 @@ select lives_ok('select * from public.pub_config', 'anon lê pub_config');
 select hasnt_column('public', 'pub_pets', 'local', 'pub_pets não tem local');
 select hasnt_column('public', 'pub_pets', 'oculto', 'pub_pets não tem oculto');
 select has_column('public', 'pub_pets', 'criado_em', 'pub_pets tem criado_em (ordem do catálogo)');
+select has_column('public', 'pub_pets', 'foto_foco_x', 'pub_pets tem o ponto principal da foto');
+select has_column('public', 'pub_campanhas', 'foto_foco_y', 'pub_campanhas tem o ponto principal da foto');
 select hasnt_column('public', 'pub_despesas', 'criado_por', 'pub_despesas não tem criado_por');
 
 -- nenhum nome de membro, doador ou local aparece em nenhuma view

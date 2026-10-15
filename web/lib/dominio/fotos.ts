@@ -32,3 +32,22 @@ export function nomeDaFoto(id: string, tipo: TipoDeFoto) {
 export function urlDaFoto(base: string, bucket: Bucket, caminho: string) {
   return `${base.replace(/\/+$/, "")}/storage/v1/object/public/${bucket}/${encodeURIComponent(caminho)}`;
 }
+
+// Ponto principal da foto: o que não pode ficar de fora quando o quadro corta a foto.
+// Em porcentagem da largura (x) e da altura (y); 50/50 = centro (o padrão do banco).
+export type Foco = { x: number; y: number };
+export const FOCO_CENTRO: Foco = { x: 50, y: 50 };
+
+const entre0e100 = (v: number) => Math.min(100, Math.max(0, Math.round(v)));
+
+// Toque ou clique na foto mostrada inteira: posição em pixels → porcentagem.
+export function focoDoToque(px: number, py: number, largura: number, altura: number): Foco {
+  if (largura <= 0 || altura <= 0) return FOCO_CENTRO;
+  return { x: entre0e100((px / largura) * 100), y: entre0e100((py / altura) * 100) };
+}
+
+// CSS object-position: com "x% y%", o ponto x%/y% da foto cai no mesmo x%/y% do quadro,
+// então ele sempre fica dentro do quadro, qualquer que seja o formato.
+export function posicaoDoFoco(foco: Foco) {
+  return `${entre0e100(foco.x)}% ${entre0e100(foco.y)}%`;
+}

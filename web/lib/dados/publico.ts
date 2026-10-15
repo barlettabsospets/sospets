@@ -1,4 +1,5 @@
 import { cacheLife, cacheTag } from "next/cache";
+import type { Foco } from "@/lib/dominio/fotos";
 import { type Mes, mesAtual, paraMes } from "@/lib/dominio/meses";
 import type { PetDoPainel } from "@/lib/dominio/pets";
 import type { ResumoDoMes } from "@/lib/dominio/saldo";
@@ -129,6 +130,7 @@ export type PetPublico = PetDoPainel & {
   precisa_lar: boolean;
   necessidade: string | null;
   foto_path: string | null;
+  foto_foco: Foco;
 };
 
 // pub_pets: só os visíveis no site, sem o local, do cadastro mais recente para o mais antigo.
@@ -158,6 +160,7 @@ export async function lerPets(): Promise<PetPublico[]> {
     precisa_lar: r.precisa_lar ?? false,
     necessidade: r.necessidade,
     foto_path: r.foto_path,
+    foto_foco: { x: r.foto_foco_x ?? 50, y: r.foto_foco_y ?? 50 },
   }));
 }
 
@@ -169,6 +172,7 @@ export type CampanhaPublica = {
   inicio: string;
   aberta: boolean;
   fotoPath: string | null;
+  fotoFoco: Foco;
   arrecadado: number;
   gasto: number;
 };
@@ -190,6 +194,7 @@ export async function lerCampanhas(): Promise<CampanhaPublica[]> {
       inicio: r.inicio!,
       aberta: r.situacao === "em_andamento",
       fotoPath: r.foto_path,
+      fotoFoco: { x: r.foto_foco_x ?? 50, y: r.foto_foco_y ?? 50 },
       arrecadado: r.arrecadado ?? 0,
       gasto: r.gasto ?? 0,
     }))

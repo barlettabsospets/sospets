@@ -68,6 +68,8 @@ export type Database = {
           atualizado_em: string
           criado_em: string
           descricao: string | null
+          foto_foco_x: number
+          foto_foco_y: number
           foto_path: string | null
           id: string
           inicio: string
@@ -79,6 +81,8 @@ export type Database = {
           atualizado_em?: string
           criado_em?: string
           descricao?: string | null
+          foto_foco_x?: number
+          foto_foco_y?: number
           foto_path?: string | null
           id?: string
           inicio: string
@@ -90,6 +94,8 @@ export type Database = {
           atualizado_em?: string
           criado_em?: string
           descricao?: string | null
+          foto_foco_x?: number
+          foto_foco_y?: number
           foto_path?: string | null
           id?: string
           inicio?: string
@@ -385,6 +391,8 @@ export type Database = {
           especie: Database["public"]["Enums"]["especie_pet"]
           faixa_idade: Database["public"]["Enums"]["faixa_idade"]
           fiv_felv_testado: boolean
+          foto_foco_x: number
+          foto_foco_y: number
           foto_path: string | null
           id: string
           lar_em: string | null
@@ -409,6 +417,8 @@ export type Database = {
           especie: Database["public"]["Enums"]["especie_pet"]
           faixa_idade: Database["public"]["Enums"]["faixa_idade"]
           fiv_felv_testado?: boolean
+          foto_foco_x?: number
+          foto_foco_y?: number
           foto_path?: string | null
           id?: string
           lar_em?: string | null
@@ -433,6 +443,8 @@ export type Database = {
           especie?: Database["public"]["Enums"]["especie_pet"]
           faixa_idade?: Database["public"]["Enums"]["faixa_idade"]
           fiv_felv_testado?: boolean
+          foto_foco_x?: number
+          foto_foco_y?: number
           foto_path?: string | null
           id?: string
           lar_em?: string | null
@@ -455,6 +467,8 @@ export type Database = {
         Row: {
           arrecadado: number | null
           descricao: string | null
+          foto_foco_x: number | null
+          foto_foco_y: number | null
           foto_path: string | null
           gasto: number | null
           id: string | null
@@ -466,6 +480,8 @@ export type Database = {
         Insert: {
           arrecadado?: never
           descricao?: string | null
+          foto_foco_x?: number | null
+          foto_foco_y?: number | null
           foto_path?: string | null
           gasto?: never
           id?: string | null
@@ -477,6 +493,8 @@ export type Database = {
         Update: {
           arrecadado?: never
           descricao?: string | null
+          foto_foco_x?: number | null
+          foto_foco_y?: number | null
           foto_path?: string | null
           gasto?: never
           id?: string | null
@@ -550,6 +568,8 @@ export type Database = {
           especie: Database["public"]["Enums"]["especie_pet"] | null
           faixa_idade: Database["public"]["Enums"]["faixa_idade"] | null
           fiv_felv_testado: boolean | null
+          foto_foco_x: number | null
+          foto_foco_y: number | null
           foto_path: string | null
           id: string | null
           lar_em: string | null
@@ -571,6 +591,8 @@ export type Database = {
           especie?: Database["public"]["Enums"]["especie_pet"] | null
           faixa_idade?: Database["public"]["Enums"]["faixa_idade"] | null
           fiv_felv_testado?: boolean | null
+          foto_foco_x?: number | null
+          foto_foco_y?: number | null
           foto_path?: string | null
           id?: string | null
           lar_em?: string | null
@@ -592,6 +614,8 @@ export type Database = {
           especie?: Database["public"]["Enums"]["especie_pet"] | null
           faixa_idade?: Database["public"]["Enums"]["faixa_idade"] | null
           fiv_felv_testado?: boolean | null
+          foto_foco_x?: number | null
+          foto_foco_y?: number | null
           foto_path?: string | null
           id?: string | null
           lar_em?: string | null

@@ -330,7 +330,7 @@ function Campanha({ c }: { c: CampanhaPublica }) {
     <article className={`tp-camp ${c.aberta ? "open" : "closed"}`}>
       {/* foto da campanha; enquanto não houver foto enviada, um espaço reservado com a pata */}
       {c.fotoPath ? (
-        <Foto className="ph" bucket="campanhas" caminho={c.fotoPath} alt={`Foto de ${c.nome}`} />
+        <Foto className="ph" bucket="campanhas" caminho={c.fotoPath} foco={c.fotoFoco} alt={`Foto de ${c.nome}`} />
       ) : (
         <div className="ph" role="img" aria-label="Espaço para a foto (ainda não enviada)">
           <Pata />
