@@ -1,5 +1,7 @@
 import { connection } from "next/server";
+import { type Contribuicao, diaEmBrasilia } from "@/lib/dominio/contribuicoes";
 import type { Membro } from "@/lib/dominio/membros";
+import { type Mes, paraMes } from "@/lib/dominio/meses";
 import { criarClienteServidor } from "@/lib/supabase/server";
 
 // Dados da área do administrador: lidos das tabelas com a sessão de quem entrou
@@ -33,9 +35,45 @@ export async function lerMembros(): Promise<Membro[]> {
   }));
 }
 
-export async function lerValorPadrao(): Promise<number> {
+export type Configuracoes = { dadosDesde: Mes; valorPadrao: number; avisoMeses: number };
+
+export async function lerConfiguracoes(): Promise<Configuracoes> {
   const supabase = await cliente();
-  const { data, error } = await supabase.from("configuracoes").select("valor_padrao").single();
+  const { data, error } = await supabase.from("configuracoes").select("dados_desde, valor_padrao, aviso_meses").single();
   falhou("configuracoes", error);
-  return Number(data!.valor_padrao);
+  return { dadosDesde: paraMes(data!.dados_desde), valorPadrao: Number(data!.valor_padrao), avisoMeses: data!.aviso_meses };
+}
+
+// Contribuições não canceladas, de todos os meses (a tela troca de mês sem ir ao servidor).
+// Lidas de 1000 em 1000, o limite de cada consulta do Supabase.
+export async function lerContribuicoes(): Promise<Contribuicao[]> {
+  const supabase = await cliente();
+  const todas: Contribuicao[] = [];
+  for (let de = 0; ; de += 1000) {
+    const { data, error } = await supabase
+      .from("contribuicoes")
+      .select("id, competencia, valor, membro_id, criado_em")
+      .is("cancelada_em", null)
+      .order("id")
+      .range(de, de + 999);
+    falhou("contribuicoes", error);
+    todas.push(...(data ?? []).map((c) => ({
+      id: c.id,
+      competencia: paraMes(c.competencia),
+      valor: Number(c.valor),
+      membroId: c.membro_id,
+      registradaEm: diaEmBrasilia(c.criado_em),
+    })));
+    if (!data || data.length < 1000) return todas;
+  }
+}
+
+export type CampanhaAberta = { id: string; nome: string };
+
+// campanhas em andamento, para a doação avulsa
+export async function lerCampanhasAbertas(): Promise<CampanhaAberta[]> {
+  const supabase = await cliente();
+  const { data, error } = await supabase.from("campanhas").select("id, nome").eq("situacao", "em_andamento").order("inicio", { ascending: false });
+  falhou("campanhas", error);
+  return data ?? [];
 }

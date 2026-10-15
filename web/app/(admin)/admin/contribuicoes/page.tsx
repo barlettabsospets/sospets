@@ -1,15 +1,35 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
+import { PainelContribuicoes } from "@/components/admin/PainelContribuicoes";
+import { lerCampanhasAbertas, lerConfiguracoes, lerContribuicoes, lerMembros } from "@/lib/dados/admin";
+import { mesAtual } from "@/lib/dominio/meses";
 
 export const metadata: Metadata = { title: "Contribuições" };
 
-// A tela de verdade vem na T5.2.
+// os dados dependem da sessão (cookies), então ficam dentro do <Suspense>
+async function Contribuicoes() {
+  const [membros, contribuicoes, campanhas, config] = await Promise.all([
+    lerMembros(), lerContribuicoes(), lerCampanhasAbertas(), lerConfiguracoes(),
+  ]);
+  return (
+    <PainelContribuicoes
+      membros={membros}
+      contribuicoes={contribuicoes}
+      campanhas={campanhas}
+      mesAtual={mesAtual()}
+      dadosDesde={config.dadosDesde}
+      padrao={config.valorPadrao}
+    />
+  );
+}
+
+// Contribuições (admin-contribuicoes.html), a tela inicial do admin.
 export default function Pagina() {
   return (
     <main id="main" className="wrap">
-      <div className="ahead">
-        <h1>Contribuições</h1>
-        <p>Em construção.</p>
-      </div>
+      <Suspense>
+        <Contribuicoes />
+      </Suspense>
     </main>
   );
 }
