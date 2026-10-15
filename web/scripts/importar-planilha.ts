@@ -26,12 +26,15 @@ type ConfigCampanha = Omit<Colunas, "nome"> & {
   saldoJaNoCaixaDaPlanilha: boolean;
 };
 type Rotulo = { pet: string } | { grupo: string | null };
+// membro fixo: o nome que vai para o cadastro e as outras grafias usadas na planilha
+export type ConfigMembro = { nome: string; grafias?: string[] };
 type Config = {
   planilha: string;
   meses: ConfigMes[];
   campanhas: ConfigCampanha[];
   ignorarNomes: string[];
   anonimos: string[];
+  membros?: ConfigMembro[];
   rotulos: Record<string, Rotulo>;
   conferenciaSaldo?: { aba: string; celula: string; ate: string };
 };
@@ -61,6 +64,14 @@ type Bloco = {
 
 const semAcento = (t: string) =>
   t.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
+
+// Membro a que um nome da planilha se refere, pelo nome ou por uma das grafias
+// (sem acento, maiúsculas nem espaços sobrando). null = não é membro: doação avulsa.
+export function membroDoNome(nome: string, membros: ConfigMembro[]): string | null {
+  const t = semAcento(nome).replace(/\s+/g, " ");
+  const m = membros.find((m) => [m.nome, ...(m.grafias ?? [])].some((g) => semAcento(g).replace(/\s+/g, " ") === t));
+  return m?.nome ?? null;
+}
 
 // Categoria pelo texto do item. A ordem importa: "Cx transporte" é equipamento, não transporte.
 const REGRAS_CATEGORIA: [RegExp, string][] = [
@@ -230,10 +241,13 @@ async function main() {
   const contribuicoes = [...meses, ...campanhas].flatMap((x) => x.bloco.contribuicoes);
   const despesas = [...meses, ...campanhas].flatMap((x) => x.bloco.despesas);
 
+  const membros = cfg.membros ?? [];
+  const pessoa = (nome: string) => membroDoNome(nome, membros) ?? nome;
+
   // mesma pessoa duas vezes no mesmo mês (sem contar campanhas)
   const vistos = new Map<string, Contribuicao[]>();
   for (const c of contribuicoes.filter((c) => c.nome && !c.campanha)) {
-    const chave = `${c.competencia}|${semAcento(c.nome!)}`;
+    const chave = `${c.competencia}|${semAcento(pessoa(c.nome!))}`;
     vistos.set(chave, [...(vistos.get(chave) ?? []), c]);
   }
   const repetidos = [...vistos.values()].filter((v) => v.length > 1);
@@ -293,11 +307,28 @@ async function main() {
 
   L.push("", "## Contribuições", "");
   L.push(`${contribuicoes.length} contribuições, ${contribuicoes.filter((c) => !c.nome).length} sem nome (anônimas).`);
-  L.push("Membros fixos e grafias ainda dependem da aba \"Membros\" do cadastro-pets.xlsx.", "");
+  L.push("");
   if (repetidos.length) {
-    L.push("Mesmo nome duas vezes no mesmo mês (serão somadas se forem a mesma pessoa):", "");
-    for (const r of repetidos) L.push(`- ${r[0].competencia.slice(0, 7)} · ${r[0].nome}: ${r.map((c) => reais(c.valor)).join(" + ")}`);
+    L.push("Mesma pessoa duas vezes no mesmo mês (serão somadas se forem a mesma pessoa):", "");
+    for (const r of repetidos) {
+      L.push(`- ${r[0].competencia.slice(0, 7)} · ${r.map((c) => `${c.nome} ${reais(c.valor)}`).join(" + ")}`);
+    }
   }
+
+  // cada grafia da planilha: de qual membro é, ou se fica como doação avulsa
+  L.push("", `### Nomes da planilha × membros (${membros.length} membros na configuração)`, "");
+  L.push("| Nome na planilha | Membro | Contribuições | Meses |", "|---|---|---|---|");
+  const porNome = new Map<string, Contribuicao[]>();
+  for (const c of contribuicoes.filter((c) => c.nome)) porNome.set(c.nome!.trim(), [...(porNome.get(c.nome!.trim()) ?? []), c]);
+  const linhas = [...porNome].map(([nome, cs]) => ({ nome, membro: membroDoNome(nome, membros), cs }))
+    .sort((a, b) => Number(Boolean(a.membro)) - Number(Boolean(b.membro)) || (a.membro ?? a.nome).localeCompare(b.membro ?? b.nome));
+  for (const { nome, membro, cs } of linhas) {
+    const meses = [...new Set(cs.map((c) => c.competencia.slice(0, 7) + (c.campanha ? " (campanha)" : "")))].sort();
+    L.push(`| ${nome} | ${membro ?? "— (doação avulsa)"} | ${cs.length} | ${meses.join(", ")} |`);
+  }
+  const usados = new Set(linhas.map((l) => l.membro));
+  const semNada = membros.filter((m) => !usados.has(m.nome)).map((m) => m.nome);
+  if (semNada.length) L.push("", `Membros sem nenhuma contribuição na planilha: ${semNada.join(", ")}.`);
 
   L.push("", "## Problemas e linhas ignoradas", "");
   for (const p of problemas) L.push(`- ${p.origem}: ${p.texto}`);
