@@ -1,15 +1,24 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
+import { PainelPets } from "@/components/admin/PainelPets";
+import { lerConfiguracoes, lerPetsDoAdmin } from "@/lib/dados/admin";
+import { mesAtual } from "@/lib/dominio/meses";
 
 export const metadata: Metadata = { title: "Pets" };
 
-// A tela de verdade vem na T5.7.
+// os dados dependem da sessão (cookies), então ficam dentro do <Suspense>
+async function Pets() {
+  const [pets, config] = await Promise.all([lerPetsDoAdmin(), lerConfiguracoes()]);
+  return <PainelPets pets={pets} mesAtual={mesAtual()} dadosDesde={config.dadosDesde} />;
+}
+
+// Pets do admin (admin-animais.html).
 export default function Pagina() {
   return (
     <main id="main" className="wrap">
-      <div className="ahead">
-        <h1>Pets</h1>
-        <p>Em construção.</p>
-      </div>
+      <Suspense>
+        <Pets />
+      </Suspense>
     </main>
   );
 }
