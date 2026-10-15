@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { FluxoMensal } from "@/components/graficos/FluxoMensal";
 import { Rosca } from "@/components/graficos/Rosca";
+import { Foto } from "@/components/ui/Foto";
 import { IconeEspecie } from "@/components/ui/IconeEspecie";
 import { SeletorDePeriodo } from "@/components/ui/SeletorDePeriodo";
 import type { CampanhaPublica, DespesaPublica, GastoDaCategoria } from "@/lib/dados/publico";
@@ -328,11 +329,14 @@ function Campanha({ c }: { c: CampanhaPublica }) {
   return (
     <article className={`tp-camp ${c.aberta ? "open" : "closed"}`}>
       {/* foto da campanha; enquanto não houver foto enviada, um espaço reservado com a pata */}
-      {/* TODO(T5.6): foto do Storage quando c.fotoPath existir */}
-      <div className="ph" role="img" aria-label="Espaço para a foto (ainda não enviada)">
-        <Pata />
-        <span>Foto</span>
-      </div>
+      {c.fotoPath ? (
+        <Foto className="ph" bucket="campanhas" caminho={c.fotoPath} alt={`Foto de ${c.nome}`} />
+      ) : (
+        <div className="ph" role="img" aria-label="Espaço para a foto (ainda não enviada)">
+          <Pata />
+          <span>Foto</span>
+        </div>
+      )}
       <div className="body">
         <div className="top">
           <h3>{c.nome}</h3>

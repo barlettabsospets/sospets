@@ -5,3 +5,8 @@
    o form não ocupa espaço na grade do cabeçalho e o botão herda a fonte como o link. */
 form.th-sair { display: contents; }
 button.th-admin { font-family: inherit; cursor: pointer; }
+
+/* Foto que o navegador não conseguiu abrir (ex.: HEIC no computador). O protótipo não tem esse erro;
+   ele aparece no próprio bloco "Foto", com as cores da caixa de erro do login, porque o toast fica atrás do diálogo. */
+body.admin .ad-foto-t .ad-foto-erro { color: #8C1D18; font-weight: 700; }
+body.admin .ad-foto-t .ad-foto-erro[hidden] { display: none; }

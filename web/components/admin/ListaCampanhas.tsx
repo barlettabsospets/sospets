@@ -4,6 +4,7 @@ import Link from "next/link";
 import { type FormEvent, useState, useTransition } from "react";
 import { Dialogo } from "@/components/ui/Dialogo";
 import { GrupoDeBotoes } from "@/components/ui/GrupoDeBotoes";
+import { CampoFoto, type FotoEscolhida } from "./CampoFoto";
 import { useToast } from "@/components/ui/Toast";
 import { mudarSituacao, salvarCampanha } from "@/lib/admin/campanhas";
 import type { Resultado } from "@/lib/admin/membros";
@@ -11,6 +12,7 @@ import type { CampanhaDoAdmin } from "@/lib/dados/admin";
 import { dataPorExtenso, progressoDaMeta, saldoDaCampanha } from "@/lib/dominio/campanhas";
 import { diaEmBrasilia } from "@/lib/dominio/contribuicoes";
 import { formatarBRL, lerReais } from "@/lib/dominio/formatacao";
+import { urlDaFoto } from "@/lib/dominio/fotos";
 
 type Filtro = "all" | "open" | "closed";
 type Situacao = "em_andamento" | "encerrada";
@@ -25,7 +27,7 @@ const Mais = () => (
 const metaNoCampo = (meta: number | null) => (meta ? String(meta).replace(".", ",") : "");
 
 // Tela Campanhas (admin-campanhas.html): lista com filtro, nova/editar e encerrar/reabrir.
-// A foto da campanha entra com o Storage (T5.6).
+// O protótipo não tem foto no formulário; ela usa o bloco "Foto" do formulário de pet.
 export function ListaCampanhas({ campanhas }: { campanhas: CampanhaDoAdmin[] }) {
   const toast = useToast();
   const [, iniciar] = useTransition();
@@ -38,6 +40,7 @@ export function ListaCampanhas({ campanhas }: { campanhas: CampanhaDoAdmin[] }) 
   const [meta, setMeta] = useState("");
   const [inicio, setInicio] = useState("");
   const [situacao, setSituacao] = useState<Situacao>("em_andamento");
+  const [foto, setFoto] = useState<FotoEscolhida>({ previa: null });
 
   const gravar = (acao: () => Promise<Resultado>, aoGravar: () => void) =>
     iniciar(async () => {
@@ -56,15 +59,16 @@ export function ListaCampanhas({ campanhas }: { campanhas: CampanhaDoAdmin[] }) 
     setMeta(metaNoCampo(c?.meta ?? null));
     setInicio(c?.inicio ?? diaEmBrasilia(new Date().toISOString()));
     setSituacao(c && !c.aberta ? "encerrada" : "em_andamento");
+    setFoto({ previa: c?.fotoPath ? urlDaFoto(process.env.NEXT_PUBLIC_SUPABASE_URL ?? "", "campanhas", c.fotoPath) : null });
   };
 
   const salvar = (e: FormEvent) => {
     e.preventDefault();
     const n = nome.trim();
-    if (!n) return;
+    if (!n || foto.preparando) return;
     const c = editando;
     setEditando(undefined);
-    const dados = { nome: n, descricao, meta: lerReais(meta) || null, inicio, situacao };
+    const dados = { nome: n, descricao, meta: lerReais(meta) || null, inicio, situacao, foto: foto.envio };
     gravar(
       () => salvarCampanha(c ? { id: c.id, ...dados } : dados),
       () => toast(c ? "Campanha atualizada." : `Campanha "${n}" criada. Ligue doações e despesas a ela ao lançar.`),
@@ -148,6 +152,7 @@ export function ListaCampanhas({ campanhas }: { campanhas: CampanhaDoAdmin[] }) 
       <Dialogo aberto={editando !== undefined} aoFechar={() => setEditando(undefined)} aria-labelledby="dlg-t">
         <form onSubmit={salvar}>
           <h2 id="dlg-t">{editando ? "Editar campanha" : "Nova campanha"}</h2>
+          <CampoFoto id="c-foto" valor={foto} aoMudar={setFoto} />
           <div className="field">
             <label htmlFor="c-n">Nome da campanha</label>
             <input id="c-n" placeholder="Ex.: Campanha da Mel" required value={nome} onChange={(e) => setNome(e.target.value)} />
@@ -178,7 +183,7 @@ export function ListaCampanhas({ campanhas }: { campanhas: CampanhaDoAdmin[] }) 
           </div>
           <div className="btns">
             <button className="btn btn-secondary" type="button" onClick={() => setEditando(undefined)}>Cancelar</button>
-            <button className="btn btn-primary" type="submit">Salvar campanha</button>
+            <button className="btn btn-primary" type="submit" disabled={foto.preparando}>Salvar campanha</button>
           </div>
         </form>
       </Dialogo>

@@ -101,6 +101,7 @@ export type CampanhaDoAdmin = {
   meta: number | null;
   inicio: string;
   aberta: boolean;
+  fotoPath: string | null;
   arrecadado: number;
   gasto: number;
 };
@@ -110,7 +111,7 @@ export async function lerCampanhasDoAdmin(): Promise<CampanhaDoAdmin[]> {
   const supabase = await cliente();
   const { data, error } = await supabase
     .from("pub_campanhas")
-    .select("id, nome, descricao, meta, inicio, situacao, arrecadado, gasto")
+    .select("id, nome, descricao, meta, inicio, situacao, foto_path, arrecadado, gasto")
     .order("inicio", { ascending: false });
   falhou("pub_campanhas", error);
   return (data ?? []).map((c) => ({
@@ -120,6 +121,7 @@ export async function lerCampanhasDoAdmin(): Promise<CampanhaDoAdmin[]> {
     meta: c.meta === null ? null : Number(c.meta),
     inicio: c.inicio!,
     aberta: c.situacao === "em_andamento",
+    fotoPath: c.foto_path,
     arrecadado: Number(c.arrecadado),
     gasto: Number(c.gasto),
   }));
