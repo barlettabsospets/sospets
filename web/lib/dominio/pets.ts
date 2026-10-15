@@ -76,3 +76,11 @@ export function contarGrupo(pets: PetDoPainel[], grupo: GrupoDePets, inicio: Mes
 export function contarTopo(pets: PetDoPainel[], desdeOInicio: boolean, fim: Mes): Contagem {
   return contar(desdeOInicio ? pets : pets.filter((p) => acompanhado(p, fim)));
 }
+
+// --- página Pets ----------------------------------------------------------------
+
+// Quando o pet saiu da rua pela primeira vez (lar temporário ou adoção), ou null.
+export function saidaDaRua(pet: DatasDoPet): Mes | null {
+  const datas = [pet.lar_em, pet.adotado_em].filter((d): d is string => d !== null).map(paraMes).sort();
+  return datas[0] ?? null;
+}

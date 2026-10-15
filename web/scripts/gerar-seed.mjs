@@ -131,6 +131,8 @@ const pets = dados.PETS.map((p, i) => ({
   precisa_lar: !!p.precisaLar,
   necessidade: p.nec || null,
   local: i % 4 === 0 ? LOCAIS[(i / 4) % LOCAIS.length] : null,
+  // o catálogo mostra o cadastro mais recente primeiro: o primeiro de dados.js é o mais novo
+  criado_em: new Date(Date.UTC(2026, 9, 1, 15) - i * 60_000).toISOString(),
   _orig: p,
 }));
 const petPorNome = Object.fromEntries(pets.map((p) => [p.nome, p]));
@@ -433,12 +435,12 @@ insert into public.membros (id, nome, valor_mensal, ativo) values
 ${linhas(membros, (m) => [sql(m.id), sql(m.nome), m.valor_mensal ?? "null", m.ativo])};
 
 insert into public.pets (id, nome, especie, sexo, faixa_idade, pelagem, entrou_em, lar_em, adotado_em, obito_em,
-  castrado, castrado_em, vacinado, vermifugado, fiv_felv_testado, precisa_lar, necessidade, local) values
+  castrado, castrado_em, vacinado, vermifugado, fiv_felv_testado, precisa_lar, necessidade, local, criado_em) values
 ${linhas(pets, (p) => [
   sql(p.id), sql(p.nome), sql(p.especie), sql(p.sexo), sql(p.faixa_idade), sql(p.pelagem),
   sql(p.entrou_em), sql(p.lar_em), sql(p.adotado_em), sql(p.obito_em),
   sql(p.castrado), sql(p.castrado_em), p.vacinado, p.vermifugado, p.fiv_felv_testado, p.precisa_lar,
-  sql(p.necessidade), sql(p.local),
+  sql(p.necessidade), sql(p.local), sql(p.criado_em),
 ])};
 
 insert into public.despesas (id, data, descricao, valor, categoria_id, pet_id, campanha_id, cancelada_em, motivo_cancelamento, criado_em) values
