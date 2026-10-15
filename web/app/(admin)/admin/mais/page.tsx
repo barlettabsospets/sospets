@@ -1,15 +1,30 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
+import { PainelMais } from "@/components/admin/PainelMais";
+import { lerCategorias, lerConfiguracoes } from "@/lib/dados/admin";
+import { lerCampanhas } from "@/lib/dados/publico";
 
 export const metadata: Metadata = { title: "Mais" };
 
-// A tela de verdade vem na T5.3.
+// os dados dependem da sessão (cookies), então ficam dentro do <Suspense>
+async function Mais() {
+  const [categorias, campanhas, config] = await Promise.all([lerCategorias(), lerCampanhas(), lerConfiguracoes()]);
+  return (
+    <PainelMais categorias={categorias} campanhas={campanhas} dataDesde={config.dataDesde} avisoMeses={config.avisoMeses} />
+  );
+}
+
+// Mais (admin-mais.html).
 export default function Pagina() {
   return (
     <main id="main" className="wrap">
       <div className="ahead">
         <h1>Mais</h1>
-        <p>Em construção.</p>
+        <p>Exportar dados, categorias de despesa, campanhas, configurações e o histórico de alterações.</p>
       </div>
+      <Suspense>
+        <Mais />
+      </Suspense>
     </main>
   );
 }
