@@ -10,3 +10,23 @@ button.th-admin { font-family: inherit; cursor: pointer; }
    ele aparece no próprio bloco "Foto", com as cores da caixa de erro do login, porque o toast fica atrás do diálogo. */
 body.admin .ad-foto-t .ad-foto-erro { color: #8C1D18; font-weight: 700; }
 body.admin .ad-foto-t .ad-foto-erro[hidden] { display: none; }
+
+/* "Ajeitar a foto" (não existe no protótipo; pedido da Barbara, 15/10): abre logo abaixo do bloco "Foto".
+   A foto aparece inteira com o ponto principal marcado; ao lado, como ela fica cortada nos formatos do site. */
+body.admin .ad-foco { display: grid; gap: 12px; justify-items: start; margin-top: 12px; padding: 14px; border-radius: 18px; background: var(--cream); }
+body.admin .ad-foco-h { display: grid; gap: 2px; }
+body.admin .ad-foco-h b { font-weight: 800; }
+body.admin .ad-foco-h span { font-size: .9375rem; color: var(--ink-2); line-height: 1.4; }
+body.admin .ad-foco-b { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; }
+body.admin .ad-foco-quadro { position: relative; line-height: 0; border-radius: 12px; overflow: hidden; touch-action: none; cursor: crosshair; }
+body.admin .ad-foco-quadro img { display: block; max-width: min(100%, 320px); max-height: 240px; user-select: none; -webkit-user-select: none; }
+body.admin .ad-foco-quadro:has(input:focus-visible) { outline: 3px solid var(--primary-500); outline-offset: 3px; }
+body.admin .ad-foco-ponto { position: absolute; width: 28px; height: 28px; transform: translate(-50%, -50%); border-radius: 50%; pointer-events: none;
+  border: 3px solid #fff; background: rgba(45, 95, 154, .35); box-shadow: 0 0 0 2px var(--primary), 0 2px 8px rgba(0, 0, 0, .35); }
+body.admin .ad-foco-previas { display: grid; gap: 6px; }
+body.admin .ad-foco-previas > span { font-size: .875rem; font-weight: 800; color: var(--ink-2); }
+body.admin .ad-foco-previas > div { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+body.admin .ad-foco-previas figure { margin: 0; display: grid; gap: 4px; justify-items: center; }
+body.admin .ad-foco-previas img { width: 96px; object-fit: cover; border-radius: 12px; background: #F3ECE2; }
+body.admin .ad-foco-previas img.redondo { width: 56px; border-radius: 50%; }
+body.admin .ad-foco-previas figcaption { font-size: .8125rem; color: var(--ink-2); }

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { type FormEvent, useState, useTransition } from "react";
 import { Dialogo } from "@/components/ui/Dialogo";
 import { GrupoDeBotoes } from "@/components/ui/GrupoDeBotoes";
-import { CampoFoto, type FotoEscolhida } from "./CampoFoto";
+import { CampoFoto, type FormatoDaFoto, type FotoEscolhida } from "./CampoFoto";
 import { useToast } from "@/components/ui/Toast";
 import { mudarSituacao, salvarCampanha } from "@/lib/admin/campanhas";
 import type { Resultado } from "@/lib/admin/membros";
@@ -12,7 +12,7 @@ import type { CampanhaDoAdmin } from "@/lib/dados/admin";
 import { dataPorExtenso, progressoDaMeta, saldoDaCampanha } from "@/lib/dominio/campanhas";
 import { diaEmBrasilia } from "@/lib/dominio/contribuicoes";
 import { formatarBRL, lerReais } from "@/lib/dominio/formatacao";
-import { urlDaFoto } from "@/lib/dominio/fotos";
+import { FOCO_CENTRO, urlDaFoto } from "@/lib/dominio/fotos";
 
 type Filtro = "all" | "open" | "closed";
 type Situacao = "em_andamento" | "encerrada";
@@ -22,6 +22,9 @@ const Mais = () => (
     <path d="M12 5v14M5 12h14" />
   </svg>
 );
+
+// no site, a foto da campanha aparece quadrada (Prestação de contas)
+const FORMATOS: FormatoDaFoto[] = [{ rotulo: "Campanha", proporcao: "1" }];
 
 // meta no campo: 640 → "640", 12.5 → "12,5" (como o protótipo)
 const metaNoCampo = (meta: number | null) => (meta ? String(meta).replace(".", ",") : "");
@@ -40,7 +43,7 @@ export function ListaCampanhas({ campanhas }: { campanhas: CampanhaDoAdmin[] }) 
   const [meta, setMeta] = useState("");
   const [inicio, setInicio] = useState("");
   const [situacao, setSituacao] = useState<Situacao>("em_andamento");
-  const [foto, setFoto] = useState<FotoEscolhida>({ previa: null });
+  const [foto, setFoto] = useState<FotoEscolhida>({ previa: null, foco: FOCO_CENTRO });
 
   const gravar = (acao: () => Promise<Resultado>, aoGravar: () => void) =>
     iniciar(async () => {
@@ -59,7 +62,10 @@ export function ListaCampanhas({ campanhas }: { campanhas: CampanhaDoAdmin[] }) 
     setMeta(metaNoCampo(c?.meta ?? null));
     setInicio(c?.inicio ?? diaEmBrasilia(new Date().toISOString()));
     setSituacao(c && !c.aberta ? "encerrada" : "em_andamento");
-    setFoto({ previa: c?.fotoPath ? urlDaFoto(process.env.NEXT_PUBLIC_SUPABASE_URL ?? "", "campanhas", c.fotoPath) : null });
+    setFoto({
+      previa: c?.fotoPath ? urlDaFoto(process.env.NEXT_PUBLIC_SUPABASE_URL ?? "", "campanhas", c.fotoPath) : null,
+      foco: c?.fotoFoco ?? FOCO_CENTRO,
+    });
   };
 
   const salvar = (e: FormEvent) => {
@@ -68,7 +74,7 @@ export function ListaCampanhas({ campanhas }: { campanhas: CampanhaDoAdmin[] }) 
     if (!n || foto.preparando) return;
     const c = editando;
     setEditando(undefined);
-    const dados = { nome: n, descricao, meta: lerReais(meta) || null, inicio, situacao, foto: foto.envio };
+    const dados = { nome: n, descricao, meta: lerReais(meta) || null, inicio, situacao, foto: foto.envio, foco: foto.foco };
     gravar(
       () => salvarCampanha(c ? { id: c.id, ...dados } : dados),
       () => toast(c ? "Campanha atualizada." : `Campanha "${n}" criada. Ligue doações e despesas a ela ao lançar.`),
@@ -152,7 +158,7 @@ export function ListaCampanhas({ campanhas }: { campanhas: CampanhaDoAdmin[] }) 
       <Dialogo aberto={editando !== undefined} aoFechar={() => setEditando(undefined)} aria-labelledby="dlg-t">
         <form onSubmit={salvar}>
           <h2 id="dlg-t">{editando ? "Editar campanha" : "Nova campanha"}</h2>
-          <CampoFoto id="c-foto" valor={foto} aoMudar={setFoto} />
+          <CampoFoto id="c-foto" valor={foto} aoMudar={setFoto} formatos={FORMATOS} />
           <div className="field">
             <label htmlFor="c-n">Nome da campanha</label>
             <input id="c-n" placeholder="Ex.: Campanha da Mel" required value={nome} onChange={(e) => setNome(e.target.value)} />

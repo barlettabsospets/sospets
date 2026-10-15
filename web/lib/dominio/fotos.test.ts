@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { medidasReduzidas, nomeDaFoto, tipoDaImagem, urlDaFoto } from "./fotos";
+import { FOCO_CENTRO, focoDoToque, medidasReduzidas, nomeDaFoto, posicaoDoFoco, tipoDaImagem, urlDaFoto } from "./fotos";
 
 const bytes = (...partes: (string | number[])[]) =>
   new Uint8Array(partes.flatMap((p) => (typeof p === "string" ? [...p].map((c) => c.charCodeAt(0)) : p)));
@@ -40,5 +40,17 @@ describe("nomeDaFoto e urlDaFoto", () => {
     expect(urlDaFoto("https://exemplo.supabase.co/", "pets", "abc.webp")).toBe(
       "https://exemplo.supabase.co/storage/v1/object/public/pets/abc.webp",
     );
+  });
+});
+
+describe("ponto principal", () => {
+  it("converte o toque em porcentagem da foto, sem passar das bordas", () => {
+    expect(focoDoToque(150, 50, 300, 200)).toEqual({ x: 50, y: 25 });
+    expect(focoDoToque(-10, 260, 300, 200)).toEqual({ x: 0, y: 100 });
+    expect(focoDoToque(10, 10, 0, 0)).toEqual(FOCO_CENTRO);
+  });
+  it("vira object-position", () => {
+    expect(posicaoDoFoco({ x: 30, y: 12.4 })).toBe("30% 12%");
+    expect(posicaoDoFoco(FOCO_CENTRO)).toBe("50% 50%");
   });
 });

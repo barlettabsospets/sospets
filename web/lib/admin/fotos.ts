@@ -9,6 +9,8 @@ type Cliente = Awaited<ReturnType<typeof criarClienteServidor>>;
 
 // foto no formulário: ausente = manter a atual; null = remover; Blob = trocar pela nova
 export const FotoDoFormulario = z.instanceof(Blob).nullable().optional();
+// ponto principal da foto, em % (vira foto_foco_x e foto_foco_y)
+export const FocoDaFoto = z.object({ x: z.number().int().min(0).max(100), y: z.number().int().min(0).max(100) });
 
 export const MSG_FOTO = "Não foi possível enviar a foto. Tente de novo ou escolha outra.";
 
