@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { categoriaDoItem, centavos, valorDaCelula } from "./importar-planilha";
+import { categoriaDoItem, centavos, membroDoNome, valorDaCelula } from "./importar-planilha";
 
 describe("categoriaDoItem", () => {
   it.each([
@@ -47,5 +47,19 @@ describe("centavos", () => {
   it("evita erro de ponto flutuante", () => {
     expect(centavos(140.16999999999999)).toBe(14017);
     expect(centavos(0.1 + 0.2)).toBe(30);
+  });
+});
+
+describe("membroDoNome", () => {
+  const membros = [{ nome: "Ana Exemplo", grafias: ["Ana", "Aninha Teste"] }, { nome: "Bruno Teste" }];
+
+  it("acha pelo nome ou por uma grafia, sem acento, maiúsculas nem espaços sobrando", () => {
+    expect(membroDoNome("bruno  teste ", membros)).toBe("Bruno Teste");
+    expect(membroDoNome("Aninha Teste", membros)).toBe("Ana Exemplo");
+    expect(membroDoNome("ANA", membros)).toBe("Ana Exemplo");
+  });
+
+  it("nome parecido não é o mesmo membro: vira doação avulsa", () => {
+    expect(membroDoNome("Ana Modelo", membros)).toBeNull();
   });
 });
