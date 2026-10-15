@@ -1,15 +1,23 @@
 // @vitest-environment jsdom
 import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { ProvedorDeToast } from "@/components/ui/Toast";
 import { PainelMais } from "./PainelMais";
 
 const acoes = vi.hoisted(() => ({
   criarCategoria: vi.fn(async () => ({ ok: true as const, dados: null })),
   salvarConfiguracoes: vi.fn(async () => ({ ok: true as const, dados: null })),
+  renomearCategoria: vi.fn(async () => ({ ok: true as const, dados: null })),
+  mudarCategoriaAtiva: vi.fn(async () => ({ ok: true as const, dados: null })),
 }));
 vi.mock("@/lib/admin/mais", () => acoes);
+
+// o jsdom não tem showModal/close
+beforeAll(() => {
+  HTMLDialogElement.prototype.showModal = function () { this.open = true; };
+  HTMLDialogElement.prototype.close = function () { this.open = false; this.dispatchEvent(new Event("close")); };
+});
 
 afterEach(() => {
   cleanup();
@@ -20,7 +28,10 @@ const montar = () =>
   render(
     <ProvedorDeToast>
       <PainelMais
-        categorias={[{ id: "1", nome: "Ração", cor: "#C2477A" }, { id: "2", nome: "Outros", cor: "#CFC3B4" }]}
+        categorias={[
+          { id: "00000000-0000-4000-a000-000000000001", nome: "Ração", cor: "#C2477A", ativa: true },
+          { id: "00000000-0000-4000-a000-000000000002", nome: "Fralda", cor: "#CFC3B4", ativa: false },
+        ]}
         campanhas={[{
           id: "c", nome: "Campanha Exemplo", descricao: null, meta: null, inicio: "2026-09-01",
           aberta: true, fotoPath: null, arrecadado: 300, gasto: 120,
@@ -64,5 +75,46 @@ describe("PainelMais", () => {
     await u.click(screen.getByRole("button", { name: "Salvar configurações" }));
     expect(acoes.salvarConfiguracoes).toHaveBeenCalledWith({ dadosDesde: "2026-01-01", avisoMeses: 6 });
     expect(await screen.findByText("Configurações salvas.")).toBeInTheDocument();
+  });
+
+  const linha = (nome: string) => within(document.getElementById("categorias")!).getByText(nome).closest(".arow") as HTMLElement;
+
+  it("desativada aparece marcada, com Reativar", () => {
+    montar();
+    expect(within(linha("Fralda")).getByText("Desativada")).toHaveClass("chip-off");
+    expect(within(linha("Fralda")).getByRole("button", { name: "Reativar" })).toBeInTheDocument();
+    expect(within(linha("Ração")).queryByText("Desativada")).not.toBeInTheDocument();
+  });
+
+  it("desativar avisa que as despesas antigas continuam, com Desfazer", async () => {
+    const u = userEvent.setup();
+    montar();
+    await u.click(within(linha("Ração")).getByRole("button", { name: "Desativar" }));
+    expect(acoes.mudarCategoriaAtiva).toHaveBeenCalledWith({ id: "00000000-0000-4000-a000-000000000001", ativa: false });
+    expect(await screen.findByText('Categoria "Ração" desativada. As despesas antigas continuam com ela.')).toBeInTheDocument();
+    await u.click(within(screen.getByRole("status")).getByRole("button", { name: "Desfazer" }));
+    expect(acoes.mudarCategoriaAtiva).toHaveBeenLastCalledWith({ id: "00000000-0000-4000-a000-000000000001", ativa: true });
+  });
+
+  it("renomear abre a janela com o nome e salva o novo", async () => {
+    const u = userEvent.setup();
+    montar();
+    await u.click(within(linha("Ração")).getByRole("button", { name: "Renomear" }));
+    const janela = screen.getByRole("dialog", { name: "Renomear categoria" });
+    const campo = within(janela).getByLabelText("Nome");
+    expect(campo).toHaveValue("Ração");
+    await u.clear(campo);
+    await u.type(campo, "Ração e petiscos");
+    await u.click(within(janela).getByRole("button", { name: "Salvar nome" }));
+    expect(acoes.renomearCategoria).toHaveBeenCalledWith({ id: "00000000-0000-4000-a000-000000000001", nome: "Ração e petiscos" });
+    expect(await screen.findByText('Categoria renomeada para "Ração e petiscos".')).toBeInTheDocument();
+  });
+
+  it("renomear com o mesmo nome não grava", async () => {
+    const u = userEvent.setup();
+    montar();
+    await u.click(within(linha("Ração")).getByRole("button", { name: "Renomear" }));
+    await u.click(screen.getByRole("button", { name: "Salvar nome" }));
+    expect(acoes.renomearCategoria).not.toHaveBeenCalled();
   });
 });

@@ -7,7 +7,7 @@ import { semAcento } from "@/lib/dominio/formatacao";
 import { criarClienteServidor } from "@/lib/supabase/server";
 import type { Resultado } from "./membros";
 
-// Server Actions da tela Mais (categorias e configurações).
+// Server Actions da tela Mais (categorias e configurações). Categoria nunca é apagada.
 // As duas aparecem no site público (cores das categorias, "Dados registrados desde").
 
 const MSG_ERRO = "Não foi possível salvar agora. Confira a conexão e tente de novo.";
@@ -17,21 +17,57 @@ function salvou() {
   refresh();
 }
 
+// nome igual a outra categoria, sem contar maiúsculas e acentos ("racao" = "Ração");
+// o índice único do banco só pega a grafia exata
+function repetida(nome: string, todas: { id: string; nome: string; ativa: boolean }[], menos?: string) {
+  const igual = todas.find((c) => c.id !== menos && semAcento(c.nome.trim()) === semAcento(nome));
+  if (!igual) return null;
+  return igual.ativa ? `Já existe uma categoria "${igual.nome}".` : `A categoria "${igual.nome}" existe, mas está desativada.`;
+}
+
 // Nova categoria: entra no fim da lista, com a cor padrão (#CFC3B4, da tabela).
 export async function criarCategoria(entrada: { nome: string }): Promise<Resultado> {
   const lido = z.object({ nome: z.string().trim().min(1).max(60) }).safeParse(entrada);
   if (!lido.success) return { ok: false, erro: "Escreva o nome da categoria." };
 
   const supabase = await criarClienteServidor();
-  const { data: todas, error: erroAoLer } = await supabase.from("categorias").select("nome, ordem, ativa");
+  const { data: todas, error: erroAoLer } = await supabase.from("categorias").select("id, nome, ordem, ativa");
   if (erroAoLer) return { ok: false, erro: MSG_ERRO };
-  // "racao" e "Ração" são a mesma categoria (o índice único do banco só pega a grafia exata)
-  const igual = todas.find((c) => semAcento(c.nome.trim()) === semAcento(lido.data.nome));
-  if (igual) {
-    return { ok: false, erro: igual.ativa ? `Já existe uma categoria "${igual.nome}".` : `A categoria "${igual.nome}" existe, mas está desativada.` };
-  }
+  const msg = repetida(lido.data.nome, todas);
+  if (msg) return { ok: false, erro: msg };
   const ordem = Math.max(0, ...todas.map((c) => c.ordem)) + 1;
   const { error } = await supabase.from("categorias").insert({ nome: lido.data.nome, ordem });
+  if (error) return { ok: false, erro: MSG_ERRO };
+
+  salvou();
+  return { ok: true, dados: null };
+}
+
+// Renomear: o nome muda em todo lugar, inclusive nas despesas antigas e no site.
+export async function renomearCategoria(entrada: { id: string; nome: string }): Promise<Resultado> {
+  const lido = z.object({ id: z.uuid(), nome: z.string().trim().min(1).max(60) }).safeParse(entrada);
+  if (!lido.success) return { ok: false, erro: "Escreva o nome da categoria." };
+
+  const supabase = await criarClienteServidor();
+  const { data: todas, error: erroAoLer } = await supabase.from("categorias").select("id, nome, ativa");
+  if (erroAoLer) return { ok: false, erro: MSG_ERRO };
+  const msg = repetida(lido.data.nome, todas, lido.data.id);
+  if (msg) return { ok: false, erro: msg };
+  const { error } = await supabase.from("categorias").update({ nome: lido.data.nome }).eq("id", lido.data.id);
+  if (error) return { ok: false, erro: MSG_ERRO };
+
+  salvou();
+  return { ok: true, dados: null };
+}
+
+// Desativar / reativar. Desativada, a categoria não aparece ao lançar uma despesa nova,
+// mas as despesas antigas continuam com ela (o site também).
+export async function mudarCategoriaAtiva(entrada: { id: string; ativa: boolean }): Promise<Resultado> {
+  const lido = z.object({ id: z.uuid(), ativa: z.boolean() }).safeParse(entrada);
+  if (!lido.success) return { ok: false, erro: MSG_ERRO };
+
+  const supabase = await criarClienteServidor();
+  const { error } = await supabase.from("categorias").update({ ativa: lido.data.ativa }).eq("id", lido.data.id);
   if (error) return { ok: false, erro: MSG_ERRO };
 
   salvou();

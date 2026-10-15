@@ -78,12 +78,18 @@ export async function lerCampanhasAbertas(): Promise<CampanhaAberta[]> {
   return data ?? [];
 }
 
-export type Categoria = { id: string; nome: string; cor: string };
+export type Categoria = { id: string; nome: string; cor: string; ativa: boolean };
 
-// categorias ativas, na ordem da tabela (Outros por último no seed)
+// todas as categorias: as ativas na ordem da tabela (Outros por último no seed), depois as desativadas.
+// Despesa nova só usa as ativas; as antigas continuam com a categoria que tinham.
 export async function lerCategorias(): Promise<Categoria[]> {
   const supabase = await cliente();
-  const { data, error } = await supabase.from("categorias").select("id, nome, cor").eq("ativa", true).order("ordem").order("nome");
+  const { data, error } = await supabase
+    .from("categorias")
+    .select("id, nome, cor, ativa")
+    .order("ativa", { ascending: false })
+    .order("ordem")
+    .order("nome");
   falhou("categorias", error);
   return data ?? [];
 }
