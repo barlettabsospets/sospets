@@ -113,7 +113,7 @@ export function PainelMais({
             <h2>Categorias de despesa</h2>
             <div className="glist">
               {categorias.map((c) => (
-                <div className="arow" key={c.id} style={{ gridTemplateColumns: "1fr auto" }}>
+                <div className="arow ad-cat" key={c.id}>
                   <span className="t1">{c.nome}</span>
                   <div className="acts">
                     {!c.ativa && <span className="chip chip-off">Desativada</span>}

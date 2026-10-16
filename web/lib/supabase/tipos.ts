@@ -663,7 +663,7 @@ export type Database = {
       }
     }
     Enums: {
-      acao_historico: "criou" | "alterou" | "cancelou"
+      acao_historico: "criou" | "alterou" | "cancelou" | "apagou"
       castracao: "sim" | "nao" | "nao_sei"
       especie_pet: "cachorro" | "gato"
       faixa_idade: "filhote" | "adulto"
@@ -799,7 +799,7 @@ export const Constants = {
   },
   public: {
     Enums: {
-      acao_historico: ["criou", "alterou", "cancelou"],
+      acao_historico: ["criou", "alterou", "cancelou", "apagou"],
       castracao: ["sim", "nao", "nao_sei"],
       especie_pet: ["cachorro", "gato"],
       faixa_idade: ["filhote", "adulto"],

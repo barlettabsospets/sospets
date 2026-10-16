@@ -1,9 +1,9 @@
 // Histórico de alterações (Mais): como cada linha aparece na tela.
 
-export type AcaoDoHistorico = "criou" | "alterou" | "cancelou";
+export type AcaoDoHistorico = "criou" | "alterou" | "cancelou" | "apagou";
 
 // sinal no círculo da linha, como no protótipo
-export const SINAL_DA_ACAO: Record<AcaoDoHistorico, string> = { criou: "+", alterou: "~", cancelou: "×" };
+export const SINAL_DA_ACAO: Record<AcaoDoHistorico, string> = { criou: "+", alterou: "~", cancelou: "×", apagou: "×" };
 
 const emBrasilia = (instante: Date) => {
   const p = Object.fromEntries(

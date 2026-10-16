@@ -39,22 +39,19 @@ export function porPet(despesas: DespesaParaSomar[]) {
 
 // --- tela Despesas do admin (admin-despesas.html) ---
 
-type DespesaDoMes = { categoria: string; cor: string; valor: number; cancelada: string | null };
+type DespesaDoMes = { categoria: string; cor: string; valor: number };
 
-// "Gasto em outubro": total e quantidade sem as canceladas, e quantas foram canceladas
+// "Gasto em outubro": total e quantidade (as canceladas já vêm de fora)
 export function resumoDoMes(doMes: DespesaDoMes[]) {
-  const validas = doMes.filter((d) => d.cancelada === null);
-  return { total: somar(validas.map((d) => d.valor)), quantidade: validas.length, canceladas: doMes.length - validas.length };
+  return { total: somar(doMes.map((d) => d.valor)), quantidade: doMes.length };
 }
 
-// "4 despesas · 1 cancelada"
-export function textoDaQuantidade({ quantidade, canceladas }: { quantidade: number; canceladas: number }) {
-  const q = `${quantidade} ${quantidade === 1 ? "despesa" : "despesas"}`;
-  return canceladas ? `${q} · ${canceladas} ${canceladas === 1 ? "cancelada" : "canceladas"}` : q;
+// "4 despesas"
+export function textoDaQuantidade({ quantidade }: { quantidade: number }) {
+  return `${quantidade} ${quantidade === 1 ? "despesa" : "despesas"}`;
 }
 
-// "Por categoria": as categorias com despesa no mês (mesmo só canceladas), com o total
-// sem as canceladas, da que mais gastou para a que menos.
+// "Por categoria": as categorias com despesa no mês, com o total, da que mais gastou para a que menos.
 export function categoriasDoMes(doMes: DespesaDoMes[]) {
   return [...new Set(doMes.map((d) => d.categoria))]
     .map((c) => {

@@ -9,6 +9,7 @@ import { PainelPets } from "./PainelPets";
 const acoes = vi.hoisted(() => ({
   salvarPet: vi.fn(async () => ({ ok: true as const, dados: null })),
   restaurarPet: vi.fn(async () => ({ ok: true as const, dados: null })),
+  apagarPet: vi.fn(async () => ({ ok: true as const, dados: null })),
 }));
 vi.mock("@/lib/admin/pets", () => acoes);
 vi.mock("@/lib/fotos/reduzir", () => ({ reduzirFoto: vi.fn() }));
@@ -137,6 +138,26 @@ describe("PainelPets", () => {
     expect(await screen.findByText("Bento: alterações salvas.")).toBeInTheDocument();
     await u.click(within(screen.getByRole("status")).getByRole("button", { name: "Desfazer" }));
     expect(acoes.restaurarPet).toHaveBeenCalledWith(PETS[2]);
+  });
+
+  it("apagar pede confirmação e só existe ao editar", async () => {
+    const u = userEvent.setup();
+    montar();
+    await u.click(screen.getByRole("button", { name: "Novo pet" }));
+    expect(screen.getByRole("button", { name: "Apagar pet", hidden: true })).not.toBeVisible();
+    await u.click(within(screen.getByRole("dialog", { name: "Novo pet" })).getByRole("button", { name: "Cancelar" }));
+
+    await u.click(linha("Bento"));
+    await u.click(within(screen.getByRole("dialog", { name: "Editar Bento" })).getByRole("button", { name: "Apagar pet" }));
+    const janela = screen.getByRole("dialog", { name: "Apagar Bento?" });
+    await u.click(within(janela).getByRole("button", { name: "Voltar" }));
+    expect(acoes.apagarPet).not.toHaveBeenCalled();
+
+    await u.click(linha("Bento"));
+    await u.click(within(screen.getByRole("dialog", { name: "Editar Bento" })).getByRole("button", { name: "Apagar pet" }));
+    await u.click(within(screen.getByRole("dialog", { name: "Apagar Bento?" })).getByRole("button", { name: "Apagar pet" }));
+    expect(acoes.apagarPet).toHaveBeenCalledWith({ id: PETS[2].id });
+    expect(await screen.findByText("Bento foi apagado.")).toBeInTheDocument();
   });
 
   it("falecido mostra o aviso", async () => {

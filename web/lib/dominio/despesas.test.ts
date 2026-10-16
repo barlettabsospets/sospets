@@ -51,18 +51,18 @@ describe("página Despesas: mesmos números do despesas.html", () => {
 });
 
 describe("tela Despesas do admin", () => {
-  const d = (categoria: string, valor: number, cancelada: string | null = null) => ({ categoria, cor: `#${categoria.length}00000`, valor, cancelada });
-  const outubro = [d("Ração", 120), d("Ração", 0.1), d("Castração", 200), d("Exames", 80, "lançada em duplicidade")];
+  const d = (categoria: string, valor: number) => ({ categoria, cor: `#${categoria.length}00000`, valor });
+  const outubro = [d("Ração", 120), d("Ração", 0.1), d("Castração", 200), d("Exames", 80)];
 
-  it("resumo sem as canceladas", () => {
-    expect(resumoDoMes(outubro)).toEqual({ total: 320.1, quantidade: 3, canceladas: 1 });
-    expect(textoDaQuantidade(resumoDoMes(outubro))).toBe("3 despesas · 1 cancelada");
-    expect(textoDaQuantidade({ quantidade: 1, canceladas: 0 })).toBe("1 despesa");
+  it("resumo: total e quantidade", () => {
+    expect(resumoDoMes(outubro)).toEqual({ total: 400.1, quantidade: 4 });
+    expect(textoDaQuantidade(resumoDoMes(outubro))).toBe("4 despesas");
+    expect(textoDaQuantidade({ quantidade: 1 })).toBe("1 despesa");
   });
 
-  it("por categoria: só canceladas aparece com R$ 0, no fim", () => {
+  it("por categoria: da que mais gastou para a que menos", () => {
     expect(categoriasDoMes(outubro).map((c) => [c.categoria, c.total])).toEqual([
-      ["Castração", 200], ["Ração", 120.1], ["Exames", 0],
+      ["Castração", 200], ["Ração", 120.1], ["Exames", 80],
     ]);
   });
 

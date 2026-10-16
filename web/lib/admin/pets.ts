@@ -6,12 +6,14 @@ import { ETIQUETA_PUBLICO } from "@/lib/dados/publico";
 import { mesAtual } from "@/lib/dominio/meses";
 import { dataDaCastracao, datasDaSituacao } from "@/lib/dominio/pets";
 import { criarClienteServidor } from "@/lib/supabase/server";
-import { enviarFoto, FocoDaFoto, FotoDoFormulario, MSG_FOTO } from "./fotos";
+import { apagarFoto, enviarFoto, FocoDaFoto, FotoDoFormulario, MSG_FOTO } from "./fotos";
 import type { Resultado } from "./membros";
 
 // Server Actions da tela Pets. Os pets aparecem no site (menos o local e os ocultos).
 
 const MSG_ERRO = "Não foi possível salvar agora. Confira a conexão e tente de novo.";
+const MSG_TEM_DESPESA =
+  "Este pet tem despesas ligadas a ele e não pode ser apagado. Para tirá-lo do site, desmarque “Mostrar no site público”.";
 
 function salvou() {
   updateTag(ETIQUETA_PUBLICO);
@@ -136,6 +138,28 @@ export async function restaurarPet(entrada: z.input<typeof PetAnterior>): Promis
     .update({ ...campos, foto_foco_x: foto_foco.x, foto_foco_y: foto_foco.y })
     .eq("id", id);
   if (error) return { ok: false, erro: MSG_ERRO };
+
+  salvou();
+  return { ok: true, dados: null };
+}
+
+// Apaga o pet de vez (pedido da Barbara, 16/10): para cadastro errado ou repetido. Não tem "Desfazer";
+// o histórico guarda como ele era. Pet com despesa (mesmo cancelada) não é apagado.
+export async function apagarPet(entrada: { id: string }): Promise<Resultado> {
+  const lido = z.object({ id: z.uuid() }).safeParse(entrada);
+  if (!lido.success) return { ok: false, erro: MSG_ERRO };
+  const { id } = lido.data;
+
+  const supabase = await criarClienteServidor();
+  const { count, error: erroDaContagem } = await supabase.from("despesas").select("id", { count: "exact", head: true }).eq("pet_id", id);
+  if (erroDaContagem) return { ok: false, erro: MSG_ERRO };
+  if (count) return { ok: false, erro: MSG_TEM_DESPESA };
+
+  const { data, error } = await supabase.from("pets").delete().eq("id", id).select("foto_path");
+  // 23503: ganhou uma despesa entre a conferência e o delete
+  if (error) return { ok: false, erro: error.code === "23503" ? MSG_TEM_DESPESA : MSG_ERRO };
+  if (!data?.length) return { ok: false, erro: MSG_ERRO };
+  await apagarFoto(supabase, "pets", data[0].foto_path);
 
   salvou();
   return { ok: true, dados: null };
