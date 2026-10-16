@@ -352,7 +352,7 @@ Cada tela usa Server Actions para gravar, valida com Zod e mostra o toast do pro
 ### Fase 7: qualidade
 - [x] **T7.1** GitHub Actions: lint, typecheck, Vitest e pgTAP em todo PR. *Dep.: T1.8, T2.2*
 - [x] **T7.2** Playwright: visitante vê a Prestação de contas; admin entra, registra uma despesa e ela aparece no site. Já existe a base (`web/e2e/`, `npm run test:e2e`) com os testes do login. *Dep.: T6.4*
-- [ ] **T7.3** Auditoria de acessibilidade (teclado, contraste, leitor de tela) nas 10 telas. *Dep.: Fases 4 e 5*
+- [x] **T7.3** Auditoria de acessibilidade (teclado, contraste, leitor de tela) nas 10 telas. *Dep.: Fases 4 e 5*
 - [ ] **T7.4** Teste em celular real (Android e iPhone) em homologação. *Dep.: T6.4*
 
 ### Decisões tomadas
