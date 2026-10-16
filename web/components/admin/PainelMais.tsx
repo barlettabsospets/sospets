@@ -93,6 +93,7 @@ export function PainelMais({
             <Link href="/admin/campanhas"><span>Campanhas<small>Criar, editar, encerrar</small></span></Link>
             <a href="#config"><span>Configurações<small>Início dos dados e avisos</small></span></a>
             <a href="#auditoria"><span>Histórico de alterações<small>Quem mudou o quê</small></span></a>
+            <Link href="/admin/conta"><span>Minha conta<small>Trocar a sua senha</small></span></Link>
             <Link href="/"><span>Ver o site público<small>Como os membros enxergam</small></span></Link>
           </nav>
         </aside>

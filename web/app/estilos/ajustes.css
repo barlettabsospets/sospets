@@ -42,3 +42,32 @@ body.admin dialog:not(.ad-dlg) > form, body.admin .ad-dlg-b { scrollbar-width: t
 /* Paginação com muitas páginas (histórico de alterações): "…" entre os números. O protótipo mostra
    todos os números, o que só cabe com poucas páginas. */
 body.admin .ad-pager .ad-pager-rest { display: grid; place-items: center; min-width: 24px; color: var(--ink-2); font-weight: 800; }
+
+/* Saudação "Olá, Ana!" ao lado do "Sair" (T5.10, não existe no protótipo; aprovada pela Barbara em 15/10):
+   os dois dividem a área "admin" do cabeçalho; o nome leva a "Minha conta". */
+body.admin .th-conta { grid-area: admin; display: flex; align-items: center; gap: 4px 14px; }
+body.admin .th-ola { display: inline-flex; align-items: center; min-height: 44px; font-weight: 800; color: var(--primary); text-decoration: none; white-space: nowrap; }
+body.admin .th-ola:hover { text-decoration: underline; text-underline-offset: 3px; }
+body.admin .th-ola:focus-visible { outline: 3px solid var(--primary-500); outline-offset: 3px; border-radius: 8px; }
+
+/* Minha conta (T5.9, não existe no protótipo; aprovada pela Barbara em 15/10): as seções no visual das de Mais,
+   uma embaixo da outra, e o campo de senha com "Mostrar" igual ao do login (.lg-senha só existe em body.auth). */
+body.admin .ad-conta { display: grid; gap: 20px; max-width: 640px; }
+body.admin .ad-conta .sec { margin-top: 0; }
+body.admin .ad-conta .ad-form { justify-items: start; }
+body.admin .ad-conta .ad-form .field { width: 100%; }
+body.admin .ad-conta-email { margin: 0; font-weight: 800; font-size: 1.0625rem; overflow-wrap: anywhere; }
+body.admin .lg-senha { position: relative; }
+body.admin .lg-senha input { padding-right: 104px; }
+body.admin .lg-senha button { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); min-height: 40px; padding: 0 12px; border: 0; border-radius: 10px; background: var(--cream); color: var(--primary); font: 800 .9375rem var(--font); cursor: pointer; }
+body.admin .lg-senha button:hover { background: var(--cream-2); }
+body.admin .lg-senha button:focus-visible { outline: 3px solid var(--primary-500); outline-offset: 1px; }
+/* Com a saudação, o cabeçalho do admin em uma linha só cabe a partir de 1100 px (no protótipo, 900 px):
+   de 900 a 1099 px ele fica em duas linhas, como de 760 a 899 (logo e conta em cima, abas embaixo);
+   de 1100 a 1279 px, em uma linha com as abas um pouco mais estreitas; acima disso, como no protótipo. */
+@media (min-width: 900px) and (max-width: 1099px) {
+  body.admin .th-in { grid-template-columns: auto 1fr auto; grid-template-areas: "brand . admin" "tabs tabs tabs"; align-items: center; column-gap: 16px; }
+  body.admin .th-tabs { justify-self: stretch; gap: 6px; }
+  body.admin .th-tabs a { flex: 1; min-height: 52px; padding: 0 12px; font-size: 1rem; }
+}
+@media (min-width: 1100px) and (max-width: 1279px) { body.admin .th-tabs a { padding: 0 14px; } body.admin .th-in { column-gap: 20px; } }

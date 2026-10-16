@@ -267,3 +267,16 @@ export async function lerHistorico(pagina: number): Promise<PaginaDoHistorico> {
     }),
   };
 }
+
+// Quem entrou: nome (de administradores) e e-mail, para a saudação e "Minha conta".
+export type AdministradorAtual = { nome: string; email: string };
+
+export async function lerAdministradorAtual(): Promise<AdministradorAtual | null> {
+  const supabase = await cliente();
+  const { data } = await supabase.auth.getClaims();
+  const id = data?.claims?.sub;
+  if (!id) return null;
+  const { data: admin, error } = await supabase.from("administradores").select("nome").eq("user_id", id).maybeSingle();
+  falhou("administradores", error);
+  return admin ? { nome: admin.nome, email: String(data.claims.email ?? "") } : null;
+}
