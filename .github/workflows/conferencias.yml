@@ -72,5 +72,12 @@ jobs:
       - run: npm run build
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
+      # se algum teste de navegador falhar: o que a página mostrava (só dados fictícios), por 3 dias
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-falhas
+          path: web/test-results/
+          retention-days: 3
       - if: always()
         run: npx supabase stop --no-backup
