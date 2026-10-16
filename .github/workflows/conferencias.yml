@@ -69,6 +69,15 @@ jobs:
           echo "NEXT_PUBLIC_AMBIENTE=homolog" >> .env.local
           cut -d= -f1 .env.local
       - run: node --env-file=.env.local e2e/criar-admin-local.mjs
+      # diagnóstico temporário: o login direto no Supabase local (só o código do erro aparece)
+      - run: |
+          node --env-file=.env.local -e '
+            const { createClient } = require("@supabase/supabase-js");
+            const s = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY, { auth: { persistSession: false } });
+            s.auth.signInWithPassword({ email: process.env.E2E_EMAIL, password: process.env.E2E_SENHA })
+              .then(({ data, error }) => console.log("login:", error ? `${error.code} ${error.status} ${error.message}` : `ok ${data.user.id}`));
+            console.log("chave começa com:", process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY.slice(0, 7), "| url:", process.env.NEXT_PUBLIC_SUPABASE_URL);
+          '
       - run: npm run build
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e

@@ -14,7 +14,7 @@ test("despesa lançada no admin aparece no site, e a cancelada some", async ({ p
   await page.getByLabel("E-mail").fill(email!);
   await page.getByLabel("Senha", { exact: true }).fill(senha!);
   await page.getByRole("button", { name: "Entrar" }).click();
-  await page.waitForURL("**/admin/despesas");
+  await page.waitForURL(/\/admin\/despesas$/);
 
   await page.getByRole("button", { name: "Nova despesa" }).click();
   const janela = page.getByRole("dialog", { name: "Nova despesa" });
