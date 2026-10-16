@@ -65,7 +65,7 @@ export async function salvarNovaSenha(_anterior: EstadoDaNovaSenha, dados: FormD
   const supabase = await criarClienteServidor();
   const { data: sessao } = await supabase.auth.getClaims();
   if (!sessao?.claims?.sub) {
-    return { erro: "O link do e-mail expirou ou já foi usado. Peça um novo link a quem administra o sistema." };
+    return { erro: "O link do e-mail expirou ou já foi usado. Peça um novo em “Esqueci minha senha”, na tela de entrar." };
   }
 
   const { error } = await supabase.auth.updateUser({ password: lido.data.senha });
@@ -83,4 +83,20 @@ export async function salvarNovaSenha(_anterior: EstadoDaNovaSenha, dados: FormD
     redirect("/entrar?aviso=sem-acesso");
   }
   redirect("/admin/contribuicoes");
+}
+
+export type EstadoDoPedido = { erro: string | null; enviado?: boolean; email?: string };
+
+// "Esqueci minha senha": manda o link de redefinição (modelo do e-mail em supabase/templates/recuperar-senha.html).
+// A resposta é a mesma, exista ou não o e-mail, para a página não revelar quem é da equipe.
+export async function pedirNovaSenha(_anterior: EstadoDoPedido, dados: FormData): Promise<EstadoDoPedido> {
+  const email = String(dados.get("email") ?? "").trim();
+  if (!z.email().safeParse(email).success) return { erro: "Informe o e-mail com que você entra.", email };
+
+  const supabase = await criarClienteServidor();
+  const { error } = await supabase.auth.resetPasswordForEmail(email);
+  if (error?.code === "over_email_send_rate_limit" || error?.code === "over_request_rate_limit") {
+    return { erro: "Muitos pedidos seguidos. Espere alguns minutos e tente de novo.", email };
+  }
+  return { erro: null, enviado: true, email };
 }

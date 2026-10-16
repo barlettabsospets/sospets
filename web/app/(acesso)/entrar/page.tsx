@@ -37,7 +37,7 @@ export default function Entrar({ searchParams }: PageProps<"/entrar">) {
           <FormularioComParametros searchParams={searchParams} />
         </Suspense>
         <p className="lg-help">
-          Acesso restrito à equipe do SOS Pets. Esqueceu a senha? Peça a redefinição a quem administra o sistema.
+          Acesso restrito à equipe do SOS Pets. <Link href="/entrar/esqueci">Esqueci minha senha</Link>
         </p>
       </main>
       <Link className="tp-more lg-voltar" href="/">
