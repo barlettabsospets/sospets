@@ -147,6 +147,7 @@ function CartaoResumo({
   const contribuicoes = doPeriodo.reduce((t, r) => t + r.contribuicoes, 0);
   const categorias = [...categoriasComGasto(gastos, inicio, fim).values()].filter((v) => v > 0).length;
   const r = resultadoDoPeriodo(entrou, saiu);
+  const vazio = entrou === 0 && saiu === 0;
 
   return (
     <section className="card c-resumo" aria-labelledby="h-res" aria-live="polite">
@@ -170,16 +171,23 @@ function CartaoResumo({
           <dd className="d">{r.faltou ? "pago com o caixa" : "ficou em caixa"}</dd>
         </div>
       </dl>
+      {/* nada entrou nem saiu (não existe no protótipo; acontece num banco ainda vazio): barra vazia */}
       <div
         className="tp-usebar"
         role="img"
-        aria-label={r.faltou ? "O gasto passou do que entrou" : `${r.usado}% do que entrou foi usado e ${100 - r.usado}% sobrou`}
+        aria-label={
+          vazio ? "Nada entrou nem saiu neste período"
+          : r.faltou ? "O gasto passou do que entrou"
+          : `${r.usado}% do que entrou foi usado e ${100 - r.usado}% sobrou`
+        }
       >
-        <i style={{ width: `${r.usado}%` }} />
-        {!r.faltou && <i style={{ width: `${100 - r.usado}%` }} />}
+        {!vazio && <i style={{ width: `${r.usado}%` }} />}
+        {!vazio && !r.faltou && <i style={{ width: `${100 - r.usado}%` }} />}
       </div>
       <p className="result">
-        {r.faltou ? "Saiu mais do que entrou neste período." : <><b>{r.usado}%</b> do que entrou foi usado. O restante ficou em caixa.</>}
+        {vazio ? "Nada entrou nem saiu neste período."
+          : r.faltou ? "Saiu mais do que entrou neste período."
+          : <><b>{r.usado}%</b> do que entrou foi usado. O restante ficou em caixa.</>}
       </p>
     </section>
   );
