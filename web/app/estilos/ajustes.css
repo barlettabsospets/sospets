@@ -38,3 +38,7 @@ body.admin .ad-foco-previas figcaption { font-size: .8125rem; color: var(--ink-2
 body.admin dialog:not(.ad-dlg) { padding: 0; overflow: hidden; max-height: calc(100dvh - 32px); }
 body.admin dialog:not(.ad-dlg) > form { padding: 24px; max-height: calc(100dvh - 32px); overflow-y: auto; overscroll-behavior: contain; }
 body.admin dialog:not(.ad-dlg) > form, body.admin .ad-dlg-b { scrollbar-width: thin; scrollbar-color: rgba(74, 40, 20, .28) transparent; }
+
+/* Paginação com muitas páginas (histórico de alterações): "…" entre os números. O protótipo mostra
+   todos os números, o que só cabe com poucas páginas. */
+body.admin .ad-pager .ad-pager-rest { display: grid; place-items: center; min-width: 24px; color: var(--ink-2); font-weight: 800; }

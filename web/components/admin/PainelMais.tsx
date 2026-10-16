@@ -6,21 +6,23 @@ import { Dialogo } from "@/components/ui/Dialogo";
 import { useToast } from "@/components/ui/Toast";
 import { criarCategoria, mudarCategoriaAtiva, renomearCategoria, salvarConfiguracoes } from "@/lib/admin/mais";
 import type { Resultado } from "@/lib/admin/membros";
-import type { Categoria } from "@/lib/dados/admin";
+import type { Categoria, PaginaDoHistorico } from "@/lib/dados/admin";
 import type { CampanhaPublica } from "@/lib/dados/publico";
 import { formatarBRL } from "@/lib/dominio/formatacao";
+import { HistoricoDeAlteracoes } from "./HistoricoDeAlteracoes";
 
-// Tela Mais (admin-mais.html): menu da página, categorias de despesa, campanhas e configurações.
-// Exportar dados e Histórico de alterações entram na T5.8.
+// Tela Mais (admin-mais.html): menu da página, exportar dados, categorias de despesa, campanhas,
+// configurações e histórico de alterações.
 // Renomear e desativar categoria não existem no protótipo: seguem os botões da tela Membros.
 export function PainelMais({
-  categorias, campanhas, dataDesde, avisoMeses,
+  categorias, campanhas, dataDesde, avisoMeses, historico,
 }: {
   categorias: Categoria[];
   campanhas: CampanhaPublica[];
   // "2026-01-01"
   dataDesde: string;
   avisoMeses: number;
+  historico: PaginaDoHistorico;
 }) {
   const toast = useToast();
   const [, iniciar] = useTransition();
@@ -86,13 +88,26 @@ export function PainelMais({
       <div className="split">
         <aside>
           <nav className="glist menu-list" aria-label="Nesta página">
+            <a href="#exportar"><span>Exportar dados<small>Baixar tudo em planilha</small></span></a>
             <a href="#categorias"><span>Categorias de despesa<small>Adicionar ou renomear</small></span></a>
             <Link href="/admin/campanhas"><span>Campanhas<small>Criar, editar, encerrar</small></span></Link>
             <a href="#config"><span>Configurações<small>Início dos dados e avisos</small></span></a>
+            <a href="#auditoria"><span>Histórico de alterações<small>Quem mudou o quê</small></span></a>
             <Link href="/"><span>Ver o site público<small>Como os membros enxergam</small></span></Link>
           </nav>
         </aside>
         <div>
+          <section className="sec tile" id="exportar">
+            <h2>Exportar dados</h2>
+            <p className="muted" style={{ marginBottom: 14 }}>Seus dados são da organização. Baixe quando quiser.</p>
+            {/* links de download (planilha CSV que abre no Excel), no visual dos botões do protótipo */}
+            <div className="two">
+              <a className="btn btn-secondary" href="/admin/exportar/doacoes" download>Doações (planilha)</a>
+              <a className="btn btn-secondary" href="/admin/exportar/despesas" download>Despesas (planilha)</a>
+              <a className="btn btn-secondary" href="/admin/exportar/pets" download>Pets (planilha)</a>
+              <a className="btn btn-secondary" href="/admin/exportar/membros" download>Membros (planilha)</a>
+            </div>
+          </section>
           <section className="sec tile" id="categorias">
             <h2>Categorias de despesa</h2>
             <div className="glist">
@@ -158,6 +173,10 @@ export function PainelMais({
               </div>
               <button className="btn btn-primary" type="submit">Salvar configurações</button>
             </form>
+          </section>
+          <section className="sec tile" id="auditoria">
+            <h2>Histórico de alterações</h2>
+            <HistoricoDeAlteracoes primeira={historico} />
           </section>
         </div>
       </div>
