@@ -38,10 +38,14 @@ type Linha = {
 function consultar(): Linha[] {
   const saida = execFileSync(
     "npx",
-    ["supabase", "db", "query", alvo === "local" ? "--local" : "--linked", SQL],
+    // -o json: sem isso, fora de um terminal interativo (como no GitHub Actions) a saída vem em tabela
+    ["supabase", "db", "query", alvo === "local" ? "--local" : "--linked", "-o", "json", SQL],
     { encoding: "utf8", maxBuffer: 20 * 1024 * 1024 },
   );
-  return JSON.parse(saida.slice(saida.indexOf("{"))).rows;
+  // conforme a versão e o terminal, vem uma lista de linhas ou { rows: [...] } (com avisos antes)
+  const inicio = saida.search(/[[{]/);
+  const lido = JSON.parse(saida.slice(inicio));
+  return Array.isArray(lido) ? lido : lido.rows;
 }
 
 describe.skipIf(!alvo)("situacao_pet (SQL) × situacaoPet (TS)", () => {
