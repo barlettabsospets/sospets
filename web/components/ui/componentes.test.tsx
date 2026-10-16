@@ -6,7 +6,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { Escolha } from "./Escolha";
 import { GrupoDeBotoes } from "./GrupoDeBotoes";
 import { Paginacao } from "./Paginacao";
-import { paginar } from "./paginacao";
+import { paginar, paginasVisiveis } from "./paginacao";
 import { SeletorDePeriodo } from "./SeletorDePeriodo";
 import { ProvedorDeToast, useToast } from "./Toast";
 
@@ -195,5 +195,26 @@ describe("Toast", () => {
     render(<ProvedorDeToast><Acao /></ProvedorDeToast>);
     await u.click(screen.getByRole("button", { name: "Registrar" }));
     expect(screen.queryByRole("button", { name: "Desfazer" })).not.toBeInTheDocument();
+  });
+});
+
+describe("paginasVisiveis", () => {
+  it("até 9 páginas, todas, como no protótipo", () => {
+    expect(paginasVisiveis(1, 3)).toEqual([1, 2, 3]);
+    expect(paginasVisiveis(5, 9)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+  });
+  it("com muitas, a primeira, a última e as vizinhas da atual, com … (null) entre elas", () => {
+    expect(paginasVisiveis(1, 40)).toEqual([1, 2, 3, 4, 5, null, 40]);
+    expect(paginasVisiveis(5, 40)).toEqual([1, null, 4, 5, 6, null, 40]);
+    expect(paginasVisiveis(3, 40)).toEqual([1, 2, 3, 4, 5, null, 40]);
+    expect(paginasVisiveis(40, 40)).toEqual([1, null, 36, 37, 38, 39, 40]);
+    expect(paginasVisiveis(37, 40)).toEqual([1, null, 36, 37, 38, 39, 40]);
+  });
+  it("na tela, o … fica escondido do leitor de tela e a página atual é marcada", () => {
+    render(<Paginacao pagina={20} paginas={40} rotulo="Páginas do histórico" aoIr={() => {}} />);
+    expect(screen.getAllByRole("button").map((b) => b.getAttribute("aria-label"))).toEqual([
+      "Página anterior", "Página 1 de 40", "Página 19 de 40", "Página 20 de 40", "Página 21 de 40", "Página 40 de 40", "Próxima página",
+    ]);
+    expect(screen.getByRole("button", { name: "Página 20 de 40" })).toHaveAttribute("aria-current", "page");
   });
 });

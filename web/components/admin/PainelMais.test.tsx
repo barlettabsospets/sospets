@@ -3,6 +3,7 @@ import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { ProvedorDeToast } from "@/components/ui/Toast";
+import type { LinhaDoHistorico } from "@/lib/dados/admin";
 import { PainelMais } from "./PainelMais";
 
 const acoes = vi.hoisted(() => ({
@@ -12,6 +13,8 @@ const acoes = vi.hoisted(() => ({
   mudarCategoriaAtiva: vi.fn(async () => ({ ok: true as const, dados: null })),
 }));
 vi.mock("@/lib/admin/mais", () => acoes);
+const historico = vi.hoisted(() => ({ paginaDoHistorico: vi.fn() }));
+vi.mock("@/lib/admin/historico", () => historico);
 
 // o jsdom não tem showModal/close
 beforeAll(() => {
@@ -23,6 +26,19 @@ afterEach(() => {
   cleanup();
   vi.clearAllMocks();
 });
+
+const mudanca = (n: number, extra: Partial<LinhaDoHistorico> = {}): LinhaDoHistorico => ({
+  id: `h${n}`, acao: "alterou", resumo: `Mudança ${n}`, valor: null, quem: "Ana Exemplo", quando: "2026-10-12T12:15:00Z", ...extra,
+});
+const PRIMEIRA = {
+  total: 12,
+  pagina: 1,
+  itens: [
+    mudanca(1, { acao: "criou", resumo: "Despesa criada: Ração para gatos de rua", valor: 120 }),
+    mudanca(2, { acao: "cancelou", resumo: "Despesa cancelada: lançada em duplicidade", quem: null }),
+    ...Array.from({ length: 8 }, (_, i) => mudanca(i + 3)),
+  ],
+};
 
 const montar = () =>
   render(
@@ -38,6 +54,7 @@ const montar = () =>
         }]}
         dataDesde="2026-01-01"
         avisoMeses={3}
+        historico={PRIMEIRA}
       />
     </ProvedorDeToast>,
   );
@@ -116,5 +133,38 @@ describe("PainelMais", () => {
     await u.click(within(linha("Ração")).getByRole("button", { name: "Renomear" }));
     await u.click(screen.getByRole("button", { name: "Salvar nome" }));
     expect(acoes.renomearCategoria).not.toHaveBeenCalled();
+  });
+
+  it("exportar: um link de download para cada planilha", () => {
+    montar();
+    const sec = within(document.getElementById("exportar")!);
+    expect(sec.getByRole("link", { name: "Doações (planilha)" })).toHaveAttribute("href", "/admin/exportar/doacoes");
+    expect(sec.getByRole("link", { name: "Despesas (planilha)" })).toHaveAttribute("href", "/admin/exportar/despesas");
+    expect(sec.getByRole("link", { name: "Pets (planilha)" })).toHaveAttribute("href", "/admin/exportar/pets");
+    expect(sec.getByRole("link", { name: "Membros (planilha)" })).toHaveAttribute("download");
+  });
+
+  it("histórico: o que mudou, valor, quem e quando, de 10 em 10", async () => {
+    const u = userEvent.setup();
+    historico.paginaDoHistorico.mockResolvedValueOnce({
+      ok: true, dados: { total: 12, pagina: 2, itens: [mudanca(11, { resumo: "Pet cadastrado: Mel" }), mudanca(12)] },
+    });
+    montar();
+    const sec = within(document.getElementById("auditoria")!);
+    expect(sec.getByText("12 alterações · mostrando 1–10")).toBeInTheDocument();
+    const criada = sec.getByText("Despesa criada: Ração para gatos de rua").closest(".arow") as HTMLElement;
+    expect(within(criada).getByText("+")).toBeInTheDocument();
+    expect(within(criada).getByText(/^R\$ 120,00 · Ana Exemplo · /)).toBeInTheDocument();
+    // feita fora do site (sem administrador): só o quando
+    const cancelada = sec.getByText("Despesa cancelada: lançada em duplicidade").closest(".arow") as HTMLElement;
+    expect(within(cancelada).getByText("×")).toBeInTheDocument();
+    expect(within(cancelada).queryByText(/Ana/)).not.toBeInTheDocument();
+
+    await u.click(sec.getByRole("button", { name: "Página 2 de 2" }));
+    expect(historico.paginaDoHistorico).toHaveBeenCalledWith({ pagina: 2 });
+    expect(await sec.findByText("Pet cadastrado: Mel")).toBeInTheDocument();
+    expect(sec.getByText("12 alterações · mostrando 11–12")).toBeInTheDocument();
+    await u.click(sec.getByRole("button", { name: "Página 1 de 2" }));
+    expect(sec.getByText("Despesa criada: Ração para gatos de rua")).toBeInTheDocument();
   });
 });

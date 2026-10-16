@@ -126,7 +126,8 @@ describe("PainelPets", () => {
     montar();
     await u.click(linha("Bento"));
     const janela = screen.getByRole("dialog", { name: "Editar Bento" });
-    expect(within(janela).getByLabelText("Nome")).toHaveFocus();
+    // o foco vai para o nome no quadro seguinte (requestAnimationFrame)
+    await vi.waitFor(() => expect(within(janela).getByLabelText("Nome")).toHaveFocus());
     expect(within(janela).getByLabelText("Adotado em")).toHaveValue("2026-09");
     expect(within(janela).getByLabelText("Onde fica (só a equipe vê)")).toHaveValue("quadra 105");
     expect(within(janela).getByLabelText("Mostrar no site público")).not.toBeChecked();

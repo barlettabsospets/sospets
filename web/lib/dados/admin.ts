@@ -1,4 +1,5 @@
 import { connection } from "next/server";
+import { POR_PAGINA } from "@/components/ui/paginacao";
 import { type Contribuicao, diaEmBrasilia } from "@/lib/dominio/contribuicoes";
 import type { Foco } from "@/lib/dominio/fotos";
 import type { Membro } from "@/lib/dominio/membros";
@@ -220,4 +221,49 @@ export async function lerPetsDoAdmin(): Promise<PetDoAdmin[]> {
     .order("nome");
   falhou("pets", error);
   return (data ?? []).map(({ foto_foco_x, foto_foco_y, ...p }) => ({ ...p, foto_foco: { x: foto_foco_x, y: foto_foco_y } }));
+}
+
+// Histórico de alterações (Mais), do mais recente para o mais antigo, de 10 em 10.
+export type LinhaDoHistorico = {
+  id: string;
+  acao: "criou" | "alterou" | "cancelou";
+  resumo: string;
+  // valor da contribuição ou da despesa
+  valor: number | null;
+  // nome do administrador (null nas mudanças feitas fora do site, como o seed)
+  quem: string | null;
+  quando: string;
+};
+export type PaginaDoHistorico = { itens: LinhaDoHistorico[]; total: number; pagina: number };
+
+export async function lerHistorico(pagina: number): Promise<PaginaDoHistorico> {
+  const supabase = await cliente();
+  const de = (pagina - 1) * POR_PAGINA;
+  const [h, a] = await Promise.all([
+    supabase
+      .from("historico")
+      .select("id, acao, resumo, quando, user_id, tabela, depois", { count: "exact" })
+      .order("quando", { ascending: false })
+      .order("id")
+      .range(de, de + POR_PAGINA - 1),
+    supabase.from("administradores").select("user_id, nome"),
+  ]);
+  falhou("historico", h.error);
+  falhou("administradores", a.error);
+  const nomes = new Map((a.data ?? []).map((x) => [x.user_id, x.nome]));
+  return {
+    total: h.count ?? 0,
+    pagina,
+    itens: (h.data ?? []).map((x) => {
+      const depois = x.depois as { valor?: number } | null;
+      return {
+        id: x.id,
+        acao: x.acao,
+        resumo: x.resumo,
+        valor: (x.tabela === "contribuicoes" || x.tabela === "despesas") && depois?.valor != null ? Number(depois.valor) : null,
+        quem: x.user_id ? nomes.get(x.user_id) ?? null : null,
+        quando: x.quando,
+      };
+    }),
+  };
 }
