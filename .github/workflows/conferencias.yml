@@ -40,9 +40,9 @@ jobs:
       - run: npm test
 
   banco:
-    name: Banco (pgTAP e situação do pet)
+    name: Banco (pgTAP) e navegador (Playwright)
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -60,5 +60,17 @@ jobs:
       - run: npm run test:banco
         env:
           TESTE_BANCO: local
+      # T7.2: o app de verdade contra esse banco, num navegador (visitante e administrador)
+      - name: Ligar o app ao Supabase local
+        run: |
+          npx supabase status -o env \
+            | sed -n 's/^API_URL=/NEXT_PUBLIC_SUPABASE_URL=/p; s/^ANON_KEY=/NEXT_PUBLIC_SUPABASE_ANON_KEY=/p; s/^SERVICE_ROLE_KEY=/SUPABASE_SERVICE_ROLE_KEY=/p' \
+            | tr -d '"' > .env.local
+          echo "NEXT_PUBLIC_AMBIENTE=homolog" >> .env.local
+          cut -d= -f1 .env.local
+      - run: node --env-file=.env.local e2e/criar-admin-local.mjs
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
       - if: always()
         run: npx supabase stop --no-backup

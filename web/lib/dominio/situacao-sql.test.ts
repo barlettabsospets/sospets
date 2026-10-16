@@ -38,7 +38,8 @@ type Linha = {
 function consultar(): Linha[] {
   const saida = execFileSync(
     "npx",
-    ["supabase", "db", "query", alvo === "local" ? "--local" : "--linked", SQL],
+    // -o json: sem isso, fora de um terminal interativo (como no GitHub Actions) a saída vem em tabela
+    ["supabase", "db", "query", alvo === "local" ? "--local" : "--linked", "-o", "json", SQL],
     { encoding: "utf8", maxBuffer: 20 * 1024 * 1024 },
   );
   return JSON.parse(saida.slice(saida.indexOf("{"))).rows;
