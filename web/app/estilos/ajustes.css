@@ -43,6 +43,12 @@ body.admin dialog:not(.ad-dlg) > form, body.admin .ad-dlg-b { scrollbar-width: t
    todos os números, o que só cabe com poucas páginas. */
 body.admin .ad-pager .ad-pager-rest { display: grid; place-items: center; min-width: 24px; color: var(--ink-2); font-weight: 800; }
 
+/* No celular, todos os números não cabem numa linha (a seta "›" caía para baixo). Fica só a página
+   atual e as setas que levam a algum lugar: "1 ›", "‹ 2 ›", "‹ 6" (pedido da Barbara, 16/10). */
+@media (max-width: 599px) {
+  :is(.an-pager, body.admin .ad-pager) :is(.pg-num:not([aria-current]), .ad-pager-rest, button[disabled]) { display: none; }
+}
+
 /* Saudação "Olá, Ana!" ao lado do "Sair" (T5.10, não existe no protótipo; aprovada pela Barbara em 15/10):
    os dois dividem a área "admin" do cabeçalho; o nome leva a "Minha conta". */
 body.admin .th-conta { grid-area: admin; display: flex; align-items: center; gap: 4px 14px; }
@@ -74,3 +80,38 @@ body.admin .lg-senha button:focus-visible { outline: 3px solid var(--primary-500
 /* Com o cabeçalho em uma linha (1100 px ou mais), "Olá, Ana!" e "Sair" ficam no alto, junto do topo do logo,
    e não na altura das abas (pedido da Barbara, 16/10). */
 @media (min-width: 1100px) { body.admin .th-conta { align-self: start; justify-self: end; padding-top: 4px; } }
+
+/* "Esqueci minha senha" (T3.4, não existe no protótipo): o aviso de link enviado, verde como o chip-ok,
+   no lugar da caixa de erro do login; e o link no texto de ajuda do login. */
+body.auth .lg-ok { margin: 0; padding: 12px 14px; border-radius: 12px; background: var(--green-100); color: var(--green-700); font-weight: 700; font-size: .9375rem; line-height: 1.5; }
+body.auth .lg-ok:focus-visible { outline: 3px solid var(--primary-500); outline-offset: 3px; }
+body.auth .lg-help a { color: var(--primary); font-weight: 800; }
+
+/* Painel lateral do admin: o CSS base deixa o aside "grudado" a partir de 1000 px, mas o admin só
+   vira duas colunas em 1100 px. Entre 1000 e 1099 px o aside fica numa coluna só e, grudado, passa
+   por cima da lista ao rolar. O mesmo acontece no protótipo. */
+@media (max-width: 1099px) { body.admin .split > aside { position: static; } }
+
+/* Janelas no celular: a área dos campos "escorregava" para o lado ao arrastar o dedo (iPhone).
+   Só rola na vertical (o zoom de dois dedos continua), e os campos de data e mês, que no Safari
+   têm largura própria, não passam da largura da janela (pedido da Barbara, 16/10). */
+body.admin :is(.ad-dlg-b, dialog:not(.ad-dlg) > form) { overflow-x: hidden; touch-action: pan-y pinch-zoom; }
+body.admin .field :is(input[type="date"], input[type="month"]) { min-width: 0; max-width: 100%; }
+body.admin :is(.ad-row2, .field) > * { min-width: 0; }
+
+/* Categorias (Mais): no celular, nome em cima e "Desativar" e "Renomear" embaixo, lado a lado.
+   Um nome comprido de uma palavra só ("Medicamentos") espremia os botões um sobre o outro. */
+body.admin .arow.ad-cat { grid-template-columns: minmax(0, 1fr) auto; }
+@media (max-width: 599px) {
+  body.admin .arow.ad-cat { grid-template-columns: minmax(0, 1fr); row-gap: 8px; }
+  body.admin .arow.ad-cat .acts { grid-column: 1; margin: 0; justify-content: flex-start; }
+  body.admin .arow.ad-cat .acts .chip { margin-left: 0; }
+}
+
+/* Pets (site): no HTML, os números (chegadas e saídas da rua, fila de castração) vêm antes de "Nossos pets",
+   para o celular mostrá-los logo depois das campanhas, com a ordem do Tab igual à da tela (pedido da
+   Barbara, 16/10; no protótipo o catálogo vem antes). No computador continuam à direita do catálogo. */
+@media (min-width: 1100px) {
+  .an-split > .an-cat { grid-column: 1; grid-row: 1; }
+  .an-split > .an-num { grid-column: 2; grid-row: 1; }
+}

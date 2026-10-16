@@ -1,0 +1,13 @@
+<!-- T3.4: e-mail de "Esqueci minha senha". Colar em Supabase → Authentication → Emails → Reset password
+     (sospets-homolog e sospets-prod), com o assunto: Criar uma nova senha – SOS Pets
+     O link usa o Site URL do projeto e vai para /auth/confirmar, que leva à tela "Nova senha". -->
+<div style="font-family: Arial, Helvetica, sans-serif; color: #2A1810; max-width: 480px; line-height: 1.5;">
+  <h2 style="color: #134074; margin: 0 0 12px;">Criar uma nova senha</h2>
+  <p>Alguém pediu para criar uma nova senha para entrar na área do administrador do <b>SOS Pets DF Águas Claras</b> com este e-mail.</p>
+  <p style="margin: 24px 0;">
+    <a href="{{ .SiteURL }}/auth/confirmar?token_hash={{ .TokenHash }}&type=recovery"
+       style="background: #134074; color: #ffffff; padding: 12px 20px; border-radius: 12px; text-decoration: none; font-weight: bold;">Criar nova senha</a>
+  </p>
+  <p>O link vale por 1 hora e só funciona uma vez.</p>
+  <p style="color: #6E5A4E; font-size: 14px;">Se não foi você, é só ignorar este e-mail: sua senha continua a mesma.</p>
+</div>

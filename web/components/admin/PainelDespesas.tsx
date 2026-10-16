@@ -147,7 +147,7 @@ export function PainelDespesas({
     if (!d || !m) return;
     setCancelando(null);
     gravar(() => cancelarDespesa({ id: d.id, motivo: m }), () =>
-      toast("Despesa cancelada. Ela saiu do total do mês.", () => gravar(() => cancelarDespesa({ id: d.id, motivo: null }), () => {})),
+      toast("Despesa cancelada. Ela saiu da lista e do total do mês.", () => gravar(() => cancelarDespesa({ id: d.id, motivo: null }), () => {})),
     );
   };
 
@@ -221,7 +221,7 @@ export function PainelDespesas({
               <button
                 type="button"
                 key={d.id}
-                className={`arow ad-rowbtn sem-thumb${d.cancelada !== null ? " void" : ""}`}
+                className="arow ad-rowbtn sem-thumb"
                 aria-label={`Editar ${d.descricao}`}
                 onClick={() => abrir(d)}
               >
@@ -234,7 +234,6 @@ export function PainelDespesas({
                       {d.especie && <IconeEspecie especie={d.especie} />}
                       {d.pet ?? "Vários pets"}
                     </span>
-                    {d.cancelada !== null && ` · cancelada: ${d.cancelada}`}
                   </span>
                 </span>
                 <span className="acts">
@@ -260,9 +259,6 @@ export function PainelDespesas({
             </button>
           </header>
           <div className="ad-dlg-b">
-            {editando && editando.cancelada !== null && (
-              <p className="ad-aviso">Esta despesa foi cancelada ({editando.cancelada}) e não entra no total.</p>
-            )}
             <div className="ad-sec">
               <div className="field">
                 <label htmlFor="f-desc">O que foi comprado ou pago?</label>
@@ -311,7 +307,7 @@ export function PainelDespesas({
             </div>
           </div>
           <footer className="ad-dlg-f">
-            <button className="btn ad-perigo" type="button" hidden={!editando || editando.cancelada !== null} onClick={abrirCancelar}>
+            <button className="btn ad-perigo" type="button" hidden={!editando} onClick={abrirCancelar}>
               Cancelar despesa
             </button>
             <button className="btn btn-secondary" type="button" onClick={() => setEditando(undefined)}>Fechar</button>
@@ -331,7 +327,7 @@ export function PainelDespesas({
             <input id="v-m" placeholder="Ex.: lançada em duplicidade" required value={motivo} onChange={(e) => setMotivo(e.target.value)} />
           </div>
           <p className="hint muted">
-            A despesa não é apagada: fica marcada como cancelada, sai do total e fica registrada no histórico de alterações.
+            A despesa não é apagada: sai da lista e do total, e fica registrada no histórico de alterações (em Mais).
           </p>
           <div className="btns">
             <button className="btn btn-secondary" type="button" onClick={() => setCancelando(null)}>Voltar</button>

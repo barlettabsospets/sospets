@@ -12,7 +12,7 @@ async function semProblemas(page: Page, nome: string) {
   expect(problemas, `${nome}`).toEqual([]);
 }
 
-for (const [rota, nome] of [["/", "Prestação de contas"], ["/pets", "Pets"], ["/despesas", "Despesas"], ["/entrar", "Login"]] as const) {
+for (const [rota, nome] of [["/", "Prestação de contas"], ["/pets", "Pets"], ["/despesas", "Despesas"], ["/entrar", "Login"], ["/entrar/esqueci", "Esqueci minha senha"]] as const) {
   test(`${nome} (público)`, async ({ page }) => {
     await page.goto(rota);
     await page.waitForLoadState("networkidle");

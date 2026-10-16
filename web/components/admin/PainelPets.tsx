@@ -11,7 +11,7 @@ import { paginar } from "@/components/ui/paginacao";
 import { SeletorDePeriodo } from "@/components/ui/SeletorDePeriodo";
 import { useToast } from "@/components/ui/Toast";
 import type { Resultado } from "@/lib/admin/membros";
-import { restaurarPet, salvarPet } from "@/lib/admin/pets";
+import { apagarPet, restaurarPet, salvarPet } from "@/lib/admin/pets";
 import type { PetDoAdmin } from "@/lib/dados/admin";
 import { capitalizar, mesAbreviado, mesPorExtenso, semAcento } from "@/lib/dominio/formatacao";
 import { FOCO_CENTRO, urlDaFoto } from "@/lib/dominio/fotos";
@@ -101,6 +101,8 @@ export function PainelPets({ pets, mesAtual, dadosDesde }: { pets: PetDoAdmin[];
   const [noSite, setNoSite] = useState(true);
   const [foto, setFoto] = useState<FotoEscolhida>({ previa: null, foco: FOCO_CENTRO });
   const campoNome = useRef<HTMLInputElement>(null);
+  // janela "Apagar pet"
+  const [apagando, setApagando] = useState<PetDoAdmin | null>(null);
 
   const gravar = (acao: () => Promise<Resultado>, aoGravar: () => void) =>
     iniciar(async () => {
@@ -199,6 +201,19 @@ export function PainelPets({ pets, mesAtual, dadosDesde }: { pets: PetDoAdmin[];
         }
       },
     );
+  };
+
+  const abrirApagar = () => {
+    setApagando(editando ?? null);
+    setEditando(undefined);
+  };
+
+  const apagar = (e: FormEvent) => {
+    e.preventDefault();
+    const p = apagando;
+    if (!p) return;
+    setApagando(null);
+    gravar(() => apagarPet({ id: p.id }), () => toast(`${p.nome} foi ${genero(p, "apagado", "apagada")}.`));
   };
 
   return (
@@ -408,9 +423,26 @@ export function PainelPets({ pets, mesAtual, dadosDesde }: { pets: PetDoAdmin[];
             </fieldset>
           </div>
           <footer className="ad-dlg-f">
+            <button className="btn ad-perigo" type="button" hidden={!editando} onClick={abrirApagar}>Apagar pet</button>
             <button className="btn btn-secondary" type="button" onClick={() => setEditando(undefined)}>Cancelar</button>
             <button className="btn btn-primary" type="submit" disabled={foto.preparando}>{editando ? "Salvar alterações" : "Salvar pet"}</button>
           </footer>
+        </form>
+      </Dialogo>
+
+      <Dialogo aberto={apagando !== null} aoFechar={() => setApagando(null)} aria-labelledby="ap-t">
+        <form onSubmit={apagar}>
+          <h2 id="ap-t">Apagar {apagando?.nome}?</h2>
+          <p className="hint muted">
+            Use para um cadastro errado ou repetido. O pet sai do admin e do site de vez, e não dá para desfazer; fica só um registro no histórico de alterações (em Mais).
+          </p>
+          <p className="hint muted">
+            Pet com despesa ligada não pode ser apagado. Para tirá-lo do site, desmarque “Mostrar no site público”.
+          </p>
+          <div className="btns">
+            <button className="btn btn-secondary" type="button" onClick={() => setApagando(null)}>Voltar</button>
+            <button className="btn ad-perigo-cheio" type="submit">Apagar pet</button>
+          </div>
         </form>
       </Dialogo>
     </>

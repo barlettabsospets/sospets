@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import { paginasVisiveis } from "./paginacao";
 
-// Botões ‹ 1 2 3 › das listas do admin. Ao trocar de página, o foco vai para a página atual.
+// Botões ‹ 1 2 3 › das listas do admin (no celular, só ‹ 2 ›). Ao trocar de página, o foco vai para a página atual.
 export function Paginacao({
   pagina,
   paginas,
@@ -33,6 +33,7 @@ export function Paginacao({
         <button
           key={n}
           type="button"
+          className="pg-num"
           aria-current={n === pagina ? "page" : undefined}
           aria-label={`Página ${n} de ${paginas}`}
           onClick={() => ir(n)}

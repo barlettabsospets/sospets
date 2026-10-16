@@ -6,7 +6,7 @@ import { FormularioNovaSenha } from "@/components/auth/FormularioNovaSenha";
 
 export const metadata: Metadata = { title: "Nova senha" };
 
-const LINK_INVALIDO = "O link do e-mail expirou ou já foi usado. Peça um novo link a quem administra o sistema.";
+const LINK_INVALIDO = "O link do e-mail expirou ou já foi usado. Peça um novo em “Esqueci minha senha”, na tela de entrar.";
 
 async function FormularioComParametros({ searchParams }: { searchParams: PageProps<"/entrar/nova-senha">["searchParams"] }) {
   const { link } = await searchParams;
