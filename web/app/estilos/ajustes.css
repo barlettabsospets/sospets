@@ -71,3 +71,6 @@ body.admin .lg-senha button:focus-visible { outline: 3px solid var(--primary-500
   body.admin .th-tabs a { flex: 1; min-height: 52px; padding: 0 12px; font-size: 1rem; }
 }
 @media (min-width: 1100px) and (max-width: 1279px) { body.admin .th-tabs a { padding: 0 14px; } body.admin .th-in { column-gap: 20px; } }
+/* Com o cabeçalho em uma linha (1100 px ou mais), "Olá, Ana!" e "Sair" ficam no alto, junto do topo do logo,
+   e não na altura das abas (pedido da Barbara, 16/10). */
+@media (min-width: 1100px) { body.admin .th-conta { align-self: start; justify-self: end; padding-top: 4px; } }
