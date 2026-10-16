@@ -179,7 +179,7 @@ export function CatalogoPets({
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7" /></svg>
             </button>
             {Array.from({ length: paginas }, (_, k) => k + 1).map((n) => (
-              <button key={n} type="button" aria-current={n === p ? "page" : undefined} aria-label={`Página ${n} de ${paginas}`} onClick={() => irParaPagina(n)}>
+              <button key={n} type="button" className="pg-num" aria-current={n === p ? "page" : undefined} aria-label={`Página ${n} de ${paginas}`} onClick={() => irParaPagina(n)}>
                 {n}
               </button>
             ))}

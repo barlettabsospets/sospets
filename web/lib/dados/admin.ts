@@ -143,18 +143,18 @@ export type DespesaDoAdmin = {
   pet: string | null;
   especie: "cachorro" | "gato" | null;
   campanhaId: string | null;
-  // motivo, quando cancelada
-  cancelada: string | null;
 };
 
-// Todas as despesas, inclusive as canceladas (aparecem riscadas), da mais recente para a mais antiga.
+// Despesas não canceladas, da mais recente para a mais antiga. As canceladas ficam no histórico
+// de alterações e na planilha exportada (pedido da Barbara, 16/10).
 export async function lerDespesasDoAdmin(): Promise<DespesaDoAdmin[]> {
   const supabase = await cliente();
   const todas: DespesaDoAdmin[] = [];
   for (let de = 0; ; de += 1000) {
     const { data, error } = await supabase
       .from("despesas")
-      .select("id, data, descricao, valor, categoria_id, pet_id, campanha_id, cancelada_em, motivo_cancelamento, categorias(nome, cor), pets(nome, especie)")
+      .select("id, data, descricao, valor, categoria_id, pet_id, campanha_id, categorias(nome, cor), pets(nome, especie)")
+      .is("cancelada_em", null)
       .order("data", { ascending: false })
       .order("criado_em", { ascending: false })
       .range(de, de + 999);
@@ -171,7 +171,6 @@ export async function lerDespesasDoAdmin(): Promise<DespesaDoAdmin[]> {
       pet: d.pets?.nome ?? null,
       especie: d.pets?.especie ?? null,
       campanhaId: d.campanha_id,
-      cancelada: d.cancelada_em ? (d.motivo_cancelamento ?? "") : null,
     })));
     if (!data || data.length < 1000) return todas;
   }
@@ -226,7 +225,7 @@ export async function lerPetsDoAdmin(): Promise<PetDoAdmin[]> {
 // Histórico de alterações (Mais), do mais recente para o mais antigo, de 10 em 10.
 export type LinhaDoHistorico = {
   id: string;
-  acao: "criou" | "alterou" | "cancelou";
+  acao: "criou" | "alterou" | "cancelou" | "apagou";
   resumo: string;
   // valor da contribuição ou da despesa
   valor: number | null;

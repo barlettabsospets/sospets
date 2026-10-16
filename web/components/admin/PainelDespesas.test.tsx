@@ -30,12 +30,11 @@ const CATEGORIAS: Categoria[] = [
 ];
 const d = (id: string, descricao: string, valor: number, categoria: Categoria, extra: Partial<DespesaDoAdmin> = {}): DespesaDoAdmin => ({
   id, descricao, valor, data: "2026-10-06", categoriaId: categoria.id, categoria: categoria.nome, cor: categoria.cor,
-  petId: null, pet: null, especie: null, campanhaId: null, cancelada: null, ...extra,
+  petId: null, pet: null, especie: null, campanhaId: null, ...extra,
 });
 const DESPESAS = [
   d("00000000-0000-4000-a000-000000000001", "Ração para gatos de rua", 120, CATEGORIAS[0]),
   d("00000000-0000-4000-a000-000000000002", "Vacina V4", 24, CATEGORIAS[1], { data: "2026-10-03", pet: "Mel", petId: "00000000-0000-4000-a000-0000000000b1", especie: "gato" }),
-  d("00000000-0000-4000-a000-000000000003", "Ração repetida", 120, CATEGORIAS[0], { cancelada: "lançada em duplicidade" }),
 ];
 
 const montar = () =>
@@ -53,11 +52,10 @@ const montar = () =>
   );
 
 describe("PainelDespesas", () => {
-  it("total sem a cancelada, que aparece riscada na lista", () => {
+  it("total e quantidade do mês", () => {
     montar();
     expect(screen.getByText("R$ 144,00")).toBeInTheDocument();
-    expect(screen.getByText("2 despesas · 1 cancelada")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Editar Ração repetida" })).toHaveClass("void");
+    expect(screen.getByText("2 despesas")).toBeInTheDocument();
   });
 
   it("Por categoria filtra a lista, e Limpar filtro volta", async () => {
@@ -68,7 +66,7 @@ describe("PainelDespesas", () => {
     expect(within(ul).getByRole("button", { name: /Vacinas/ })).toHaveAttribute("aria-pressed", "true");
     expect(screen.getByText("1 despesa de vacinas em outubro")).toBeInTheDocument();
     await u.click(screen.getByRole("button", { name: "Limpar filtro" }));
-    expect(screen.getByText("3 despesas em outubro")).toBeInTheDocument();
+    expect(screen.getByText("2 despesas em outubro")).toBeInTheDocument();
   });
 
   it("nova despesa: sem descrição ou valor não salva e põe o foco no campo", async () => {
@@ -120,7 +118,7 @@ describe("PainelDespesas", () => {
     await u.type(within(janela).getByLabelText("Motivo"), "valor errado");
     await u.click(within(janela).getByRole("button", { name: "Cancelar despesa" }));
     expect(acoes.cancelarDespesa).toHaveBeenCalledWith({ id: "00000000-0000-4000-a000-000000000001", motivo: "valor errado" });
-    expect(await screen.findByText("Despesa cancelada. Ela saiu do total do mês.")).toBeInTheDocument();
+    expect(await screen.findByText("Despesa cancelada. Ela saiu da lista e do total do mês.")).toBeInTheDocument();
     await u.click(within(screen.getByRole("status")).getByRole("button", { name: "Desfazer" }));
     expect(acoes.cancelarDespesa).toHaveBeenLastCalledWith({ id: "00000000-0000-4000-a000-000000000001", motivo: null });
   });

@@ -52,11 +52,17 @@ export function ListaDespesas({ despesas, mesAtual }: { despesas: DespesaPublica
   const cats = [...new Set(doMes.map((d) => d.categoria))];
   const cat = fCat && cats.includes(fCat) ? fCat : null;
   const porCat = porCategoria(doMes).map((x) => ({ c: x.categoria, cor: x.cor, n: x.quantidade, v: x.total }));
-  const maior = Math.max(...porCat.map((x) => x.v), 1);
 
   // pets do mês: quem mais gastou primeiro, "Vários pets" no fim
   const pets = porPet(doMes).map((x) => ({ k: x.chave, nome: x.nome, especie: x.especie, v: x.total }));
   const pet = fPet !== null && pets.some((x) => x.k === fPet) ? fPet : null;
+  const nomeDoPet = pet === null ? null : pets.find((x) => x.k === pet)!.nome;
+
+  // "Para onde foi o dinheiro": com um pet escolhido, só as categorias do que foi gasto com ele
+  // (não existe no protótipo; pedido da Barbara, 16/10)
+  const doPet = pet === null ? doMes : doMes.filter((d) => chaveDoPet(d) === pet);
+  const barras = pet === null ? porCat : porCategoria(doPet).map((x) => ({ c: x.categoria, cor: x.cor, n: x.quantidade, v: x.total }));
+  const maior = Math.max(...barras.map((x) => x.v), 1);
 
   // lista: categoria + pet + busca
   const termo = semAcento(busca.trim());
@@ -66,9 +72,15 @@ export function ListaDespesas({ despesas, mesAtual }: { despesas: DespesaPublica
       (pet === null || chaveDoPet(d) === pet) &&
       (!termo || semAcento(`${d.descricao} ${d.petId ? d.pet : "vários pets"}`).includes(termo)),
   );
-  const filtros = [cat, pet === null ? null : pets.find((x) => x.k === pet)!.nome, termo ? `“${busca.trim()}”` : null].filter(Boolean);
+  const filtros = [cat, nomeDoPet, termo ? `“${busca.trim()}”` : null].filter(Boolean);
 
   const alternarCat = (c: string | null) => setFCat(cat === c ? null : c);
+  // ao escolher um pet, a categoria escolhida que não tem gasto com ele é esquecida
+  const alternarPet = (k: string) => {
+    const novo = pet === k ? null : k;
+    setFPet(novo);
+    if (novo !== null && cat && !doMes.some((d) => chaveDoPet(d) === novo && d.categoria === cat)) setFCat(null);
+  };
   // outro mês: filtros que não existem nele são esquecidos
   const mudarMes = (m: Mes) => {
     const novo = despesas.filter((d) => paraMes(d.data) === m);
@@ -180,10 +192,12 @@ export function ListaDespesas({ despesas, mesAtual }: { despesas: DespesaPublica
             <div className="card-h"><h2 id="dp-cap">Gasto em {nome}</h2></div>
             <p className="dp-big num">{formatarBRL(total)}</p>
             <p className="dp-tnote">{plural(doMes.length, "despesa", "despesas")} em {plural(cats.length, "categoria", "categorias")}.</p>
-            <h3 className="dp-sub">Para onde foi o dinheiro</h3>
+            <h3 className="dp-sub">
+              Para onde foi o dinheiro{nomeDoPet !== null && ` gasto com ${pet === "" ? "vários pets" : nomeDoPet}`}
+            </h3>
             {/* barras com o valor escrito; tocar filtra a lista */}
             <ul className="dp-bars" aria-label="Categorias. Escolha uma para filtrar a lista.">
-              {porCat.map((x) => (
+              {barras.map((x) => (
                 <li key={x.c}>
                   <button type="button" aria-pressed={cat === x.c} className={cat && cat !== x.c ? "off" : undefined} onClick={() => alternarCat(x.c)}>
                     <span className="n">{x.c}</span>
@@ -203,7 +217,7 @@ export function ListaDespesas({ despesas, mesAtual }: { despesas: DespesaPublica
                   type="button"
                   aria-pressed={pet === x.k}
                   className={pet !== null && pet !== x.k ? "off" : undefined}
-                  onClick={() => setFPet(pet === x.k ? null : x.k)}
+                  onClick={() => alternarPet(x.k)}
                 >
                   {x.especie ? <><IconeEspecie especie={x.especie} />{x.nome}</> : "Vários pets"}
                   <b>{formatarBRL(x.v)}</b>
