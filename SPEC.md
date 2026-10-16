@@ -346,7 +346,7 @@ Cada tela usa Server Actions para gravar, valida com Zod e mostra o toast do pro
 - [ ] **T6.4** Publicar `develop` e testar homologação de ponta a ponta. *Dep.: Fases 3 a 5*
 - [ ] **T6.5** Aplicar as migrations em produção (**sem seed**), importar a planilha real (T1.11), criar categorias iniciais, configurações e os 3 administradores. *Dep.: T6.4, T1.11*
 - [ ] **T6.6** Merge `develop` → `main`; escolher o nome do projeto na Vercel para o endereço `<nome>.vercel.app`. *Dep.: T6.5*
-- [ ] **T6.7** Tarefa agendada da Vercel (`vercel.json`, uma vez por dia) que faz uma consulta leve em produção, para o Supabase gratuito não pausar o projeto. *Dep.: T6.6*
+- [x] **T6.7** Tarefa agendada da Vercel (`vercel.json`, uma vez por dia) que faz uma consulta leve em produção, para o Supabase gratuito não pausar o projeto. *Dep.: T6.6*
 - [ ] **T6.8** GitHub Action semanal com `pg_dump` de produção, guardado como artefato num repositório privado (backup que o plano gratuito não tem). *Dep.: T6.6*
 
 ### Fase 7: qualidade
