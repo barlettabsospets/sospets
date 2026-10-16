@@ -100,7 +100,9 @@ export function FluxoMensal({
 
   return (
     <>
-      <svg id="mensal" ref={svg} viewBox={`0 0 ${W} ${H}`} role="img" aria-labelledby="mensal-t" className={parado ? "still" : undefined}>
+      {/* role="group" (no protótipo, "img"): as barras dos meses são botões, e um "img" esconde
+          do leitor de tela o que tem dentro (WCAG, nested-interactive) */}
+      <svg id="mensal" ref={svg} viewBox={`0 0 ${W} ${H}`} role="group" aria-labelledby="mensal-t" className={parado ? "still" : undefined}>
         <title id="mensal-t">{titulo}</title>
         {linhas.map((g) => (
           <g key={g}>
