@@ -5,8 +5,10 @@
 // (maior valor R$ 1.040 → linhas 400, 800 e 1.200).
 const PASSOS = [1, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10];
 
+// Sem dados (ou com valores muito pequenos), o topo mínimo é R$ 30 (linhas 10, 20 e 30):
+// abaixo disso as linhas arredondadas em reais se repetiriam ("R$ 1, R$ 1").
 export function escalaDoGrafico(maior: number, estreito = false) {
-  const bruto = Math.max(maior, 1) / 3;
+  const bruto = Math.max(maior, 30) / 3;
   const ordem = 10 ** Math.floor(Math.log10(bruto));
   const passo = PASSOS.map((p) => p * ordem).find((p) => p >= bruto)!;
   const topo = passo * 3;

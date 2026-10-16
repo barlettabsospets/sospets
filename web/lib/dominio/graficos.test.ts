@@ -75,3 +75,11 @@ describe("fatiasDaRosca", () => {
     expect(fatiasDaRosca(new Map(), ranking)).toEqual([]);
   });
 });
+
+describe("escalaDoGrafico sem dados", () => {
+  it("topo mínimo de R$ 30, sem linhas repetidas depois de arredondar", () => {
+    expect(escalaDoGrafico(0)).toEqual({ topo: 30, linhas: [10, 20, 30] });
+    expect(escalaDoGrafico(12)).toEqual({ topo: 30, linhas: [10, 20, 30] });
+    expect(escalaDoGrafico(0, true)).toEqual({ topo: 30, linhas: [15, 30] });
+  });
+});
