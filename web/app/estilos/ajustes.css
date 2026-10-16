@@ -1,0 +1,76 @@
+/* Ajustes do app sobre o CSS portado do protótipo (os outros arquivos desta pasta são gerados).
+   Cada ajuste com um comentário dizendo por quê. */
+
+/* "Sair" é um botão de formulário (Server Action) no lugar do link do protótipo:
+   o form não ocupa espaço na grade do cabeçalho e o botão herda a fonte como o link. */
+form.th-sair { display: contents; }
+button.th-admin { font-family: inherit; cursor: pointer; }
+
+/* Foto que o navegador não conseguiu abrir (ex.: HEIC no computador). O protótipo não tem esse erro;
+   ele aparece no próprio bloco "Foto", com as cores da caixa de erro do login, porque o toast fica atrás do diálogo. */
+body.admin .ad-foto-t .ad-foto-erro { color: #8C1D18; font-weight: 700; }
+body.admin .ad-foto-t .ad-foto-erro[hidden] { display: none; }
+
+/* "Ajeitar a foto" (não existe no protótipo; pedido da Barbara, 15/10): abre logo abaixo do bloco "Foto".
+   A foto aparece inteira com o ponto principal marcado; ao lado, como ela fica cortada nos formatos do site. */
+body.admin .ad-foco { display: grid; gap: 12px; justify-items: start; margin-top: 12px; padding: 14px; border-radius: 18px; background: var(--cream); }
+body.admin .ad-foco-h { display: grid; gap: 2px; }
+body.admin .ad-foco-h b { font-weight: 800; }
+body.admin .ad-foco-h span { font-size: .9375rem; color: var(--ink-2); line-height: 1.4; }
+body.admin .ad-foco-b { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; }
+body.admin .ad-foco-quadro { position: relative; line-height: 0; border-radius: 12px; overflow: hidden; touch-action: none; cursor: crosshair; }
+body.admin .ad-foco-quadro img { display: block; max-width: min(100%, 320px); max-height: 240px; user-select: none; -webkit-user-select: none; }
+body.admin .ad-foco-quadro:has(input:focus-visible) { outline: 3px solid var(--primary-500); outline-offset: 3px; }
+body.admin .ad-foco-ponto { position: absolute; width: 28px; height: 28px; transform: translate(-50%, -50%); border-radius: 50%; pointer-events: none;
+  border: 3px solid #fff; background: rgba(45, 95, 154, .35); box-shadow: 0 0 0 2px var(--primary), 0 2px 8px rgba(0, 0, 0, .35); }
+body.admin .ad-foco-previas { display: grid; gap: 6px; }
+body.admin .ad-foco-previas > span { font-size: .875rem; font-weight: 800; color: var(--ink-2); }
+body.admin .ad-foco-previas > div { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+body.admin .ad-foco-previas figure { margin: 0; display: grid; gap: 4px; justify-items: center; }
+body.admin .ad-foco-previas img { width: 96px; object-fit: cover; border-radius: 12px; background: #F3ECE2; }
+body.admin .ad-foco-previas img.redondo { width: 56px; border-radius: 50%; }
+body.admin .ad-foco-previas figcaption { font-size: .8125rem; color: var(--ink-2); }
+
+/* Rolagem das janelas (pedido da Barbara, 15/10): no protótipo a janela simples rola inteira, e a barra
+   de rolagem do navegador ocupa a borda e deixa o canto de cima quadrado. Aqui a janela fica fixa,
+   recortada pelo arredondado, e quem rola é o formulário de dentro, com uma barra fina na cor da tinta.
+   A janela grande (.ad-dlg, Despesas e Pets) já rola só no meio; ganha a mesma barra. */
+body.admin dialog:not(.ad-dlg) { padding: 0; overflow: hidden; max-height: calc(100dvh - 32px); }
+body.admin dialog:not(.ad-dlg) > form { padding: 24px; max-height: calc(100dvh - 32px); overflow-y: auto; overscroll-behavior: contain; }
+body.admin dialog:not(.ad-dlg) > form, body.admin .ad-dlg-b { scrollbar-width: thin; scrollbar-color: rgba(74, 40, 20, .28) transparent; }
+
+/* Paginação com muitas páginas (histórico de alterações): "…" entre os números. O protótipo mostra
+   todos os números, o que só cabe com poucas páginas. */
+body.admin .ad-pager .ad-pager-rest { display: grid; place-items: center; min-width: 24px; color: var(--ink-2); font-weight: 800; }
+
+/* Saudação "Olá, Ana!" ao lado do "Sair" (T5.10, não existe no protótipo; aprovada pela Barbara em 15/10):
+   os dois dividem a área "admin" do cabeçalho; o nome leva a "Minha conta". */
+body.admin .th-conta { grid-area: admin; display: flex; align-items: center; gap: 4px 14px; }
+body.admin .th-ola { display: inline-flex; align-items: center; min-height: 44px; font-weight: 800; color: var(--primary); text-decoration: none; white-space: nowrap; }
+body.admin .th-ola:hover { text-decoration: underline; text-underline-offset: 3px; }
+body.admin .th-ola:focus-visible { outline: 3px solid var(--primary-500); outline-offset: 3px; border-radius: 8px; }
+
+/* Minha conta (T5.9, não existe no protótipo; aprovada pela Barbara em 15/10): as seções no visual das de Mais,
+   uma embaixo da outra, e o campo de senha com "Mostrar" igual ao do login (.lg-senha só existe em body.auth). */
+body.admin .ad-conta { display: grid; gap: 20px; max-width: 640px; }
+body.admin .ad-conta .sec { margin-top: 0; }
+body.admin .ad-conta .ad-form { justify-items: start; }
+body.admin .ad-conta .ad-form .field { width: 100%; }
+body.admin .ad-conta-email { margin: 0; font-weight: 800; font-size: 1.0625rem; overflow-wrap: anywhere; }
+body.admin .lg-senha { position: relative; }
+body.admin .lg-senha input { padding-right: 104px; }
+body.admin .lg-senha button { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); min-height: 40px; padding: 0 12px; border: 0; border-radius: 10px; background: var(--cream); color: var(--primary); font: 800 .9375rem var(--font); cursor: pointer; }
+body.admin .lg-senha button:hover { background: var(--cream-2); }
+body.admin .lg-senha button:focus-visible { outline: 3px solid var(--primary-500); outline-offset: 1px; }
+/* Com a saudação, o cabeçalho do admin em uma linha só cabe a partir de 1100 px (no protótipo, 900 px):
+   de 900 a 1099 px ele fica em duas linhas, como de 760 a 899 (logo e conta em cima, abas embaixo);
+   de 1100 a 1279 px, em uma linha com as abas um pouco mais estreitas; acima disso, como no protótipo. */
+@media (min-width: 900px) and (max-width: 1099px) {
+  body.admin .th-in { grid-template-columns: auto 1fr auto; grid-template-areas: "brand . admin" "tabs tabs tabs"; align-items: center; column-gap: 16px; }
+  body.admin .th-tabs { justify-self: stretch; gap: 6px; }
+  body.admin .th-tabs a { flex: 1; min-height: 52px; padding: 0 12px; font-size: 1rem; }
+}
+@media (min-width: 1100px) and (max-width: 1279px) { body.admin .th-tabs a { padding: 0 14px; } body.admin .th-in { column-gap: 20px; } }
+/* Com o cabeçalho em uma linha (1100 px ou mais), "Olá, Ana!" e "Sair" ficam no alto, junto do topo do logo,
+   e não na altura das abas (pedido da Barbara, 16/10). */
+@media (min-width: 1100px) { body.admin .th-conta { align-self: start; justify-self: end; padding-top: 4px; } }

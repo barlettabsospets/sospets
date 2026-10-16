@@ -1,0 +1,83 @@
+# T7.1: em todo PR (e a cada push no develop e no main), as conferências do projeto.
+# O repositório é público, e os logs também: nenhum segredo é usado aqui. O banco é um
+# Supabase descartável, criado dentro do próprio GitHub com as migrations e o seed fictício.
+name: Conferências
+
+on:
+  pull_request:
+  push:
+    branches: [develop, main]
+
+permissions:
+  contents: read
+
+# um PR atualizado cancela a conferência antiga dele
+concurrency:
+  group: conferencias-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: web
+
+jobs:
+  app:
+    name: Lint, tipos e testes
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      # tipos das rotas do Next (LayoutProps, RouteContext), que o build gera
+      - run: npx next typegen
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+
+  banco:
+    name: Banco (pgTAP) e navegador (Playwright)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      # Supabase local (Docker): aplica as migrations e o seed.sql (dados fictícios).
+      # Sem os serviços que os testes não usam; o Storage fica, porque cria as tabelas das fotos.
+      - run: npx supabase start -x realtime,studio,imgproxy,mailpit,edge-runtime,logflare,vector,supavisor
+      # regras de acesso (RLS), views públicas, somas, histórico e Storage
+      - run: npx supabase test db
+      # situacao_pet() do SQL × situacaoPet() do TS, para todos os pets do seed
+      - run: npm run test:banco
+        env:
+          TESTE_BANCO: local
+      # T7.2: o app de verdade contra esse banco, num navegador (visitante e administrador)
+      - name: Ligar o app ao Supabase local
+        run: |
+          npx supabase status -o env \
+            | sed -n 's/^API_URL=/NEXT_PUBLIC_SUPABASE_URL=/p; s/^ANON_KEY=/NEXT_PUBLIC_SUPABASE_ANON_KEY=/p; s/^SERVICE_ROLE_KEY=/SUPABASE_SERVICE_ROLE_KEY=/p' \
+            | tr -d '"' > .env.local
+          echo "NEXT_PUBLIC_AMBIENTE=homolog" >> .env.local
+          cut -d= -f1 .env.local
+      - run: node --env-file=.env.local e2e/criar-admin-local.mjs
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+      # se algum teste de navegador falhar: o que a página mostrava (só dados fictícios), por 3 dias
+      - if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-falhas
+          path: web/test-results/
+          retention-days: 3
+      - if: always()
+        run: npx supabase stop --no-backup

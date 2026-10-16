@@ -205,7 +205,28 @@ Se um pet oculto tiver despesa, `pub_despesas` mostra "Vários pets" no lugar do
 
 **Login:** e-mail e senha (Supabase Auth). **Cadastro público desligado.** Administradores são convidados pelo painel do Supabase e recebem uma linha em `administradores`. O middleware do Next protege `/admin/*` e manda para `/entrar` quem não tiver sessão.
 
-**Storage:** bucket `pets` e bucket `campanhas`, leitura pública, escrita só para admin. Fotos redimensionadas no envio (máximo 1600 px, WebP).
+**Storage:** bucket `pets` e bucket `campanhas`, leitura pública, escrita só para admin. Fotos redimensionadas no envio (máximo 1000 px, WebP; ver "Decisões tomadas").
+
+### Repositório público
+
+O repositório no GitHub é **público**: qualquer pessoa vê o código, **todo o histórico de commits**, os PRs e os logs do GitHub Actions. A segurança vem do RLS e de manter os segredos fora do git, não de esconder o código.
+
+**Nunca entra no git (nem em commit antigo, PR, issue ou log):**
+- **Segredos:** `.env.local` e qualquer `.env` preenchido, `SUPABASE_SERVICE_ROLE_KEY`, chaves `sb_secret_…`, senhas do banco, tokens do GitHub, da Vercel ou do Supabase (`supabase login`). Só o `.env.example` vazio vai para o git.
+- **Dados reais:** a planilha (`web/dados-reais/`, `*.xlsx`), nomes, e-mails e telefones de membros, doadores e administradores, contribuições individuais, `pets.local`, exportações CSV do admin, `pg_dump` e qualquer backup do banco.
+- **Prints e cópias de produção** em PRs e issues. Para exemplo, use dados do `seed.sql`, que são fictícios.
+
+**O `seed.sql` e os testes usam só dados fictícios.** Nomes de membros no seed são inventados.
+
+**Antes de cada commit:** rode `scripts/conferir-commit.sh` (faz os passos 1 a 3 e falha se achar algo) e confira à mão o que ele não vê, como nomes de pessoas reais.
+1. Conferir o e-mail do autor: `git config user.email` deve ser o endereço `noreply` do GitHub, nunca o e-mail pessoal.
+2. Ver a lista do que vai entrar (`git diff --cached --name-only`): nenhum `.env*` além do `.env.example`, nenhum `.xlsx`, `.csv`, `.dump` ou `.sql` fora de `web/supabase/`.
+3. Procurar segredos no diff (`git diff --cached`): textos começando com `eyJhbGci`, `sb_secret_`, `sb_publishable_`, `ghp_`, `ghu_`, `password=` ou `postgres://…:senha@`.
+4. Se algo aparecer, tirar do commit e colocar no `.gitignore` antes de seguir.
+
+**GitHub Actions:** os logs são públicos. Segredos só em *GitHub Secrets*, e nunca impressos (`echo`) nos passos. O backup de produção (T6.8) roda e fica **num repositório privado separado**, porque artefatos de repositório público podem ser baixados por qualquer pessoa.
+
+**Se um segredo vazar:** considere-o comprometido. Primeiro **troque a chave ou a senha** no Supabase, na Vercel ou no GitHub; só depois limpe o histórico. Apagar o commit não basta, porque robôs copiam chaves de repositórios públicos em minutos.
 
 ## 7. Telas
 
@@ -228,6 +249,7 @@ Cada tela segue o arquivo correspondente do protótipo: layout, textos, estados 
 | `/admin/membros` | `admin-membros.html` | Ativos/inativos, novo membro, valor próprio ou padrão, alterar valor padrão (com opção de aplicar a todos) |
 | `/admin/campanhas` | `admin-campanhas.html` | Lista com arrecadado/gasto/meta, nova/editar, encerrar |
 | `/admin/mais` | `admin-mais.html` | Exportar CSV (doações, despesas, pets), categorias (adicionar, renomear, desativar), configurações, histórico de alterações |
+| `/admin/conta` | *(não existe no protótipo)* | Minha conta: trocar a própria senha e o próprio e-mail |
 
 **Comportamentos comuns:** listas de 10 em 10 com a mesma paginação; "Desfazer" no toast após marcar contribuição ou cancelar; diálogos `<dialog>` nativos; números em BRL (`pt-BR`).
 
@@ -264,56 +286,58 @@ Cada tela segue o arquivo correspondente do protótipo: layout, textos, estados 
 Formato: `[ ]` a fazer, `[x]` feito. **Dep.** = precisa de outra tarefa antes. Cada tarefa termina com algo que dá para conferir.
 
 ### Fase 0: preparação (comece por aqui)
-- [ ] **T0.1** Criar os projetos `sospets-homolog` e `sospets-prod` no Supabase (região São Paulo). Guardar as chaves num gerenciador de senhas, nunca no repositório.
-- [ ] **T0.2** Criar o branch `develop` a partir do `main` e proteger os dois no GitHub (merge só por PR).
-- [ ] **T0.3** Criar o app em `web/`: Next.js + TypeScript + Tailwind v4 + ESLint. Rodar `npm run dev` e ver a página inicial. *Dep.: nenhuma*
-- [ ] **T0.4** Instalar a Supabase CLI, rodar `supabase init` dentro de `web/` e `supabase link` com o projeto de homologação.
-- [ ] **T0.5** Criar `web/.env.example` com as variáveis da seção 4, `web/.env.local` (no `.gitignore`) e os clientes em `lib/supabase/` (server, browser, middleware). *Dep.: T0.3, T0.4*
-- [ ] **T0.6** Configurar Vitest e um teste de exemplo passando. *Dep.: T0.3*
+- [x] **T0.1** Criar os projetos `sospets-homolog` e `sospets-prod` no Supabase (região São Paulo). Guardar as chaves num gerenciador de senhas, nunca no repositório.
+- [x] **T0.2** Criar o branch `develop` a partir do `main` e proteger os dois no GitHub (merge só por PR).
+- [x] **T0.3** Criar o app em `web/`: Next.js + TypeScript + Tailwind v4 + ESLint. Rodar `npm run dev` e ver a página inicial. *Dep.: nenhuma*
+- [x] **T0.4** Instalar a Supabase CLI, rodar `supabase init` dentro de `web/` e `supabase link` com o projeto de homologação.
+- [x] **T0.5** Criar `web/.env.example` com as variáveis da seção 4, `web/.env.local` (no `.gitignore`) e os clientes em `lib/supabase/` (server, browser, middleware). *Dep.: T0.3, T0.4*
+- [x] **T0.6** Configurar Vitest e um teste de exemplo passando. *Dep.: T0.3*
 
 ### Fase 1: banco de dados
-- [ ] **T1.1** Migration: enums e tabelas da seção 5, com chaves estrangeiras, `check (valor > 0)` e o índice único de contribuição por membro e mês. *Dep.: T0.4*
-- [ ] **T1.2** Migration: triggers de `atualizado_em`. *Dep.: T1.1*
-- [ ] **T1.3** Migration: função `situacao_pet(pet, mes)` em SQL. *Dep.: T1.1*
-- [ ] **T1.4** Migration: `eh_admin()` e RLS em todas as tabelas (admin lê e escreve; `anon` não lê nada). *Dep.: T1.1*
-- [ ] **T1.5** Migration: as 6 views públicas da seção 6 com `grant select to anon`. *Dep.: T1.3, T1.4*
-- [ ] **T1.6** Migration: trigger de `historico` em contribuições, despesas, pets, membros, campanhas e categorias, com `resumo` legível ("Despesa criada: Ração para gatos de rua"). *Dep.: T1.1*
-- [ ] **T1.7** `seed.sql` com os dados fictícios de `dados.js` e `app.js` (48 pets, despesas de ago a out, campanhas Stuart e Nelson, categorias com cores). Gerar despesas e contribuições de jan a jul que somem exatamente os valores `IN`, `OUT` e `CNT` do `index.html`. Criar 24 membros fictícios. *Dep.: T1.1*
-- [ ] **T1.8** Testes pgTAP: `anon` não lê tabelas privadas; `anon` lê as views; `pub_pets` não tem `local` nem pets ocultos; canceladas não somam; admin escreve; usuário logado que não é admin não escreve. *Dep.: T1.5, T1.7*
-- [ ] **T1.9** Aplicar tudo em homologação (`supabase db push` + seed) e conferir no painel. *Dep.: T1.8*
-- [ ] **T1.10** Gerar os tipos TypeScript (`supabase gen types typescript`) em `lib/supabase/tipos.ts`. *Dep.: T1.9*
+- [x] **T1.1** Migration: enums e tabelas da seção 5, com chaves estrangeiras, `check (valor > 0)` e o índice único de contribuição por membro e mês. *Dep.: T0.4*
+- [x] **T1.2** Migration: triggers de `atualizado_em`. *Dep.: T1.1*
+- [x] **T1.3** Migration: função `situacao_pet(pet, mes)` em SQL. *Dep.: T1.1*
+- [x] **T1.4** Migration: `eh_admin()` e RLS em todas as tabelas (admin lê e escreve; `anon` não lê nada). *Dep.: T1.1*
+- [x] **T1.5** Migration: as 6 views públicas da seção 6 com `grant select to anon`. *Dep.: T1.3, T1.4*
+- [x] **T1.6** Migration: trigger de `historico` em contribuições, despesas, pets, membros, campanhas e categorias, com `resumo` legível ("Despesa criada: Ração para gatos de rua"). *Dep.: T1.1*
+- [x] **T1.7** `seed.sql` com os dados fictícios de `dados.js` e `app.js` (48 pets, despesas de ago a out, campanhas Stuart e Nelson, categorias com cores). Gerar despesas e contribuições de jan a jul que somem exatamente os valores `IN`, `OUT` e `CNT` do `index.html`. Criar 24 membros fictícios. *Dep.: T1.1*
+- [x] **T1.8** Testes pgTAP: `anon` não lê tabelas privadas; `anon` lê as views; `pub_pets` não tem `local` nem pets ocultos; canceladas não somam; admin escreve; usuário logado que não é admin não escreve. *Dep.: T1.5, T1.7*
+- [x] **T1.9** Aplicar tudo em homologação (`supabase db push` + seed) e conferir no painel. *Dep.: T1.8*
+- [x] **T1.10** Gerar os tipos TypeScript (`supabase gen types typescript`) em `lib/supabase/tipos.ts`. *Dep.: T1.9*
 - [ ] **T1.11** Importar a planilha real: script em `web/scripts/importar-planilha.ts` que lê o `.xlsx` de `web/dados-reais/` (pasta fora do git) e grava em pets, membros, contribuições, despesas, campanhas e categorias. Mostra um relatório antes de gravar (quantas linhas, totais por mês, linhas com problema). Rodar primeiro num banco local ou em homologação, conferir os totais com a planilha e só depois, com pedido explícito, em produção. *Dep.: T1.9*
 
 ### Fase 2: base do front-end
-- [ ] **T2.1** Portar `tokens.css` para o `@theme` do Tailwind; copiar as fontes de `assets/fonts` e as imagens do logo. *Dep.: T0.3*
-- [ ] **T2.2** `lib/dominio`: `situacaoPet`, `mesesEntre`, formatação BRL e de mês ("out/2026"), cálculo de saldo, com testes Vitest usando os mesmos casos do protótipo. *Dep.: T0.6*
-- [ ] **T2.3** Teste que compara `situacao_pet` do SQL com `situacaoPet` do TS para todos os pets do seed em todos os meses. *Dep.: T1.9, T2.2*
-- [ ] **T2.4** Componentes de UI (`components/ui`): botão, cartão, seletor de período (`periodPicker`), lista de escolha (`escolha`), chips, paginação, diálogo, toast com "Desfazer". Mesmo teclado e ARIA do `app.js` e do `admin.js`. *Dep.: T2.1*
-- [ ] **T2.5** Layouts: cabeçalho público (logo, abas, "Área do administrador"), cabeçalho do admin (abas + "Sair"), tabbar no celular, rodapé com `dados_desde`, faixa de homologação. *Dep.: T2.4*
-- [ ] **T2.6** Gráficos SVG (`components/graficos`): barras mensais clicáveis, rosca com legenda, barras por categoria. *Dep.: T2.1*
+- [x] **T2.1** Portar `tokens.css` para o `@theme` do Tailwind; copiar as fontes de `assets/fonts` e as imagens do logo. *Dep.: T0.3*
+- [x] **T2.2** `lib/dominio`: `situacaoPet`, `mesesEntre`, formatação BRL e de mês ("out/2026"), cálculo de saldo, com testes Vitest usando os mesmos casos do protótipo. *Dep.: T0.6*
+- [x] **T2.3** Teste que compara `situacao_pet` do SQL com `situacaoPet` do TS para todos os pets do seed em todos os meses. *Dep.: T1.9, T2.2*
+- [x] **T2.4** Componentes de UI (`components/ui`): botão, cartão, seletor de período (`periodPicker`), lista de escolha (`escolha`), chips, paginação, diálogo, toast com "Desfazer". Mesmo teclado e ARIA do `app.js` e do `admin.js`. *Dep.: T2.1*
+- [x] **T2.5** Layouts: cabeçalho público (logo, abas, "Área do administrador"), cabeçalho do admin (abas + "Sair"), tabbar no celular, rodapé com `dados_desde`, faixa de homologação. *Dep.: T2.4*
+- [x] **T2.6** Gráficos SVG (`components/graficos`): barras mensais clicáveis, rosca com legenda, barras por categoria. *Dep.: T2.1*
 
 ### Fase 3: login
-- [ ] **T3.1** Página `/entrar` igual a `login.html`, com login por e-mail e senha no Supabase Auth e mensagens de erro em português. *Dep.: T0.5, T2.5*
-- [ ] **T3.2** Middleware protegendo `/admin/*`; botão "Sair". *Dep.: T3.1*
-- [ ] **T3.3** Desligar o cadastro público no Supabase (nos dois projetos) e criar os 3 administradores (Barbara + duas pessoas) em homologação. Documentar no README como convidar um administrador. *Dep.: T1.9*
+- [x] **T3.1** Página `/entrar` igual a `login.html`, com login por e-mail e senha no Supabase Auth e mensagens de erro em português. *Dep.: T0.5, T2.5*
+- [x] **T3.2** Middleware protegendo `/admin/*`; botão "Sair". *Dep.: T3.1*
+- [x] **T3.3** Desligar o cadastro público no Supabase (nos dois projetos) e criar os 3 administradores (Barbara + duas pessoas) em homologação. Documentar no README como convidar um administrador. *Dep.: T1.9*
 - [ ] **T3.4** Página "esqueci minha senha" (e-mail do Supabase em português). *Dep.: T3.1*
 
 ### Fase 4: páginas públicas
-- [ ] **T4.1** `/` Prestação de contas, lendo `pub_resumo_mensal`, `pub_gasto_categoria_mes`, `pub_despesas`, `pub_pets` e `pub_campanhas`. Conferir os números contra o protótipo, mês a mês. *Dep.: T1.10, T2.4–T2.6*
-- [ ] **T4.2** `/pets`, igual a `animais.html`. *Dep.: T4.1*
-- [ ] **T4.3** `/despesas`, igual a `despesas.html`. *Dep.: T4.1*
-- [ ] **T4.4** Cache: ISR de 5 min + `revalidatePath` quando o admin salva. *Dep.: T4.1*
+- [x] **T4.1** `/` Prestação de contas, lendo `pub_resumo_mensal`, `pub_gasto_categoria_mes`, `pub_despesas`, `pub_pets` e `pub_campanhas`. Conferir os números contra o protótipo, mês a mês. *Dep.: T1.10, T2.4–T2.6*
+- [x] **T4.2** `/pets`, igual a `animais.html`. *Dep.: T4.1*
+- [x] **T4.3** `/despesas`, igual a `despesas.html`. *Dep.: T4.1*
+- [x] **T4.4** Cache: ISR de 5 min + `revalidatePath` quando o admin salva. *Dep.: T4.1*
 
 ### Fase 5: área do administrador
 Cada tela usa Server Actions para gravar, valida com Zod e mostra o toast do protótipo.
-- [ ] **T5.1** `/admin/membros`: listar, criar, editar, ativar/desativar, valor padrão. *Dep.: T3.2*
-- [ ] **T5.2** `/admin/contribuicoes`: marcar e desmarcar por mês (com Desfazer), doação avulsa, resumo do mês, aviso de "sem contribuir". *Dep.: T5.1*
-- [ ] **T5.3** `/admin/mais` (parte de categorias e configurações): categorias e configurações. *Dep.: T3.2*
-- [ ] **T5.4** `/admin/campanhas`: criar, editar, encerrar, foto. *Dep.: T3.2*
-- [ ] **T5.5** `/admin/despesas`: criar, editar, cancelar com motivo, filtro por categoria, ligar a pet e campanha. *Dep.: T5.3, T5.4*
-- [ ] **T5.6** Storage: buckets `pets` e `campanhas` com política de escrita só para admin; redimensionar a foto antes de enviar. *Dep.: T1.4*
-- [ ] **T5.7** `/admin/pets`: tabela, filtro por situação no mês, busca, "Precisa de atenção", criar/editar com foto, ocultar do site. *Dep.: T5.6*
-- [ ] **T5.8** `/admin/mais` (parte de exportação e histórico): exportar CSV e histórico de alterações paginado. *Dep.: T1.6, T5.3*
+- [x] **T5.1** `/admin/membros`: listar, criar, editar, ativar/desativar, valor padrão. *Dep.: T3.2*
+- [x] **T5.2** `/admin/contribuicoes`: marcar e desmarcar por mês (com Desfazer), doação avulsa, resumo do mês, aviso de "sem contribuir". *Dep.: T5.1*
+- [x] **T5.3** `/admin/mais` (parte de categorias e configurações): categorias e configurações. *Dep.: T3.2*
+- [x] **T5.4** `/admin/campanhas`: criar, editar, encerrar, foto. *Dep.: T3.2*
+- [x] **T5.5** `/admin/despesas`: criar, editar, cancelar com motivo, filtro por categoria, ligar a pet e campanha. *Dep.: T5.3, T5.4*
+- [x] **T5.6** Storage: buckets `pets` e `campanhas` com política de escrita só para admin; redimensionar a foto antes de enviar. *Dep.: T1.4*
+- [x] **T5.7** `/admin/pets`: tabela, filtro por situação no mês, busca, "Precisa de atenção", criar/editar com foto, ocultar do site. *Dep.: T5.6*
+- [x] **T5.8** `/admin/mais` (parte de exportação e histórico): exportar CSV e histórico de alterações paginado. *Dep.: T1.6, T5.3*
+- [x] **T5.9** `/admin/conta` (Minha conta): trocar a senha (pedindo a senha atual) e o e-mail. Não existe no protótipo: propor o visual no estilo das telas do admin e aprovar antes de implementar. Trocar o e-mail exige confirmação pelo e-mail novo, que só chega com envio de e-mail próprio (SMTP); até lá, quem administra troca pelo painel do Supabase. Link para a página no cabeçalho do admin e em "Mais". *Dep.: T3.2*
+- [x] **T5.10** Saudação no admin: "Olá, Ana Exemplo!", com o nome de `administradores`. Não existe no protótipo: propor onde fica (cabeçalho ou topo de Contribuições) e aprovar antes. *Dep.: T3.2*
 
 ### Fase 6: deploy
 - [ ] **T6.1** Criar o projeto na Vercel com *Root Directory* = `web`. *Dep.: T0.3*
@@ -322,13 +346,13 @@ Cada tela usa Server Actions para gravar, valida com Zod e mostra o toast do pro
 - [ ] **T6.4** Publicar `develop` e testar homologação de ponta a ponta. *Dep.: Fases 3 a 5*
 - [ ] **T6.5** Aplicar as migrations em produção (**sem seed**), importar a planilha real (T1.11), criar categorias iniciais, configurações e os 3 administradores. *Dep.: T6.4, T1.11*
 - [ ] **T6.6** Merge `develop` → `main`; escolher o nome do projeto na Vercel para o endereço `<nome>.vercel.app`. *Dep.: T6.5*
-- [ ] **T6.7** Tarefa agendada da Vercel (`vercel.json`, uma vez por dia) que faz uma consulta leve em produção, para o Supabase gratuito não pausar o projeto. *Dep.: T6.6*
+- [x] **T6.7** Tarefa agendada da Vercel (`vercel.json`, uma vez por dia) que faz uma consulta leve em produção, para o Supabase gratuito não pausar o projeto. *Dep.: T6.6*
 - [ ] **T6.8** GitHub Action semanal com `pg_dump` de produção, guardado como artefato num repositório privado (backup que o plano gratuito não tem). *Dep.: T6.6*
 
 ### Fase 7: qualidade
-- [ ] **T7.1** GitHub Actions: lint, typecheck, Vitest e pgTAP em todo PR. *Dep.: T1.8, T2.2*
-- [ ] **T7.2** Playwright: visitante vê a Prestação de contas; admin entra, registra uma despesa e ela aparece no site. *Dep.: T6.4*
-- [ ] **T7.3** Auditoria de acessibilidade (teclado, contraste, leitor de tela) nas 10 telas. *Dep.: Fases 4 e 5*
+- [x] **T7.1** GitHub Actions: lint, typecheck, Vitest e pgTAP em todo PR. *Dep.: T1.8, T2.2*
+- [x] **T7.2** Playwright: visitante vê a Prestação de contas; admin entra, registra uma despesa e ela aparece no site. Já existe a base (`web/e2e/`, `npm run test:e2e`) com os testes do login. *Dep.: T6.4*
+- [x] **T7.3** Auditoria de acessibilidade (teclado, contraste, leitor de tela) nas 10 telas. *Dep.: Fases 4 e 5*
 - [ ] **T7.4** Teste em celular real (Android e iPhone) em homologação. *Dep.: T6.4*
 
 ### Decisões tomadas
@@ -336,3 +360,22 @@ Cada tela usa Server Actions para gravar, valida com Zod e mostra o toast do pro
 - [x] **Administradores:** 3 pessoas (Barbara + duas).
 - [x] **Dados reais:** importar da planilha Excel (T1.11).
 - [x] **Planos:** Supabase e Vercel gratuitos, com as compensações de T6.7 e T6.8.
+- [x] **Seed:** gerado por `web/scripts/gerar-seed.mjs` a partir do protótipo. A Campanha Stuart fica com R$ 1.200 arrecadados e **R$ 0 gastos**: no protótipo ela tem R$ 980 gastos, mas nenhuma despesa de agosto a outubro é do Stuart, e mudar essas despesas quebraria os totais públicos.
+- [x] **Senha esquecida (T3.4):** segue o protótipo ("peça a redefinição a quem administra o sistema"): quem administra gera uma senha temporária com `scripts/adicionar-admin.ts --senha-temporaria` e a pessoa troca em `/entrar/nova-senha`. O link "Esqueci minha senha" fica para quando houver envio de e-mail próprio (o SMTP gratuito do Supabase só entrega para membros da organização).
+- [x] **Administradores:** criados no painel com senha temporária (sem convite por e-mail), ligados com `scripts/adicionar-admin.ts`. Passo a passo no README.
+- [x] **Ordem do catálogo de Pets:** do cadastro mais recente para o mais antigo (`criado_em`), como no protótipo, em que um pet novo entra no topo. Por isso `pub_pets` tem `criado_em`, e o seed grava os pets na ordem de `dados.js`.
+- [x] **Página Despesas:** o seletor mostra os meses que têm despesa, e a nota "Registros detalhados a partir de…" usa o primeiro deles (no protótipo, "agosto de 2026" fixo). Com o seed, que tem despesas desde janeiro, aparece "janeiro de 2026".
+- [x] **Tela Contribuições (T5.2):** a lista mostra os membros ativos e também os inativos que contribuíram no mês (no protótipo aparecem todos os 24, inclusive a inativa). O campo de valor sugere o valor do membro (próprio ou padrão). "Arrecadado no mês" soma membros e doações avulsas, como o "Entrou" do site. "Pago em" é o dia em que a contribuição foi registrada. A nota conta os meses até o mês escolhido, como no protótipo ("Sem contribuir há 3 meses" para quem contribuiu em julho, vendo outubro); quem nunca contribuiu mostra "Ainda não contribuiu". "Desfazer" cancela a contribuição com o motivo "Desfeita na tela de Contribuições".
+- [x] **Destaque de "sem contribuir" (15/10, Barbara):** quem está sem contribuir há `aviso_meses` ou mais (padrão 3, ou seja, "mais de 2 meses") tem a nota na etiqueta `chip-warn` do protótipo, no lugar do texto simples. Quem nunca contribuiu não é destacado. Mudar o limite em "Mais" muda o destaque.
+- [x] **Tela Mais (T5.3):** categorias como no protótipo, só com "Adicionar" (a categoria nova entra no fim, com a cor `#CFC3B4`). Um nome igual a outro, sem contar maiúsculas e acentos ("racao" e "Ração"), é recusado. "Exportar dados" e "Histórico de alterações" (seções e itens do menu) entram com a T5.8. Renomear e desativar categoria (pedido da Barbara, 15/10; não existem no protótipo) seguem os botões da tela Membros: "Desativar"/"Reativar" e "Renomear", com "Desfazer". Desativada, a categoria some ao lançar uma despesa nova, mas as despesas antigas continuam com ela, no admin e no site. Renomear muda o nome em todo lugar.
+- [x] **Tela Campanhas (T5.4):** igual ao protótipo, que não tem campo de foto: a foto da campanha entra junto com o Storage (T5.6). A data de início de uma campanha nova começa com o dia de hoje (no protótipo, fixa). A aba "Mais" fica marcada em Campanhas, como no protótipo.
+- [x] **Tela Despesas do admin (T5.5):** igual ao protótipo. As canceladas aparecem riscadas na lista (e contam no "N despesas em outubro"), mas não no total. O formulário oferece só as categorias ativas e as campanhas em andamento; ao editar, a categoria e a campanha que a despesa já tem continuam na lista, mesmo desativada ou encerrada. A data de uma despesa nova começa com o dia de hoje (no protótipo, fixa). O seletor vai do início dos dados (ou da despesa mais antiga) até o mês atual (ou a mais nova).
+- [x] **Fotos (T5.6):** o navegador reduz a foto antes de enviar: lado maior de até **1000 px** (o SPEC dizia até 1600; a maior foto na tela, o cartão do catálogo, tem uns 300 px, e 1000 px cobre celulares de tela densa sem pesar no 4G), sem cortar (o corte é do CSS, como no protótipo, que guardava uma miniatura quadrada de 320 px). Formato WebP; onde o navegador não gera WebP (Safari, iPhone), JPEG. Redesenhar a foto descarta os dados escondidos dela, inclusive a localização. Buckets aceitam só WebP e JPEG, até 1 MB, e o servidor confere o tipo pelos primeiros bytes. Cada envio ganha um nome novo; ao trocar ou tirar a foto, a antiga é apagada do Storage (a CDN do Supabase ainda pode servir a cópia antiga por um tempo). O visitante abre uma foto pelo endereço, mas não lista os arquivos. O formulário de campanha ganhou o bloco "Foto" do formulário de pet (o protótipo não tem foto em Campanhas), e "Salvar" fica desativado enquanto a foto escolhida é preparada. Se o navegador não conseguir abrir a foto (ex.: HEIC no computador), o erro aparece dentro do próprio bloco, porque o toast fica atrás do diálogo.
+- [x] **Ajeitar a foto (15/10, Barbara; não existe no protótipo):** em vez de recortar, a pessoa marca o **ponto principal** da foto (o que não pode ficar de fora, como o rosto). A foto continua inteira no Storage; o site corta para cada formato (quadrado na campanha e no avatar, mais largo no catálogo) mantendo esse ponto dentro do quadro (`object-position`). Fica em `foto_foco_x` e `foto_foco_y` (0 a 100, padrão 50, o centro) em `pets` e `campanhas`, e nas views `pub_pets` e `pub_campanhas`. No formulário, o botão "Ajeitar" abre um painel abaixo do bloco "Foto" (abre sozinho ao escolher uma foto nova): a foto inteira com o ponto marcado, que se move com toque, clique ou arrastando, e ao lado "Como fica no site", com a prévia de cada formato. Pelo teclado, dois controles deslizantes (da esquerda para a direita e de cima para baixo). Trocar a foto volta o ponto para o centro.
+- [x] **Rolagem das janelas (15/10, Barbara):** nas janelas simples do admin (Campanhas, Membros, Contribuições, Mais, cancelar despesa), quem rola é o formulário de dentro, não a janela, para a barra de rolagem não deixar o canto arredondado quadrado (no protótipo, a janela inteira rola). A barra é fina, na cor da tinta, também na janela grande (Despesas e Pets).
+- [x] **Tela Pets do admin (T5.7):** igual ao protótipo. "Precisa de atenção" segue o protótipo: quem precisa de lar temporário, a fila de castração e cada pet com necessidade (o SPEC citava também "não vacinado", que o protótipo não tem). O seletor vai do início dos dados até o mês atual. Pet novo começa como gata adulta, na rua, chegando no mês atual. As datas não podem ser depois do mês atual, e a da situação não pode ser antes da chegada. Ao marcar "Castrado? Sim" pela primeira vez, a castração conta a partir do mês atual (como no protótipo); se já era castrado, a data que existe continua. "Desfazer" depois de editar volta o pet exatamente como era, inclusive a foto; por isso, ao trocar a foto de um pet, a antiga não é apagada do Storage (nas campanhas, que não têm "Desfazer", é).
+- [x] **Cache (T4.4):** as páginas públicas leem por funções `'use cache'` (5 minutos, etiqueta `publico`), e toda Server Action que muda algo do site chama `updateTag("publico")`, então a mudança aparece na hora. As de Membros não chamam, porque membros não aparecem no site.
+- [x] **Exportar e histórico (T5.8):** "Exportar dados" segue o protótipo, com quatro planilhas (o SPEC citava três; o protótipo tem também Membros): doações, despesas, pets e membros, em CSV que abre direto no Excel em português (";", vírgula nos decimais, datas dd/mm/aaaa). Cada planilha tem tudo, inclusive o que foi cancelado (com o motivo), porque serve de cópia de segurança; a de pets tem o "onde fica". Só administrador baixa (o visitante vai para o login). Texto que começa com "=", "+", "-" ou "@" ganha um apóstrofo, para não virar fórmula no Excel. O histórico mostra o que mudou, o valor (contribuições e despesas), quem fez e quando ("hoje, 20:41"), de 10 em 10, lido no servidor página a página. Com mais de 9 páginas, a paginação mostra a primeira, a última e as vizinhas da atual, com "…" (o protótipo mostra todos os números).
+- [x] **Minha conta e saudação (T5.9 e T5.10, aprovadas pela Barbara em 15/10; não existem no protótipo):** "Olá, Ana!" (primeiro nome de `administradores`) fica no cabeçalho, ao lado do "Sair", em todas as telas do admin, e leva a "Minha conta" (também no menu de Mais; a aba "Mais" fica marcada). Para caber, o cabeçalho do admin fica em duas linhas até 1099 px (no protótipo, até 899) e, de 1100 a 1279 px, as abas ficam um pouco mais estreitas. "Minha conta" tem "Trocar senha" (senha atual, nova com pelo menos 8 caracteres e repetir, com "Mostrar"/"Esconder" como no login; a atual é conferida antes de trocar) e "E-mail", só para ver: para trocar o e-mail, quem administra troca pelo painel do Supabase, até haver envio de e-mail próprio.
+- [x] **Produção (T6.5, em andamento):** em 16/10, a pedido da Barbara, as 11 migrations foram aplicadas no `sospets-prod` (sem seed) e conferidas (RLS nas 9 tabelas, as 6 views públicas, os buckets de fotos). Depois, `supabase/dados-iniciais-producao.sql` criou as 9 categorias com as cores do protótipo e as configurações (dados desde janeiro de 2026, R$ 20,00, aviso em 3 meses). Faltam os 3 administradores (criados no painel e ligados com `scripts/adicionar-admin.ts`, rodado pela Barbara com o `.env.producao`, fora do git) e a planilha real (T1.11).
+
