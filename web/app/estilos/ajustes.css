@@ -107,3 +107,11 @@ body.admin .arow.ad-cat { grid-template-columns: minmax(0, 1fr) auto; }
   body.admin .arow.ad-cat .acts { grid-column: 1; margin: 0; justify-content: flex-start; }
   body.admin .arow.ad-cat .acts .chip { margin-left: 0; }
 }
+
+/* Pets (site): no HTML, os números (chegadas e saídas da rua, fila de castração) vêm antes de "Nossos pets",
+   para o celular mostrá-los logo depois das campanhas, com a ordem do Tab igual à da tela (pedido da
+   Barbara, 16/10; no protótipo o catálogo vem antes). No computador continuam à direita do catálogo. */
+@media (min-width: 1100px) {
+  .an-split > .an-cat { grid-column: 1; grid-row: 1; }
+  .an-split > .an-num { grid-column: 2; grid-row: 1; }
+}

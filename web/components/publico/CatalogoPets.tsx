@@ -124,6 +124,24 @@ export function CatalogoPets({
 
       {/* catálogo à esquerda (principal), números à direita no computador */}
       <div className="an-split">
+        {/* o trabalho em números: antes do catálogo no celular; à direita dele no computador */}
+        <section className="an-num" aria-label="Números do grupo">
+          <div className="tp-grid">
+            <Movimento
+              pets={pets}
+              meses={meses}
+              mesAtual={mesAtual}
+              dadosDesde={dadosDesde}
+              mov={mov}
+              aoMudarMes={(v) => { setMov(v); if (filtro?.startsWith("ev:")) setPagina(1); }}
+              filtro={filtro}
+              contar={(k) => pets.filter(FILTROS[k][0]).length}
+              aoFiltrar={filtrarDeFora}
+            />
+            <FilaDeCastracao pets={pets} mesAtual={mesAtual} ativo={filtro === "fila"} aoVer={() => filtrarDeFora("fila")} />
+          </div>
+        </section>
+
         <section className="an-cat" aria-labelledby="h-cat">
           <div className="an-cat-h">
             <h1 id="h-cat" ref={titulo}>Nossos pets</h1>
@@ -190,24 +208,6 @@ export function CatalogoPets({
               {lista.length ? `${(p - 1) * POR_PAGINA + 1}–${Math.min(p * POR_PAGINA, lista.length)} de ${lista.length}` : ""}
             </span>
           </nav>
-        </section>
-
-        {/* o trabalho em números: menor, depois do catálogo */}
-        <section className="an-num" aria-label="Números do grupo">
-          <div className="tp-grid">
-            <Movimento
-              pets={pets}
-              meses={meses}
-              mesAtual={mesAtual}
-              dadosDesde={dadosDesde}
-              mov={mov}
-              aoMudarMes={(v) => { setMov(v); if (filtro?.startsWith("ev:")) setPagina(1); }}
-              filtro={filtro}
-              contar={(k) => pets.filter(FILTROS[k][0]).length}
-              aoFiltrar={filtrarDeFora}
-            />
-            <FilaDeCastracao pets={pets} mesAtual={mesAtual} ativo={filtro === "fila"} aoVer={() => filtrarDeFora("fila")} />
-          </div>
         </section>
       </div>
     </main>
