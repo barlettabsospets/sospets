@@ -63,7 +63,7 @@ async function pets(s: Cliente): Promise<Planilha> {
     cabecalho: [
       "Nome", "Espécie", "Sexo", "Idade", "Pelagem", "Situação hoje", "Chegou em", "Em lar temporário desde", "Adotado em", "Faleceu em",
       "Castrado", "Castrado em", "Vacinado", "Vermifugado", "Testado para FIV/FeLV", "Precisa de lar temporário", "Precisa de algo agora",
-      "Onde fica (ou onde foi resgatado, se adotado)", "Mostrar no site", "Adotante", "Telefone do adotante", "Endereço do adotante",
+      "Onde fica (ou onde foi resgatado, se adotado ou em lar temporário)", "Mostrar no site", "Adotante", "Telefone do adotante", "Endereço do adotante",
     ],
     linhas: p.map((r) => {
       const sit = paraMes(r.entrou_em) <= hoje ? situacaoPet(r, hoje) : null;
