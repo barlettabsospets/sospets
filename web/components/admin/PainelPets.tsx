@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { type CSSProperties, type FormEvent, type ReactNode, useRef, useState, useTransition } from "react";
 import { Dialogo } from "@/components/ui/Dialogo";
+import { Dica } from "@/components/ui/Dica";
 import { Escolha, type OpcaoDeEscolha } from "@/components/ui/Escolha";
 import { Foto } from "@/components/ui/Foto";
 import { IconeEspecie } from "@/components/ui/IconeEspecie";
@@ -17,7 +18,7 @@ import { capitalizar, mesAbreviado, mesPorExtenso, semAcento } from "@/lib/domin
 import { FOCO_CENTRO, urlDaFoto } from "@/lib/dominio/fotos";
 import { type Mes, listaDeMeses, mesesEntre, paraMes } from "@/lib/dominio/meses";
 import {
-  castradoNoMes, desdeDaSituacao, type FiltroDoAdmin, passaNoFiltro, ROTULO_DO_FILTRO, type SituacaoPet, situacaoPet, tempoDesde,
+  castradoNoMes, desdeDaSituacao, type FiltroDoAdmin, linkDoWhatsApp, passaNoFiltro, ROTULO_DO_FILTRO, type SituacaoPet, situacaoPet, tempoDesde,
 } from "@/lib/dominio/pets";
 import { CampoFoto, type FormatoDaFoto, type FotoEscolhida } from "./CampoFoto";
 
@@ -99,6 +100,9 @@ export function PainelPets({ pets, mesAtual, dadosDesde }: { pets: PetDoAdmin[];
   const [fivFelv, setFivFelv] = useState(false);
   const [local, setLocal] = useState("");
   const [noSite, setNoSite] = useState(true);
+  const [adotanteNome, setAdotanteNome] = useState("");
+  const [adotanteTelefone, setAdotanteTelefone] = useState("");
+  const [adotanteEndereco, setAdotanteEndereco] = useState("");
   const [foto, setFoto] = useState<FotoEscolhida>({ previa: null, foco: FOCO_CENTRO });
   const campoNome = useRef<HTMLInputElement>(null);
   // janela "Apagar pet"
@@ -173,6 +177,9 @@ export function PainelPets({ pets, mesAtual, dadosDesde }: { pets: PetDoAdmin[];
     setFivFelv(p?.fiv_felv_testado ?? false);
     setLocal(p?.local ?? "");
     setNoSite(!p?.oculto);
+    setAdotanteNome(p?.adotante_nome ?? "");
+    setAdotanteTelefone(p?.adotante_telefone ?? "");
+    setAdotanteEndereco(p?.adotante_endereco ?? "");
     setFoto({
       previa: p?.foto_path ? urlDaFoto(process.env.NEXT_PUBLIC_SUPABASE_URL ?? "", "pets", p.foto_path) : null,
       foco: p?.foto_foco ?? FOCO_CENTRO,
@@ -189,6 +196,7 @@ export function PainelPets({ pets, mesAtual, dadosDesde }: { pets: PetDoAdmin[];
     const dados = {
       nome: n, especie, sexo, faixaIdade: idade, situacao, entrou, desde: situacao === "rua" ? null : desde,
       precisaLar, necessidade, castrado, vacinado, vermifugado, fivFelv, local, noSite, foto: foto.envio, foco: foto.foco,
+      adotanteNome, adotanteTelefone, adotanteEndereco,
     };
     gravar(
       () => salvarPet(p ? { id: p.id, ...dados } : dados),
@@ -258,8 +266,10 @@ export function PainelPets({ pets, mesAtual, dadosDesde }: { pets: PetDoAdmin[];
         </aside>
         <section aria-label="Lista de pets">
           <div className="ahead">
-            <h1>Pets</h1>
-            <p>Cadastre os pets, atualize a situação de cada um e escolha quem aparece no site público.</p>
+            <div className="com-dica">
+              <h1>Pets</h1>
+              <Dica sobre="a página Pets">Cadastre os pets, atualize a situação de cada um e escolha quem aparece no site público.</Dica>
+            </div>
           </div>
           <div className="ad-tools">
             <label className="ad-busca">
@@ -298,12 +308,14 @@ export function PainelPets({ pets, mesAtual, dadosDesde }: { pets: PetDoAdmin[];
                 s === "adotado" ? genero(p, "Adotado", "Adotada") : s === "falecido" ? genero(p, "Falecido", "Falecida")
                 : s === "rua" ? "Na rua" : "Em lar temporário";
               const cast = castradoNoMes(p, mes);
+              // contato de quem adotou, só para a equipe (pedido da Barbara, 19/10)
+              const contato = s === "adotado" ? [p.adotante_nome, p.adotante_telefone].filter(Boolean).join(" · ") : "";
               return (
                 <button
                   type="button"
                   key={p.id}
                   className="ad-tr"
-                  aria-label={`Editar ${p.nome}: ${idadeTexto}, ${nomeSit} ${quando}, ${cast ? "castrado" : "não castrado"}`}
+                  aria-label={`Editar ${p.nome}: ${idadeTexto}, ${nomeSit} ${quando}${contato ? `, ${genero(p, "adotado", "adotada")} por ${contato}` : ""}, ${cast ? "castrado" : "não castrado"}`}
                   onClick={() => abrir(p)}
                 >
                   <span className="c-pet">
@@ -316,6 +328,7 @@ export function PainelPets({ pets, mesAtual, dadosDesde }: { pets: PetDoAdmin[];
                     <span>
                       <em className="sit-b" style={{ "--c": COR_SIT[s] } as CSSProperties}>{nomeSit}</em>
                       <small>{quando}</small>
+                      {contato && <small className="ad-adotante">{genero(p, "Adotado", "Adotada")} por {contato}</small>}
                     </span>
                   </span>
                   <span className={`c-cast ${cast ? "sim" : "nao"}`}>{cast ? "Sim" : "Não"}</span>
@@ -398,6 +411,37 @@ export function PainelPets({ pets, mesAtual, dadosDesde }: { pets: PetDoAdmin[];
               </div>
             </fieldset>
 
+            {situacao === "adotado" && (
+              <fieldset className="ad-sec">
+                <legend className="com-dica">
+                  Adotante (só a equipe vê)
+                  <Dica sobre="os dados do adotante">Opcional. Guarde só com a autorização de quem adotou, para acompanhar o pet depois da adoção.</Dica>
+                </legend>
+                <div className="field">
+                  <label htmlFor="p-ad-nome">Nome do adotante</label>
+                  <input id="p-ad-nome" autoComplete="off" maxLength={120} value={adotanteNome} onChange={(e) => setAdotanteNome(e.target.value)} />
+                </div>
+                <div className="ad-row2">
+                  <div className="field">
+                    <label htmlFor="p-ad-tel">Telefone</label>
+                    <input
+                      id="p-ad-tel" type="tel" inputMode="tel" autoComplete="off" placeholder="(61) 99999-0000" maxLength={30}
+                      value={adotanteTelefone} onChange={(e) => setAdotanteTelefone(e.target.value)}
+                    />
+                    {linkDoWhatsApp(adotanteTelefone) && (
+                      <a className="hint ad-whats" href={linkDoWhatsApp(adotanteTelefone)!} target="_blank" rel="noopener noreferrer">
+                        Abrir conversa no WhatsApp
+                      </a>
+                    )}
+                  </div>
+                  <div className="field">
+                    <label htmlFor="p-ad-end">Endereço</label>
+                    <input id="p-ad-end" autoComplete="off" maxLength={200} value={adotanteEndereco} onChange={(e) => setAdotanteEndereco(e.target.value)} />
+                  </div>
+                </div>
+              </fieldset>
+            )}
+
             <fieldset className="ad-sec">
               <legend>Saúde</legend>
               <div className="field">
@@ -416,7 +460,7 @@ export function PainelPets({ pets, mesAtual, dadosDesde }: { pets: PetDoAdmin[];
             <fieldset className="ad-sec">
               <legend>Privacidade</legend>
               <div className="field">
-                <label htmlFor="p-loc">Onde fica (só a equipe vê)</label>
+                <label htmlFor="p-loc">{situacao === "adotado" || situacao === "lar" ? "Onde foi resgatado" : "Onde fica"} (só a equipe vê)</label>
                 <input id="p-loc" placeholder="Ex.: perto da padaria, quadra 105" maxLength={200} value={local} onChange={(e) => setLocal(e.target.value)} />
               </div>
               <label className="check"><input type="checkbox" checked={noSite} onChange={(e) => setNoSite(e.target.checked)} /> Mostrar no site público</label>

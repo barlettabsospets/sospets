@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { ListaCampanhas } from "@/components/admin/ListaCampanhas";
+import { Dica } from "@/components/ui/Dica";
 import { lerCampanhasDoAdmin } from "@/lib/dados/admin";
 
 export const metadata: Metadata = { title: "Campanhas" };
@@ -15,11 +16,10 @@ export default function Pagina() {
   return (
     <main id="main" className="wrap">
       <div className="ahead">
-        <h1>Campanhas</h1>
-        <p>
-          Arrecadações para um caso específico, como a do Stuart ou do Nelson. Doações e despesas podem ser ligadas a uma
-          campanha, e o site mostra só os totais.
-        </p>
+        <div className="com-dica">
+          <h1>Campanhas</h1>
+          <Dica sobre="a página Campanhas">Arrecadações para um caso específico, como a do Stuart ou do Nelson. Doações e despesas podem ser ligadas a uma campanha, e o site mostra só os totais.</Dica>
+        </div>
       </div>
       <Suspense>
         <Campanhas />

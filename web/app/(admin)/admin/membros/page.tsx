@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { ListaMembros } from "@/components/admin/ListaMembros";
+import { Dica } from "@/components/ui/Dica";
 import { lerConfiguracoes, lerMembros } from "@/lib/dados/admin";
 
 export const metadata: Metadata = { title: "Membros" };
@@ -16,8 +17,10 @@ export default function Pagina() {
   return (
     <main id="main" className="wrap">
       <div className="ahead">
-        <h1>Membros</h1>
-        <p>Os nomes aparecem só aqui, para você. O site público nunca mostra quem contribui.</p>
+        <div className="com-dica">
+          <h1>Membros</h1>
+          <Dica sobre="a página Membros">Os nomes aparecem só aqui, para você. O site público nunca mostra quem contribui.</Dica>
+        </div>
       </div>
       <Suspense>
         <Membros />
