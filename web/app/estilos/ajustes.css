@@ -120,3 +120,13 @@ body.admin .arow.ad-cat { grid-template-columns: minmax(0, 1fr) auto; }
    situação, e o link do WhatsApp embaixo do telefone na janela do pet. */
 body.admin .ad-tr .c-sit small.ad-adotante { display: block; color: var(--ink-2); }
 body.admin .field a.ad-whats { color: var(--primary); font-weight: 700; text-decoration: underline; justify-self: start; }
+
+/* Dica "i" (components/ui/Dica.tsx; não existe no protótipo, pedido da Barbara, 19/10): textos de ajuda
+   escondidos atrás de um "i" ao lado do título ou do campo. O balão ocupa a linha de baixo inteira. */
+body.admin .com-dica { display: flex; flex-wrap: wrap; align-items: center; column-gap: 2px; }
+body.admin .dica-b { flex: none; width: 32px; height: 32px; margin: -6px 0; padding: 0; border: 0; border-radius: 50%; background: none; color: var(--ink-2); display: inline-grid; place-items: center; cursor: pointer; }
+body.admin .dica-b svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+body.admin .dica-b:hover, body.admin .dica-b[aria-expanded="true"] { color: var(--primary); background: var(--cream); }
+body.admin .dica-b:focus-visible { outline: 3px solid var(--primary-500); outline-offset: 1px; }
+body.admin .dica-t { flex-basis: 100%; margin-top: 6px; padding: 10px 12px; border-radius: 12px; background: #fff; border: 1px solid rgba(74, 40, 20, .14); box-shadow: 0 6px 18px -10px rgba(74, 40, 20, .35); color: var(--ink); font: 600 .9375rem/1.45 var(--font); letter-spacing: 0; text-transform: none; }
+body.admin .dica-t[hidden] { display: none; }

@@ -2,6 +2,7 @@
 
 import { type FormEvent, useState, useTransition } from "react";
 import { Dialogo } from "@/components/ui/Dialogo";
+import { Dica } from "@/components/ui/Dica";
 import { GrupoDeBotoes } from "@/components/ui/GrupoDeBotoes";
 import { Paginacao } from "@/components/ui/Paginacao";
 import { paginar } from "@/components/ui/paginacao";
@@ -212,14 +213,16 @@ export function ListaMembros({ membros, padrao }: { membros: Membro[]; padrao: n
             <input id="m-nome" placeholder="Como aparece na lista" required value={nome} onChange={(e) => setNome(e.target.value)} />
           </div>
           <div className="field">
-            <label htmlFor="m-val">Contribuição mensal</label>
+            <div className="com-dica">
+              <label htmlFor="m-val">Contribuição mensal</label>
+              <Dica sobre="Contribuição mensal">
+                O valor padrão do grupo é {formatarBRL(padrao)}. Se colocar outro valor, ele passa a ser o valor próprio deste membro.
+              </Dica>
+            </div>
             <div className="money">
               <span>R$</span>
               <input id="m-val" inputMode="decimal" value={valor} onChange={(e) => setValor(e.target.value)} />
             </div>
-            <span className="hint">
-              O valor padrão do grupo é {formatarBRL(padrao)}. Se colocar outro valor, ele passa a ser o valor próprio deste membro.
-            </span>
           </div>
           <div className="btns">
             <button className="btn btn-secondary" type="button" onClick={() => setEditando(undefined)}>

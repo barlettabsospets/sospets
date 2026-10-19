@@ -2,6 +2,7 @@
 
 import { type FormEvent, useRef, useState, useTransition } from "react";
 import { Dialogo } from "@/components/ui/Dialogo";
+import { Dica } from "@/components/ui/Dica";
 import { GrupoDeBotoes } from "@/components/ui/GrupoDeBotoes";
 import { Paginacao } from "@/components/ui/Paginacao";
 import { paginar } from "@/components/ui/paginacao";
@@ -220,8 +221,10 @@ export function PainelContribuicoes({
         </aside>
         <section aria-label="Membros">
           <div className="ahead">
-            <h1>Contribuições</h1>
-            <p>Marque quem contribuiu no mês. Os nomes aparecem só aqui; o site público mostra apenas os totais.</p>
+            <div className="com-dica">
+              <h1>Contribuições</h1>
+              <Dica sobre="a página Contribuições">Marque quem contribuiu no mês. Os nomes aparecem só aqui; o site público mostra apenas os totais.</Dica>
+            </div>
           </div>
           <div className="ad-tools">
             <label className="ad-busca">

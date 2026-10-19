@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { TrocarSenha } from "@/components/admin/TrocarSenha";
+import { Dica } from "@/components/ui/Dica";
 import { lerAdministradorAtual } from "@/lib/dados/admin";
 
 export const metadata: Metadata = { title: "Minha conta" };
@@ -17,8 +18,10 @@ export default function Pagina() {
   return (
     <main id="main" className="wrap">
       <div className="ahead">
-        <h1>Minha conta</h1>
-        <p>Troque a sua senha e confira o e-mail com que você entra.</p>
+        <div className="com-dica">
+          <h1>Minha conta</h1>
+          <Dica sobre="a página Minha conta">Troque a sua senha e confira o e-mail com que você entra.</Dica>
+        </div>
       </div>
       <div className="ad-conta">
         <section className="sec tile" aria-labelledby="t-senha">

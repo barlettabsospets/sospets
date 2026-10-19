@@ -2,6 +2,7 @@
 
 import { type FormEvent, useRef, useState, useTransition } from "react";
 import { Dialogo } from "@/components/ui/Dialogo";
+import { Dica } from "@/components/ui/Dica";
 import { Escolha } from "@/components/ui/Escolha";
 import { IconeEspecie } from "@/components/ui/IconeEspecie";
 import { Paginacao } from "@/components/ui/Paginacao";
@@ -199,8 +200,10 @@ export function PainelDespesas({
         </aside>
         <section aria-label="Lista de despesas">
           <div className="ahead">
-            <h1>Despesas</h1>
-            <p>Lance o que foi pago e corrija quando precisar. Cada despesa aparece no site público na hora, sem nomes de pessoas.</p>
+            <div className="com-dica">
+              <h1>Despesas</h1>
+              <Dica sobre="a página Despesas">Lance o que foi pago e corrija quando precisar. Cada despesa aparece no site público na hora, sem nomes de pessoas.</Dica>
+            </div>
           </div>
           <div className="ad-list-h">
             <p className="ad-count" aria-live="polite">{pg.contador}</p>
@@ -289,12 +292,14 @@ export function PainelDespesas({
               </div>
               <div className="ad-row2">
                 <div className="field">
-                  <label htmlFor="f-ani">Pet (opcional)</label>
+                  <div className="com-dica">
+                    <label htmlFor="f-ani">Pet (opcional)</label>
+                    <Dica sobre="Pet (opcional)">Serve para saber, depois, quanto cada pet custou.</Dica>
+                  </div>
                   <select id="f-ani" value={petId} onChange={(e) => setPetId(e.target.value)}>
                     <option value="">Nenhum (vários pets)</option>
                     {pets.map((p) => <option key={p.id} value={p.id}>{p.nome}</option>)}
                   </select>
-                  <span className="hint">Serve para saber, depois, quanto cada pet custou.</span>
                 </div>
                 <div className="field">
                   <label htmlFor="f-camp">Campanha (opcional)</label>
