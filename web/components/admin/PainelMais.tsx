@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { type FormEvent, useState, useTransition } from "react";
 import { Dialogo } from "@/components/ui/Dialogo";
+import { Dica } from "@/components/ui/Dica";
 import { useToast } from "@/components/ui/Toast";
 import { criarCategoria, mudarCategoriaAtiva, renomearCategoria, salvarConfiguracoes } from "@/lib/admin/mais";
 import type { Resultado } from "@/lib/admin/membros";
@@ -160,9 +161,11 @@ export function PainelMais({
                 O valor padrão da contribuição mensal fica em <Link href="/admin/membros">Membros</Link>, junto de quem tem valor próprio.
               </p>
               <div className="field">
-                <label htmlFor="s-i">Dados registrados desde</label>
+                <div className="com-dica">
+                  <label htmlFor="s-i">Dados registrados desde</label>
+                  <Dica sobre="Dados registrados desde">Aparece no site público, para ser transparente sobre o que existe.</Dica>
+                </div>
                 <input id="s-i" type="date" required value={desde} onChange={(e) => setDesde(e.target.value)} />
-                <span className="hint">Aparece no site público, para ser transparente sobre o que existe.</span>
               </div>
               <div className="field">
                 <label htmlFor="s-a">Avisar quando alguém ficar sem contribuir por</label>
@@ -186,9 +189,11 @@ export function PainelMais({
         <form onSubmit={renomear}>
           <h2 id="dlg-cat-t">Renomear categoria</h2>
           <div className="field">
-            <label htmlFor="cat-nome">Nome</label>
+            <div className="com-dica">
+              <label htmlFor="cat-nome">Nome</label>
+              <Dica sobre="o novo nome">O nome muda também nas despesas já lançadas e no site.</Dica>
+            </div>
             <input id="cat-nome" required value={novoNome} onChange={(e) => setNovoNome(e.target.value)} />
-            <span className="hint">O nome muda também nas despesas já lançadas e no site.</span>
           </div>
           <div className="btns">
             <button className="btn btn-secondary" type="button" onClick={() => setRenomeando(null)}>Cancelar</button>

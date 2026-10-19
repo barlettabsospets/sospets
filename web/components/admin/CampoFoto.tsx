@@ -1,6 +1,7 @@
 "use client";
 
 import { type ChangeEvent, type PointerEvent, useEffect, useRef, useState } from "react";
+import { Dica } from "@/components/ui/Dica";
 import { FOCO_CENTRO, type Foco, focoDoToque, posicaoDoFoco } from "@/lib/dominio/fotos";
 import { reduzirFoto } from "@/lib/fotos/reduzir";
 
@@ -86,8 +87,10 @@ export function CampoFoto({
           {previa ? <img src={previa} alt="" style={{ objectPosition: posicao }} /> : <Pata />}
         </div>
         <div className="ad-foto-t">
-          <b>Foto</b>
-          <span>Tire na hora ou escolha da galeria. A foto é reduzida e a localização dela é removida.</span>
+          <div className="com-dica">
+            <b>Foto</b>
+            <Dica sobre="a foto">Tire na hora ou escolha da galeria. A foto é reduzida e a localização dela é removida.</Dica>
+          </div>
           <span className="ad-foto-erro" role="alert" hidden={!erro}>Não foi possível abrir essa foto. Tente outra.</span>
           <div className="ad-foto-b">
             <label className="btn btn-secondary btn-sm" htmlFor={id}>{previa ? "Trocar foto" : "Escolher foto"}</label>

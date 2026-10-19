@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { type CSSProperties, type FormEvent, type ReactNode, useRef, useState, useTransition } from "react";
 import { Dialogo } from "@/components/ui/Dialogo";
+import { Dica } from "@/components/ui/Dica";
 import { Escolha, type OpcaoDeEscolha } from "@/components/ui/Escolha";
 import { Foto } from "@/components/ui/Foto";
 import { IconeEspecie } from "@/components/ui/IconeEspecie";
@@ -265,8 +266,10 @@ export function PainelPets({ pets, mesAtual, dadosDesde }: { pets: PetDoAdmin[];
         </aside>
         <section aria-label="Lista de pets">
           <div className="ahead">
-            <h1>Pets</h1>
-            <p>Cadastre os pets, atualize a situação de cada um e escolha quem aparece no site público.</p>
+            <div className="com-dica">
+              <h1>Pets</h1>
+              <Dica sobre="a página Pets">Cadastre os pets, atualize a situação de cada um e escolha quem aparece no site público.</Dica>
+            </div>
           </div>
           <div className="ad-tools">
             <label className="ad-busca">
@@ -410,7 +413,10 @@ export function PainelPets({ pets, mesAtual, dadosDesde }: { pets: PetDoAdmin[];
 
             {situacao === "adotado" && (
               <fieldset className="ad-sec">
-                <legend>Adotante (só a equipe vê)</legend>
+                <legend className="com-dica">
+                  Adotante (só a equipe vê)
+                  <Dica sobre="os dados do adotante">Opcional. Guarde só com a autorização de quem adotou, para acompanhar o pet depois da adoção.</Dica>
+                </legend>
                 <div className="field">
                   <label htmlFor="p-ad-nome">Nome do adotante</label>
                   <input id="p-ad-nome" autoComplete="off" maxLength={120} value={adotanteNome} onChange={(e) => setAdotanteNome(e.target.value)} />
@@ -433,7 +439,6 @@ export function PainelPets({ pets, mesAtual, dadosDesde }: { pets: PetDoAdmin[];
                     <input id="p-ad-end" autoComplete="off" maxLength={200} value={adotanteEndereco} onChange={(e) => setAdotanteEndereco(e.target.value)} />
                   </div>
                 </div>
-                <p className="hint">Opcional. Guarde só com a autorização de quem adotou, para acompanhar o pet depois da adoção.</p>
               </fieldset>
             )}
 

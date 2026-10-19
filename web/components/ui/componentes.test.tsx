@@ -3,6 +3,7 @@ import { act, cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useState } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { Dica } from "./Dica";
 import { Escolha } from "./Escolha";
 import { GrupoDeBotoes } from "./GrupoDeBotoes";
 import { Paginacao } from "./Paginacao";
@@ -216,5 +217,51 @@ describe("paginasVisiveis", () => {
       "Página anterior", "Página 1 de 40", "Página 19 de 40", "Página 20 de 40", "Página 21 de 40", "Página 40 de 40", "Próxima página",
     ]);
     expect(screen.getByRole("button", { name: "Página 20 de 40" })).toHaveAttribute("aria-current", "page");
+  });
+});
+
+describe("Dica", () => {
+  const montar = () =>
+    render(
+      <div>
+        <h1>Pets</h1>
+        <Dica sobre="a página Pets">Cadastre os pets.</Dica>
+        <button type="button">fora</button>
+      </div>,
+    );
+
+  it("o botão abre e fecha a explicação, com aria-expanded", async () => {
+    const u = userEvent.setup();
+    montar();
+    const botao = screen.getByRole("button", { name: "Sobre a página Pets" });
+    expect(botao).toHaveAttribute("aria-expanded", "false");
+    expect(screen.getByText("Cadastre os pets.")).not.toBeVisible();
+    await u.click(botao);
+    expect(botao).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByText("Cadastre os pets.")).toBeVisible();
+    expect(botao).toHaveAttribute("aria-controls", screen.getByText("Cadastre os pets.").id);
+    await u.click(botao);
+    expect(screen.getByText("Cadastre os pets.")).not.toBeVisible();
+  });
+
+  it("teclado: Enter abre, Esc fecha e o foco volta ao botão", async () => {
+    const u = userEvent.setup();
+    montar();
+    await u.tab();
+    const botao = screen.getByRole("button", { name: "Sobre a página Pets" });
+    expect(botao).toHaveFocus();
+    await u.keyboard("{Enter}");
+    expect(screen.getByText("Cadastre os pets.")).toBeVisible();
+    await u.keyboard("{Escape}");
+    expect(screen.getByText("Cadastre os pets.")).not.toBeVisible();
+    expect(botao).toHaveFocus();
+  });
+
+  it("um toque fora fecha", async () => {
+    const u = userEvent.setup();
+    montar();
+    await u.click(screen.getByRole("button", { name: "Sobre a página Pets" }));
+    await u.click(screen.getByRole("button", { name: "fora" }));
+    expect(screen.getByText("Cadastre os pets.")).not.toBeVisible();
   });
 });
