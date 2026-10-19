@@ -460,7 +460,7 @@ export function PainelPets({ pets, mesAtual, dadosDesde }: { pets: PetDoAdmin[];
             <fieldset className="ad-sec">
               <legend>Privacidade</legend>
               <div className="field">
-                <label htmlFor="p-loc">{situacao === "adotado" ? "Onde foi resgatado" : "Onde fica"} (só a equipe vê)</label>
+                <label htmlFor="p-loc">{situacao === "adotado" || situacao === "lar" ? "Onde foi resgatado" : "Onde fica"} (só a equipe vê)</label>
                 <input id="p-loc" placeholder="Ex.: perto da padaria, quadra 105" maxLength={200} value={local} onChange={(e) => setLocal(e.target.value)} />
               </div>
               <label className="check"><input type="checkbox" checked={noSite} onChange={(e) => setNoSite(e.target.checked)} /> Mostrar no site público</label>

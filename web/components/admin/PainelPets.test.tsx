@@ -74,6 +74,13 @@ describe("PainelPets", () => {
     const outra = screen.getByRole("dialog", { name: "Editar Mel" });
     expect(within(outra).queryByRole("group", { name: "Adotante (só a equipe vê)" })).not.toBeInTheDocument();
     expect(within(outra).getByLabelText("Onde fica (só a equipe vê)")).toBeInTheDocument();
+    await u.click(within(outra).getByRole("button", { name: "Cancelar" }));
+
+    // em lar temporário também é "Onde foi resgatado", mas sem bloco do adotante
+    await u.click(linha("Thor"));
+    const lar = screen.getByRole("dialog", { name: "Editar Thor" });
+    expect(within(lar).getByLabelText("Onde foi resgatado (só a equipe vê)")).toBeInTheDocument();
+    expect(within(lar).queryByRole("group", { name: "Adotante (só a equipe vê)" })).not.toBeInTheDocument();
   });
 
   it("tabela com situação no mês, castração e 'Oculto no site'", () => {
@@ -139,7 +146,7 @@ describe("PainelPets", () => {
     expect(within(janela).getByLabelText("Em lar temporário desde")).toHaveValue("2026-10");
     expect(within(janela).queryByLabelText("Precisa de lar temporário agora")).not.toBeInTheDocument();
     await u.click(within(janela).getByRole("radio", { name: "Sim" }));
-    await u.type(within(janela).getByLabelText("Onde fica (só a equipe vê)"), "quadra 108");
+    await u.type(within(janela).getByLabelText("Onde foi resgatado (só a equipe vê)"), "quadra 108");
     await u.click(within(janela).getByLabelText("Mostrar no site público"));
     await u.click(within(janela).getByRole("button", { name: "Salvar pet" }));
 
