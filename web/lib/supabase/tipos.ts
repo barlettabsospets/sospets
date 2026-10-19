@@ -383,6 +383,9 @@ export type Database = {
       pets: {
         Row: {
           adotado_em: string | null
+          adotante_endereco: string | null
+          adotante_nome: string | null
+          adotante_telefone: string | null
           atualizado_em: string
           castrado: Database["public"]["Enums"]["castracao"]
           castrado_em: string | null
@@ -409,6 +412,9 @@ export type Database = {
         }
         Insert: {
           adotado_em?: string | null
+          adotante_endereco?: string | null
+          adotante_nome?: string | null
+          adotante_telefone?: string | null
           atualizado_em?: string
           castrado?: Database["public"]["Enums"]["castracao"]
           castrado_em?: string | null
@@ -435,6 +441,9 @@ export type Database = {
         }
         Update: {
           adotado_em?: string | null
+          adotante_endereco?: string | null
+          adotante_nome?: string | null
+          adotante_telefone?: string | null
           atualizado_em?: string
           castrado?: Database["public"]["Enums"]["castracao"]
           castrado_em?: string | null

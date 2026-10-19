@@ -208,6 +208,10 @@ export type PetDoAdmin = {
   oculto: boolean;
   foto_path: string | null;
   foto_foco: Foco;
+  // contato de quem adotou (só existe com o pet adotado)
+  adotante_nome: string | null;
+  adotante_telefone: string | null;
+  adotante_endereco: string | null;
 };
 
 // do cadastro mais recente para o mais antigo, como o catálogo (pet novo entra no topo)
@@ -215,7 +219,7 @@ export async function lerPetsDoAdmin(): Promise<PetDoAdmin[]> {
   const supabase = await cliente();
   const { data, error } = await supabase
     .from("pets")
-    .select("id, nome, especie, sexo, faixa_idade, entrou_em, lar_em, adotado_em, obito_em, castrado, castrado_em, vacinado, vermifugado, fiv_felv_testado, precisa_lar, necessidade, local, oculto, foto_path, foto_foco_x, foto_foco_y")
+    .select("id, nome, especie, sexo, faixa_idade, entrou_em, lar_em, adotado_em, obito_em, castrado, castrado_em, vacinado, vermifugado, fiv_felv_testado, precisa_lar, necessidade, local, oculto, foto_path, foto_foco_x, foto_foco_y, adotante_nome, adotante_telefone, adotante_endereco")
     .order("criado_em", { ascending: false })
     .order("nome");
   falhou("pets", error);

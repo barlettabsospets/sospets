@@ -115,3 +115,8 @@ body.admin .arow.ad-cat { grid-template-columns: minmax(0, 1fr) auto; }
   .an-split > .an-cat { grid-column: 1; grid-row: 1; }
   .an-split > .an-num { grid-column: 2; grid-row: 1; }
 }
+
+/* Contato do adotante (não existe no protótipo; pedido da Barbara, 19/10): na lista de Pets, embaixo da
+   situação, e o link do WhatsApp embaixo do telefone na janela do pet. */
+body.admin .ad-tr .c-sit small.ad-adotante { display: block; color: var(--ink-2); }
+body.admin .field a.ad-whats { color: var(--primary); font-weight: 700; text-decoration: underline; justify-self: start; }

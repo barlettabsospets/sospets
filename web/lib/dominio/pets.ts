@@ -158,3 +158,12 @@ export function dataDaCastracao(castrado: "sim" | "nao" | "nao_sei", atual: stri
   if (castrado !== "sim") return null;
   return eraCastrado ? atual : `${mesAtual}-01`;
 }
+
+// Link do WhatsApp para o telefone do adotante: com DDD (10 ou 11 dígitos) ganha o 55 do Brasil;
+// já com o 55 (12 ou 13 dígitos) fica como está. Outro formato: sem link.
+export function linkDoWhatsApp(telefone: string | null): string | null {
+  const d = (telefone ?? "").replace(/\D/g, "");
+  if (d.length === 10 || d.length === 11) return `https://wa.me/55${d}`;
+  if ((d.length === 12 || d.length === 13) && d.startsWith("55")) return `https://wa.me/${d}`;
+  return null;
+}

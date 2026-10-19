@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest";
 import { type Mes, listaDeMeses } from "./meses";
 import {
   acompanhado, castradoNoMes, contarGrupo, contarTopo, dataDaCastracao, datasDaSituacao, desdeDaSituacao,
-  type FiltroDoAdmin, naFilaDeCastracao, passaNoFiltro, saidaDaRua, situacaoPet, tempoDesde,
+  type FiltroDoAdmin, linkDoWhatsApp, naFilaDeCastracao, passaNoFiltro, saidaDaRua, situacaoPet, tempoDesde,
 } from "./pets";
 
 // dados.js do protótipo: os mesmos pets e a mesma situacaoPet() que a página usa
@@ -186,5 +186,20 @@ describe("tela Pets do admin", () => {
 
   it("tempo desde", () => {
     expect([0, 1, 4].map(tempoDesde)).toEqual(["desde este mês", "há 1 mês", "há 4 meses"]);
+  });
+});
+
+describe("linkDoWhatsApp", () => {
+  it("telefone com DDD ganha o 55 do Brasil", () => {
+    expect(linkDoWhatsApp("(61) 99999-0000")).toBe("https://wa.me/5561999990000");
+    expect(linkDoWhatsApp("61 3333-4444")).toBe("https://wa.me/556133334444");
+  });
+  it("com o 55 fica como está", () => {
+    expect(linkDoWhatsApp("+55 61 99999-0000")).toBe("https://wa.me/5561999990000");
+  });
+  it("sem DDD, vazio ou estranho: sem link", () => {
+    expect(linkDoWhatsApp("99999-0000")).toBeNull();
+    expect(linkDoWhatsApp(null)).toBeNull();
+    expect(linkDoWhatsApp("+1 555 123 4567 89")).toBeNull();
   });
 });
