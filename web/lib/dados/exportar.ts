@@ -63,7 +63,7 @@ async function pets(s: Cliente): Promise<Planilha> {
     cabecalho: [
       "Nome", "Espécie", "Sexo", "Idade", "Pelagem", "Situação hoje", "Chegou em", "Em lar temporário desde", "Adotado em", "Faleceu em",
       "Castrado", "Castrado em", "Vacinado", "Vermifugado", "Testado para FIV/FeLV", "Precisa de lar temporário", "Precisa de algo agora",
-      "Onde fica", "Mostrar no site",
+      "Onde fica (ou onde foi resgatado, se adotado)", "Mostrar no site", "Adotante", "Telefone do adotante", "Endereço do adotante",
     ],
     linhas: p.map((r) => {
       const sit = paraMes(r.entrou_em) <= hoje ? situacaoPet(r, hoje) : null;
@@ -71,7 +71,7 @@ async function pets(s: Cliente): Promise<Planilha> {
         r.nome, r.especie === "cachorro" ? "Cachorro" : "Gato", r.sexo === "f" ? "Fêmea" : "Macho", r.faixa_idade === "filhote" ? "Filhote" : "Adulto",
         r.pelagem, sit ? SITUACAO[sit] : null, mesBR(r.entrou_em), mesBR(r.lar_em), mesBR(r.adotado_em), mesBR(r.obito_em),
         CASTRADO[r.castrado], mesBR(r.castrado_em), r.vacinado, r.vermifugado, r.especie === "gato" ? r.fiv_felv_testado : null,
-        r.precisa_lar, r.necessidade, r.local, !r.oculto,
+        r.precisa_lar, r.necessidade, r.local, !r.oculto, r.adotante_nome, r.adotante_telefone, r.adotante_endereco,
       ];
     }),
   };

@@ -29,12 +29,16 @@ const pet = (id: string, nome: string, extra: Partial<PetDoAdmin> = {}): PetDoAd
   id: `00000000-0000-4000-a000-00000000000${id}`, nome, especie: "gato", sexo: "f", faixa_idade: "adulto",
   entrou_em: "2026-03-01", lar_em: null, adotado_em: null, obito_em: null, castrado: "nao_sei", castrado_em: null,
   vacinado: false, vermifugado: false, fiv_felv_testado: false, precisa_lar: false, necessidade: null,
-  local: null, oculto: false, foto_path: null, foto_foco: { x: 50, y: 50 }, ...extra,
+  local: null, oculto: false, foto_path: null, foto_foco: { x: 50, y: 50 },
+  adotante_nome: null, adotante_telefone: null, adotante_endereco: null, ...extra,
 });
 const PETS = [
   pet("1", "Mel", { precisa_lar: true }),
   pet("2", "Thor", { especie: "cachorro", sexo: "m", faixa_idade: "filhote", castrado: "sim", castrado_em: "2026-05-01", lar_em: "2026-08-01" }),
-  pet("3", "Bento", { especie: "cachorro", sexo: "m", adotado_em: "2026-09-01", castrado: "sim", oculto: true, local: "quadra 105" }),
+  pet("3", "Bento", {
+    especie: "cachorro", sexo: "m", adotado_em: "2026-09-01", castrado: "sim", oculto: true, local: "quadra 105",
+    adotante_nome: "Maria Exemplo", adotante_telefone: "(61) 99999-0000", adotante_endereco: "Quadra 205 (exemplo)",
+  }),
   pet("4", "Luna", { necessidade: "Precisa de cirurgia" }),
   pet("5", "Novata", { entrou_em: "2026-10-01" }),
 ];
@@ -48,11 +52,35 @@ const montar = () =>
 const linha = (nome: string) => screen.getByRole("button", { name: new RegExp(`^Editar ${nome}:`) });
 
 describe("PainelPets", () => {
+  it("adotante: na lista e na janela, só para pet adotado", async () => {
+    const u = userEvent.setup();
+    montar();
+    expect(within(linha("Bento")).getByText("Adotado por Maria Exemplo · (61) 99999-0000")).toBeInTheDocument();
+    expect(linha("Bento")).toHaveAccessibleName(/adotado por Maria Exemplo/);
+
+    await u.click(linha("Bento"));
+    const janela = screen.getByRole("dialog", { name: "Editar Bento" });
+    const grupo = within(janela).getByRole("group", { name: "Adotante (só a equipe vê)" });
+    expect(within(grupo).getByLabelText("Nome do adotante")).toHaveValue("Maria Exemplo");
+    expect(within(grupo).getByLabelText("Endereço")).toHaveValue("Quadra 205 (exemplo)");
+    expect(within(grupo).getByRole("link", { name: "Abrir conversa no WhatsApp" })).toHaveAttribute("href", "https://wa.me/5561999990000");
+    expect(within(janela).getByLabelText("Onde foi resgatado (só a equipe vê)")).toHaveValue("quadra 105");
+    await u.click(within(janela).getByRole("button", { name: "Salvar alterações" }));
+    expect(acoes.salvarPet).toHaveBeenCalledWith(expect.objectContaining({
+      id: PETS[2].id, adotanteNome: "Maria Exemplo", adotanteTelefone: "(61) 99999-0000", adotanteEndereco: "Quadra 205 (exemplo)",
+    }));
+
+    await u.click(linha("Mel"));
+    const outra = screen.getByRole("dialog", { name: "Editar Mel" });
+    expect(within(outra).queryByRole("group", { name: "Adotante (só a equipe vê)" })).not.toBeInTheDocument();
+    expect(within(outra).getByLabelText("Onde fica (só a equipe vê)")).toBeInTheDocument();
+  });
+
   it("tabela com situação no mês, castração e 'Oculto no site'", () => {
     montar();
     expect(screen.getByText("5 pets")).toBeInTheDocument();
     expect(linha("Thor")).toHaveAccessibleName("Editar Thor: Cão filhote, Em lar temporário há 2 meses, castrado");
-    expect(linha("Bento")).toHaveAccessibleName("Editar Bento: Cão adulto, Adotado em set/2026, castrado");
+    expect(linha("Bento")).toHaveAccessibleName("Editar Bento: Cão adulto, Adotado em set/2026, adotado por Maria Exemplo · (61) 99999-0000, castrado");
     expect(linha("Mel")).toHaveAccessibleName("Editar Mel: Gata adulta, Na rua há 7 meses, não castrado");
     expect(within(linha("Bento")).getByText("Oculto no site")).toBeInTheDocument();
     expect(within(linha("Novata")).getByText("desde este mês")).toBeInTheDocument();
@@ -130,7 +158,7 @@ describe("PainelPets", () => {
     // o foco vai para o nome no quadro seguinte (requestAnimationFrame)
     await vi.waitFor(() => expect(within(janela).getByLabelText("Nome")).toHaveFocus());
     expect(within(janela).getByLabelText("Adotado em")).toHaveValue("2026-09");
-    expect(within(janela).getByLabelText("Onde fica (só a equipe vê)")).toHaveValue("quadra 105");
+    expect(within(janela).getByLabelText("Onde foi resgatado (só a equipe vê)")).toHaveValue("quadra 105");
     expect(within(janela).getByLabelText("Mostrar no site público")).not.toBeChecked();
     await u.click(within(janela).getByLabelText("Mostrar no site público"));
     await u.click(within(janela).getByRole("button", { name: "Salvar alterações" }));

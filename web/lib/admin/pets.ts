@@ -44,6 +44,10 @@ const DadosDoPet = z.object({
   noSite: z.boolean(),
   foto: FotoDoFormulario,
   foco: FocoDaFoto,
+  // contato de quem adotou (opcional; só fica gravado com o pet adotado)
+  adotanteNome: TextoOpcional(120),
+  adotanteTelefone: TextoOpcional(30),
+  adotanteEndereco: TextoOpcional(200),
 });
 
 // Cria (sem id) ou altera um pet. A foto antiga não é apagada ao trocar, para o "Desfazer" poder voltar a ela.
@@ -87,6 +91,10 @@ export async function salvarPet(entrada: z.input<typeof DadosDoPet>): Promise<Re
     fiv_felv_testado: d.especie === "gato" && d.fivFelv,
     local: d.local,
     oculto: !d.noSite,
+    // se o pet deixar de estar adotado, o contato do adotante é apagado junto
+    adotante_nome: d.situacao === "adotado" ? d.adotanteNome : null,
+    adotante_telefone: d.situacao === "adotado" ? d.adotanteTelefone : null,
+    adotante_endereco: d.situacao === "adotado" ? d.adotanteEndereco : null,
     foto_foco_x: d.foco.x,
     foto_foco_y: d.foco.y,
     ...(foto_path === undefined ? {} : { foto_path }),
@@ -124,6 +132,9 @@ const PetAnterior = z.object({
   // só um arquivo do bucket pets (nome gerado por enviarFoto)
   foto_path: z.string().regex(/^[\w-]+\.(webp|jpg)$/).nullable(),
   foto_foco: FocoDaFoto,
+  adotante_nome: z.string().max(120).nullable(),
+  adotante_telefone: z.string().max(30).nullable(),
+  adotante_endereco: z.string().max(200).nullable(),
 });
 
 // "Desfazer" da edição: o pet volta a ser exatamente como era, inclusive a foto.
