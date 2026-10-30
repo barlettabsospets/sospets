@@ -4,8 +4,12 @@
 // O script é genérico e vai para o git. Tudo o que é da planilha real (colunas de cada mês,
 // nomes de pets nos rótulos, quem fica anônimo) está na configuração em dados-reais/,
 // fora do git. O relatório também é gravado lá, porque tem nomes de pessoas.
-// Por enquanto só há o modo relatório: nada é gravado no banco.
+//
+// Gravar (só num banco sem membros, contribuições, despesas nem campanhas):
+//   node --env-file=.env.local scripts/importar-planilha.ts --gravar --projeto=<ref do projeto>
+// O --projeto precisa ser o mesmo do NEXT_PUBLIC_SUPABASE_URL: evita gravar no banco errado.
 
+import { createClient } from "@supabase/supabase-js";
 import ExcelJS from "exceljs";
 import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -30,6 +34,10 @@ type Rotulo = { pet: string } | { grupo: string | null };
 export type ConfigMembro = { nome: string; grafias?: string[] };
 type Config = {
   planilha: string;
+  // aba "Membros" preenchida pela equipe: nome final, tipo, valor mensal e se está ativo
+  cadastro?: { planilha: string; aba: string };
+  // grafias da planilha que a aba "Membros" não tem → nome final
+  grafias?: Record<string, string>;
   meses: ConfigMes[];
   campanhas: ConfigCampanha[];
   ignorarNomes: string[];
@@ -102,6 +110,123 @@ export function valorDaCelula(v: ExcelJS.CellValue): Celula {
   if (typeof v === "object" && "result" in v) return valorDaCelula(v.result as ExcelJS.CellValue);
   if (typeof v === "object" && "richText" in v) return v.richText.map((p) => p.text).join("").trim() || null;
   return String(v);
+}
+
+// --- cadastro de membros (aba "Membros") ---------------------------------------------------
+
+// Uma linha da aba: uma grafia da planilha, com os meses em que aparece e o que fazer com ela
+export type LinhaCadastro = {
+  nome: string;
+  meses: string;
+  nomeFinal: string | null;
+  fixo: boolean;
+  valorMensal: number | null;
+  ativo: boolean;
+};
+
+const MESES = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
+
+// "jan, fev (campanha Stuart)" → ["2026-01", "2026-02 Stuart"]: mês, e a campanha quando houver
+export function mesesDoCadastro(texto: string, ano: number): string[] {
+  return texto.split(",").map((t) => t.trim()).filter(Boolean).flatMap((t) => {
+    const m = /^([a-zç]{3})\b(?:\s*\(campanha\s+(.+)\))?/i.exec(semAcento(t));
+    const i = m ? MESES.indexOf(m[1]) : -1;
+    if (i < 0) return [];
+    const mes = `${ano}-${String(i + 1).padStart(2, "0")}`;
+    return [m![2] ? `${mes} ${m![2].trim()}` : mes];
+  });
+}
+
+// Quem é a pessoa de uma contribuição. A mesma grafia pode ser duas pessoas em meses
+// diferentes ("Bruno" em maio e em julho): aí decide o mês.
+export function linhaDoCadastro(
+  nome: string,
+  competencia: string,
+  campanha: string | null,
+  cadastro: LinhaCadastro[],
+): LinhaCadastro | null {
+  const t = semAcento(nome).replace(/\s+/g, " ");
+  const ano = Number(competencia.slice(0, 4));
+  const mes = competencia.slice(0, 7);
+  const noMes = (l: LinhaCadastro) =>
+    mesesDoCadastro(l.meses, ano).some((m) => {
+      const [mm, ...camp] = m.split(" ");
+      return mm === mes && (campanha ? semAcento(campanha).includes(semAcento(camp.join(" ")) || "\0") : camp.length === 0);
+    });
+  const igual = (a: string) => semAcento(a).replace(/\s+/g, " ") === t;
+  const candidatas = cadastro.filter((l) => igual(l.nome));
+  if (candidatas.length === 1) return candidatas[0];
+  if (candidatas.length > 1) {
+    const doMes = candidatas.filter(noMes);
+    return doMes.length === 1 ? doMes[0] : null;
+  }
+  // grafia já traduzida para o nome final (configuração "grafias")
+  const finais = cadastro.filter((l) => l.nomeFinal && igual(l.nomeFinal));
+  return new Set(finais.map((l) => l.nomeFinal)).size === 1 ? finais[0] : null;
+}
+
+export type ContribuicaoGravar = {
+  competencia: string;
+  valor: number; // centavos
+  membro: string | null; // nome final do membro fixo
+  nomeAvulso: string | null; // doação avulsa; null = "Anônimo"
+  campanha: string | null;
+};
+
+// Contribuições da planilha → linhas do banco. Membro fixo só fora de campanha (no admin,
+// doação para campanha é sempre avulsa); o mesmo membro duas vezes no mês vira uma só.
+export function contribuicoesParaGravar(
+  lidas: { competencia: string; valor: number; nome: string | null; campanha: string | null; origem: string }[],
+  cadastro: LinhaCadastro[],
+  // grafia da planilha que a aba "Membros" não tem → nome final ("Beto" → "Roberto Exemplo")
+  grafias: Record<string, string> = {},
+): { linhas: ContribuicaoGravar[]; avisos: string[] } {
+  const avisos: string[] = [];
+  const traduzir = new Map(Object.entries(grafias).map(([g, n]) => [semAcento(g), n]));
+  const porMembroMes = new Map<string, ContribuicaoGravar>();
+  const linhas: ContribuicaoGravar[] = [];
+  for (const c of lidas) {
+    if (c.nome === null) {
+      linhas.push({ competencia: c.competencia, valor: c.valor, membro: null, nomeAvulso: null, campanha: c.campanha });
+      continue;
+    }
+    const l = linhaDoCadastro(c.nome, c.competencia, c.campanha, cadastro)
+      ?? linhaDoCadastro(traduzir.get(semAcento(c.nome)) ?? "", c.competencia, c.campanha, cadastro);
+    if (!l?.nomeFinal) avisos.push(`${c.origem}: "${c.nome}" sem nome final no cadastro; entra como avulsa com o nome da planilha`);
+    const nomeFinal = l?.nomeFinal ?? c.nome.trim();
+    if (l?.fixo && l.nomeFinal && !c.campanha) {
+      const chave = `${l.nomeFinal}|${c.competencia}`;
+      const ja = porMembroMes.get(chave);
+      if (ja) ja.valor += c.valor;
+      else {
+        const nova = { competencia: c.competencia, valor: c.valor, membro: l.nomeFinal, nomeAvulso: null, campanha: null };
+        porMembroMes.set(chave, nova);
+        linhas.push(nova);
+      }
+      continue;
+    }
+    linhas.push({ competencia: c.competencia, valor: c.valor, membro: null, nomeAvulso: nomeFinal, campanha: c.campanha });
+  }
+  return { linhas, avisos };
+}
+
+// Membros fixos do cadastro (um por nome final). Se as linhas divergirem, vale a primeira com valor.
+export function membrosDoCadastro(cadastro: LinhaCadastro[]): { nome: string; valorMensal: number | null; ativo: boolean }[] {
+  const porNome = new Map<string, { nome: string; valorMensal: number | null; ativo: boolean }>();
+  for (const l of cadastro.filter((l) => l.fixo && l.nomeFinal)) {
+    const m = porNome.get(l.nomeFinal!) ?? { nome: l.nomeFinal!, valorMensal: null, ativo: l.ativo };
+    m.valorMensal ??= l.valorMensal;
+    porNome.set(m.nome, m);
+  }
+  return [...porNome.values()];
+}
+
+// Pet citado na planilha → id no banco, pelo nome (sem acento; "Mortícia e Ophelia" e
+// "Banguela/Heitor" valem por cada nome). Só pets visíveis e sem nome repetido.
+export function petDoNome(nome: string, pets: { id: string; nome: string; oculto: boolean }[]): string | null {
+  const t = semAcento(nome);
+  const achados = pets.filter((p) => !p.oculto && p.nome.split(/\s+e\s+|\//).some((n) => semAcento(n) === t));
+  return achados.length === 1 ? achados[0].id : null;
 }
 
 export const centavos = (v: number) => Math.round(v * 100);
@@ -215,7 +340,10 @@ const confere = (a: number, b: number | null) => (b === null ? "sem total na pla
 
 async function main() {
   const raiz = join(dirname(new URL(import.meta.url).pathname), "..");
-  const caminhoConfig = process.argv[2] ?? join(raiz, "dados-reais", "importacao.json");
+  const args = process.argv.slice(2);
+  const gravar = args.includes("--gravar");
+  const projeto = args.find((a) => a.startsWith("--projeto="))?.split("=")[1];
+  const caminhoConfig = args.find((a) => !a.startsWith("--")) ?? join(raiz, "dados-reais", "importacao.json");
   const pasta = dirname(caminhoConfig);
   const cfg: Config = JSON.parse(readFileSync(caminhoConfig, "utf8"));
 
@@ -336,6 +464,21 @@ async function main() {
   const pets = [...new Set(despesas.map((d) => d.petCitado).filter(Boolean))].sort();
   L.push("", "## Pets citados nas despesas (para ligar depois no admin)", "", pets.join(", "));
 
+  // o que vai para o banco, pelo cadastro da equipe
+  const cadastro = cfg.cadastro ? await lerCadastro(join(pasta, cfg.cadastro.planilha), cfg.cadastro.aba) : [];
+  const plano = contribuicoesParaGravar(contribuicoes, cadastro, cfg.grafias);
+  const novosMembros = membrosDoCadastro(cadastro);
+  L.push("", "## O que será gravado", "");
+  if (!cfg.cadastro) L.push("Sem `cadastro` na configuração: não dá para gravar.");
+  else {
+    const fixas = plano.linhas.filter((c) => c.membro);
+    L.push(`- ${novosMembros.length} membros fixos (${novosMembros.filter((m) => m.ativo).length} ativos): ${novosMembros.map((m) => m.nome + (m.valorMensal ? ` (${reais(centavos(m.valorMensal))})` : "") + (m.ativo ? "" : " (inativo)")).join(", ")}`);
+    L.push(`- ${plano.linhas.length} contribuições: ${fixas.length} de membros, ${plano.linhas.length - fixas.length} avulsas (${plano.linhas.filter((c) => !c.membro && !c.nomeAvulso).length} anônimas)`);
+    L.push(`- Total: ${reais(soma(plano.linhas))} (lido: ${reais(soma(contribuicoes))})`);
+    L.push(`- ${despesas.length} despesas, ${reais(soma(despesas))}; ${campanhas.length} campanhas`);
+    for (const a of plano.avisos) L.push(`- Aviso: ${a}`);
+  }
+
   const destino = join(pasta, "relatorio-importacao.md");
   writeFileSync(destino, L.join("\n") + "\n");
 
@@ -344,6 +487,110 @@ async function main() {
   console.log(conf.join("\n"));
   console.log(`\n${despesas.length} despesas, ${contribuicoes.length} contribuições, ${problemas.length} avisos.`);
   console.log(`Relatório completo: ${destino}`);
+  if (cfg.cadastro) {
+    console.log(`A gravar: ${novosMembros.length} membros, ${plano.linhas.length} contribuições (${reais(soma(plano.linhas))}), ${despesas.length} despesas, ${campanhas.length} campanhas; ${plano.avisos.length} avisos do cadastro.`);
+  }
+
+  if (!gravar) return;
+  if (!cfg.cadastro) throw new Error("Falta `cadastro` na configuração.");
+  await gravarNoBanco({ projeto, campanhas: campanhas.map((c) => c.cfg), membros: novosMembros, contribuicoes: plano.linhas, despesas });
+}
+
+// Lê a aba "Membros": Nome na planilha | Meses | Valores | Nome final | Tipo | Valor mensal | Ativo
+async function lerCadastro(caminho: string, nomeAba: string): Promise<LinhaCadastro[]> {
+  const wb = new ExcelJS.Workbook();
+  await wb.xlsx.readFile(caminho);
+  const ws = wb.getWorksheet(nomeAba);
+  if (!ws) throw new Error(`Aba não encontrada: ${nomeAba}`);
+  const linhas: LinhaCadastro[] = [];
+  ws.eachRow((row, n) => {
+    if (n === 1) return;
+    const c = (i: number) => valorDaCelula(row.getCell(i).value);
+    const nome = c(1);
+    if (typeof nome !== "string") return;
+    const valor = c(6);
+    linhas.push({
+      nome,
+      meses: String(c(2) ?? ""),
+      nomeFinal: typeof c(4) === "string" ? (c(4) as string) : null,
+      fixo: c(5) === "Membro fixo",
+      valorMensal: typeof valor === "number" ? valor : typeof valor === "string" ? Number(valor.replace(/\./g, "").replace(",", ".")) || null : null,
+      ativo: c(7) !== "Não",
+    });
+  });
+  return linhas;
+}
+
+// --- gravação ------------------------------------------------------------------------
+
+async function gravarNoBanco(p: {
+  projeto: string | undefined;
+  campanhas: ConfigCampanha[];
+  membros: { nome: string; valorMensal: number | null; ativo: boolean }[];
+  contribuicoes: ContribuicaoGravar[];
+  despesas: Despesa[];
+}) {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const chave = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !chave) throw new Error("Rode com --env-file=<arquivo .env> do banco de destino.");
+  const ref = new URL(url).hostname.split(".")[0];
+  if (p.projeto !== ref) throw new Error(`O destino é ${ref}. Para gravar nele, passe --projeto=${ref}.`);
+  const db = createClient(url, chave, { auth: { persistSession: false } });
+
+  // só num banco sem dados financeiros: rodar duas vezes duplicaria tudo
+  for (const t of ["membros", "contribuicoes", "despesas", "campanhas"] as const) {
+    const { count, error } = await db.from(t).select("id", { count: "exact", head: true });
+    if (error) throw error;
+    if (count) throw new Error(`${ref}: a tabela ${t} já tem ${count} linhas. A importação só grava num banco sem dados financeiros.`);
+  }
+
+  const { data: categorias, error: e1 } = await db.from("categorias").select("id, nome");
+  if (e1) throw e1;
+  const categoria = new Map(categorias.map((c) => [c.nome, c.id]));
+  const faltam = [...new Set(p.despesas.map((d) => d.categoria))].filter((c) => !categoria.has(c));
+  if (faltam.length) throw new Error(`Categorias que não existem em ${ref}: ${faltam.join(", ")}`);
+
+  const { data: pets, error: e2 } = await db.from("pets").select("id, nome, oculto");
+  if (e2) throw e2;
+  const semPet = [...new Set(p.despesas.map((d) => d.petCitado).filter((n): n is string => !!n && !petDoNome(n, pets)))];
+
+  const inserir = async <T extends { id: string }>(tabela: string, linhas: object[], campos = "id") => {
+    if (!linhas.length) return [] as T[];
+    const { data, error } = await db.from(tabela).insert(linhas).select(campos);
+    if (error) throw new Error(`Falhou ao gravar ${tabela} (o que veio antes já foi gravado): ${error.message}`);
+    return data as unknown as T[];
+  };
+  const reaisDe = (c: number) => c / 100;
+
+  const camp = await inserir<{ id: string; nome: string }>("campanhas", p.campanhas.map((c) => ({
+    nome: c.nome, inicio: c.inicio, situacao: c.situacao,
+  })), "id, nome");
+  const campanhaId = new Map(camp.map((c) => [c.nome, c.id]));
+
+  const mem = await inserir<{ id: string; nome: string }>("membros", p.membros.map((m) => ({
+    nome: m.nome, valor_mensal: m.valorMensal, ativo: m.ativo,
+  })), "id, nome");
+  const membroId = new Map(mem.map((m) => [m.nome, m.id]));
+
+  const contr = await inserir("contribuicoes", p.contribuicoes.map((c) => ({
+    competencia: c.competencia,
+    valor: reaisDe(c.valor),
+    membro_id: c.membro ? membroId.get(c.membro) : null,
+    nome_avulso: c.nomeAvulso,
+    campanha_id: c.campanha ? campanhaId.get(c.campanha) : null,
+  })));
+
+  const desp = await inserir("despesas", p.despesas.map((d) => ({
+    data: d.data,
+    descricao: d.descricao,
+    valor: reaisDe(d.valor),
+    categoria_id: categoria.get(d.categoria),
+    pet_id: d.petCitado ? petDoNome(d.petCitado, pets) : null,
+    campanha_id: d.campanha ? campanhaId.get(d.campanha) : null,
+  })));
+
+  console.log(`\nGravado em ${ref}: ${camp.length} campanhas, ${mem.length} membros, ${contr.length} contribuições, ${desp.length} despesas.`);
+  if (semPet.length) console.log(`Despesas que ficaram como "Vários pets" (pet não encontrado): ${semPet.join(", ")}`);
 }
 
 if (process.argv[1] && import.meta.url.endsWith(process.argv[1].split("/").pop()!)) {

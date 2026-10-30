@@ -305,7 +305,7 @@ Formato: `[ ]` a fazer, `[x]` feito. **Dep.** = precisa de outra tarefa antes. C
 - [x] **T1.8** Testes pgTAP: `anon` não lê tabelas privadas; `anon` lê as views; `pub_pets` não tem `local` nem pets ocultos; canceladas não somam; admin escreve; usuário logado que não é admin não escreve. *Dep.: T1.5, T1.7*
 - [x] **T1.9** Aplicar tudo em homologação (`supabase db push` + seed) e conferir no painel. *Dep.: T1.8*
 - [x] **T1.10** Gerar os tipos TypeScript (`supabase gen types typescript`) em `lib/supabase/tipos.ts`. *Dep.: T1.9*
-- [ ] **T1.11** Importar a planilha real: script em `web/scripts/importar-planilha.ts` que lê o `.xlsx` de `web/dados-reais/` (pasta fora do git) e grava em pets, membros, contribuições, despesas, campanhas e categorias. Mostra um relatório antes de gravar (quantas linhas, totais por mês, linhas com problema). Rodar primeiro num banco local ou em homologação, conferir os totais com a planilha e só depois, com pedido explícito, em produção. *Dep.: T1.9*
+- [x] **T1.11** Importar a planilha real: script em `web/scripts/importar-planilha.ts` que lê o `.xlsx` de `web/dados-reais/` (pasta fora do git) e grava em pets, membros, contribuições, despesas, campanhas e categorias. Mostra um relatório antes de gravar (quantas linhas, totais por mês, linhas com problema). Rodar primeiro num banco local ou em homologação, conferir os totais com a planilha e só depois, com pedido explícito, em produção. *Dep.: T1.9*
 
 ### Fase 2: base do front-end
 - [x] **T2.1** Portar `tokens.css` para o `@theme` do Tailwind; copiar as fontes de `assets/fonts` e as imagens do logo. *Dep.: T0.3*
@@ -345,7 +345,7 @@ Cada tela usa Server Actions para gravar, valida com Zod e mostra o toast do pro
 - [x] **T6.2** Variáveis de ambiente: *Preview* (branch `develop`) com o Supabase de homologação; *Production* com o de produção. `SUPABASE_SERVICE_ROLE_KEY` só onde for usada. *Dep.: T6.1, T0.1*
 - [x] **T6.3** No Supabase Auth de cada projeto, cadastrar a URL do site e as URLs de redirecionamento (homologação e produção). *Dep.: T6.2*
 - [x] **T6.4** Publicar `develop` e testar homologação de ponta a ponta. *Dep.: Fases 3 a 5*
-- [ ] **T6.5** Aplicar as migrations em produção (**sem seed**), importar a planilha real (T1.11), criar categorias iniciais, configurações e os 3 administradores. *Dep.: T6.4, T1.11*
+- [x] **T6.5** Aplicar as migrations em produção (**sem seed**), importar a planilha real (T1.11), criar categorias iniciais, configurações e os 3 administradores. *Dep.: T6.4, T1.11*
 - [x] **T6.6** Merge `develop` → `main`; escolher o nome do projeto na Vercel para o endereço `<nome>.vercel.app`. *Dep.: T6.5*
 - [x] **T6.7** Tarefa agendada da Vercel (`vercel.json`, uma vez por dia) que faz uma consulta leve em produção, para o Supabase gratuito não pausar o projeto. *Dep.: T6.6*
 - [x] **T6.8** GitHub Action semanal com `pg_dump` de produção, guardado como artefato num repositório privado (backup que o plano gratuito não tem). *Dep.: T6.6*
