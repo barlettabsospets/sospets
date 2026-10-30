@@ -6,6 +6,7 @@ import "../globals.css";
 export const metadata: Metadata = {
   title: { default: "Entrar", template: "%s | SOS Pets DF Águas Claras" },
   robots: { index: false, follow: false },
+  appleWebApp: { title: "SOS Pets" },
 };
 
 export const viewport: Viewport = { themeColor: "#FFF4E3" };
