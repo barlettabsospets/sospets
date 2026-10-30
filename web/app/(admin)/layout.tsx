@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { CabecalhoAdmin, TabbarAdmin } from "@/components/layout/CabecalhoAdmin";
 import { FaixaDoAmbiente, PularParaConteudo } from "@/components/layout/partes";
+import { ConviteAtalho } from "@/components/ui/ConviteAtalho";
 import { PreCarregarFontes } from "@/components/ui/PreCarregarFontes";
 import { ProvedorDeToast } from "@/components/ui/Toast";
 import "../globals.css";
@@ -8,6 +9,7 @@ import "../globals.css";
 export const metadata: Metadata = {
   title: { default: "Área do administrador", template: "%s | Área do administrador" },
   robots: { index: false, follow: false },
+  appleWebApp: { title: "SOS Pets" },
 };
 
 export const viewport: Viewport = { themeColor: "#FFF4E3" };
@@ -25,6 +27,7 @@ export default function LayoutAdmin({ children }: LayoutProps<"/">) {
           <CabecalhoAdmin />
           {children}
           <TabbarAdmin />
+          <ConviteAtalho />
         </ProvedorDeToast>
       </body>
     </html>
