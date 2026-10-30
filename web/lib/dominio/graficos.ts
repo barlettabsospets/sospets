@@ -15,12 +15,14 @@ export function escalaDoGrafico(maior: number, estreito = false) {
   return { topo, linhas: estreito ? [topo / 2, topo] : [passo, passo * 2, topo] };
 }
 
-// Quais meses aparecem no gráfico: os últimos 6 (3 no celular); se o escolhido for
-// mais antigo, a janela começa nele (mesmo comportamento do protótipo).
+// Quais meses aparecem no gráfico: os últimos 6 (3 no celular). Com um mês escolhido, ele é
+// o último da janela, com os anteriores antes dele (ago → jun, jul, ago); nos primeiros meses,
+// a janela começa no primeiro. No protótipo a janela só andava quando o escolhido era mais
+// antigo, e começava nele (pedido da Barbara, 30/10).
 export function mesesVisiveis(total: number, escolhido: number | null, quantos: number): number[] {
   const n = Math.min(total, quantos);
-  let inicio = total - n;
-  if (escolhido !== null && escolhido < inicio) inicio = escolhido;
+  const fim = escolhido ?? total - 1;
+  const inicio = Math.max(0, fim - n + 1);
   return Array.from({ length: n }, (_, k) => inicio + k);
 }
 

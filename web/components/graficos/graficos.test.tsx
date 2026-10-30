@@ -83,9 +83,11 @@ describe("FluxoMensal", () => {
     Element.prototype.getBoundingClientRect = original;
   });
 
-  it("mês antigo escolhido puxa a janela e a tabela segue", () => {
-    render(<Painel inicial="2026-02" />);
-    expect(screen.getAllByRole("button", { name: /^Ver / })[0]).toHaveAccessibleName(/^Ver fevereiro/);
+  it("mês escolhido fica por último, com os anteriores antes dele, e a tabela segue", () => {
+    render(<Painel inicial="2026-07" />);
+    const meses = screen.getAllByRole("button", { name: /^Ver / });
+    expect(meses[0]).toHaveAccessibleName(/^Ver fevereiro/);
+    expect(meses.at(-1)).toHaveAccessibleName(/^Ver julho/);
     expect(screen.getAllByRole("row")).toHaveLength(7);
   });
 });
