@@ -25,9 +25,16 @@ describe("mesesVisiveis", () => {
     expect(mesesVisiveis(10, null, 3)).toEqual([7, 8, 9]);
   });
 
-  it("mês escolhido mais antigo puxa a janela", () => {
-    expect(mesesVisiveis(10, 1, 6)).toEqual([1, 2, 3, 4, 5, 6]);
-    expect(mesesVisiveis(10, 8, 6)).toEqual([4, 5, 6, 7, 8, 9]);
+  it("mês escolhido é o último, com os anteriores antes dele", () => {
+    // out (9) → ago, set, out; ago (7) → jun, jul, ago
+    expect(mesesVisiveis(10, 9, 3)).toEqual([7, 8, 9]);
+    expect(mesesVisiveis(10, 7, 3)).toEqual([5, 6, 7]);
+    expect(mesesVisiveis(10, 7, 6)).toEqual([2, 3, 4, 5, 6, 7]);
+  });
+
+  it("nos primeiros meses, a janela começa no primeiro", () => {
+    expect(mesesVisiveis(10, 1, 3)).toEqual([0, 1, 2]);
+    expect(mesesVisiveis(10, 0, 6)).toEqual([0, 1, 2, 3, 4, 5]);
   });
 
   it("menos meses do que o espaço", () => {
