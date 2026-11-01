@@ -356,6 +356,26 @@ Cada tela usa Server Actions para gravar, valida com Zod e mostra o toast do pro
 - [x] **T7.3** Auditoria de acessibilidade (teclado, contraste, leitor de tela) nas 10 telas. *Dep.: Fases 4 e 5*
 - [ ] **T7.4** Teste em celular real (Android e iPhone) em homologação. *Dep.: T6.4*
 
+### Próximas funcionalidades (proposta, a decidir)
+Pedido da coordenação (31/10/2026): lembrete mensal para os membros e contribuir direto pelo site. Proposta em quatro pacotes **cumulativos** (cada um inclui o anterior); valores, prazos e condições estão na proposta, fora do git (`web/dados-reais/`). Nenhum começa antes de a coordenação escolher. Em todos: testes, homologação antes da produção e as mesmas regras de privacidade (nenhum contato de membro no site; mudança em RLS ou views com teste pgTAP).
+
+- [ ] **P1 · Essencial**
+  - Página pública **"Contribua"** com a chave Pix do grupo, **QR Code estático** (BR Code do Banco Central, gerado pelo portal, sem serviço externo) e **Pix copia e cola**; mensal ou avulsa, com valores sugeridos.
+  - Chave Pix, nome do titular e cidade em `configuracoes`, editáveis no admin (o QR Code se atualiza sozinho).
+  - Admin: botão que gera a **mensagem pronta** do lembrete (link e chave Pix) para colar no grupo dos membros.
+  - **Aviso por e-mail às administradoras no dia 1** de cada mês (tarefa agendada da Vercel + serviço de e-mail gratuito).
+  - A coordenação continua marcando "Contribuiu" (o QR Code estático não confirma pagamento).
+- [ ] **P2 · Lembrete** (P1 +)
+  - **E-mail automático aos membros** no 5º dia útil de cada mês, ou no dia definido nas configurações, com botão "Contribuir" para a página "Contribua".
+  - Só para quem **autorizou** (LGPD): e-mail do membro e data da autorização guardados no banco, visíveis só para administradores; link pessoal **"não quero mais receber"** em todo e-mail.
+  - Formulário simples para a coordenação coletar os e-mails.
+- [ ] **P3 · Automático** (P2 +)
+  - **Pix com confirmação automática**: o portal gera um Pix por contribuição pela API de um serviço de pagamento (ex.: Mercado Pago ou Asaas); o serviço avisa por *webhook*, o portal confere a assinatura do aviso e registra a contribuição.
+  - Exige conta do grupo num serviço de pagamento (alguns pedem CNPJ) e suporte mensal para acompanhar os pagamentos.
+  - Chaves do serviço só no servidor (como a `SUPABASE_SERVICE_ROLE_KEY`).
+- [ ] **P4 · Completo** (P3 +)
+  - **Contribuição mensal automática** pelo **Pix Automático** (Banco Central), no mesmo serviço de pagamento: o membro autoriza uma vez no app do banco; cada cobrança paga entra no portal pelo mesmo *webhook*; cancelamento pelo próprio banco.
+
 ### Decisões tomadas
 - [x] **Endereço:** o gratuito da Vercel, `<nome>.vercel.app` (nome a escolher; ex.: `sospets-aguasclaras.vercel.app`). Homologação usa a URL de preview do branch `develop`.
 - [x] **Administradores:** 3 pessoas (Barbara + duas).
