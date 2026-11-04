@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/next";
 import type { Metadata, Viewport } from "next";
 import { CabecalhoPublico } from "@/components/layout/CabecalhoPublico";
 import { FaixaDoAmbiente, PularParaConteudo } from "@/components/layout/partes";
@@ -30,6 +31,8 @@ export default function LayoutPublico({ children }: LayoutProps<"/">) {
         {children}
         <RodapePublico />
         <ConviteAtalho />
+        {/* indicador 5 (visitantes): Vercel Web Analytics, sem cookies nem dados pessoais; só nas páginas públicas */}
+        <Analytics />
       </body>
     </html>
   );
