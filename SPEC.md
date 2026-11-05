@@ -319,7 +319,7 @@ Formato: `[ ]` a fazer, `[x]` feito. **Dep.** = precisa de outra tarefa antes. C
 - [x] **T3.1** Página `/entrar` igual a `login.html`, com login por e-mail e senha no Supabase Auth e mensagens de erro em português. *Dep.: T0.5, T2.5*
 - [x] **T3.2** Middleware protegendo `/admin/*`; botão "Sair". *Dep.: T3.1*
 - [x] **T3.3** Desligar o cadastro público no Supabase (nos dois projetos) e criar os 3 administradores (Barbara + duas pessoas) em homologação. Documentar no README como convidar um administrador. *Dep.: T1.9*
-- [ ] **T3.4** Página "esqueci minha senha" (e-mail do Supabase em português). *Dep.: T3.1*
+- [x] **T3.4** Página "esqueci minha senha" (e-mail do Supabase em português). *Dep.: T3.1* SMTP do Gmail do grupo (senha de app) configurado nos dois projetos e testado em 05/11/2026.
 
 ### Fase 4: páginas públicas
 - [x] **T4.1** `/` Prestação de contas, lendo `pub_resumo_mensal`, `pub_gasto_categoria_mes`, `pub_despesas`, `pub_pets` e `pub_campanhas`. Conferir os números contra o protótipo, mês a mês. *Dep.: T1.10, T2.4–T2.6*
