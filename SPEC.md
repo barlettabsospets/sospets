@@ -319,7 +319,7 @@ Formato: `[ ]` a fazer, `[x]` feito. **Dep.** = precisa de outra tarefa antes. C
 - [x] **T3.1** Página `/entrar` igual a `login.html`, com login por e-mail e senha no Supabase Auth e mensagens de erro em português. *Dep.: T0.5, T2.5*
 - [x] **T3.2** Middleware protegendo `/admin/*`; botão "Sair". *Dep.: T3.1*
 - [x] **T3.3** Desligar o cadastro público no Supabase (nos dois projetos) e criar os 3 administradores (Barbara + duas pessoas) em homologação. Documentar no README como convidar um administrador. *Dep.: T1.9*
-- [ ] **T3.4** Página "esqueci minha senha" (e-mail do Supabase em português). *Dep.: T3.1*
+- [x] **T3.4** Página "esqueci minha senha" (e-mail do Supabase em português). *Dep.: T3.1* SMTP do Gmail do grupo (senha de app) configurado nos dois projetos e testado em 05/11/2026.
 
 ### Fase 4: páginas públicas
 - [x] **T4.1** `/` Prestação de contas, lendo `pub_resumo_mensal`, `pub_gasto_categoria_mes`, `pub_despesas`, `pub_pets` e `pub_campanhas`. Conferir os números contra o protótipo, mês a mês. *Dep.: T1.10, T2.4–T2.6*
@@ -355,6 +355,26 @@ Cada tela usa Server Actions para gravar, valida com Zod e mostra o toast do pro
 - [x] **T7.2** Playwright: visitante vê a Prestação de contas; admin entra, registra uma despesa e ela aparece no site. Já existe a base (`web/e2e/`, `npm run test:e2e`) com os testes do login. *Dep.: T6.4*
 - [x] **T7.3** Auditoria de acessibilidade (teclado, contraste, leitor de tela) nas 10 telas. *Dep.: Fases 4 e 5*
 - [ ] **T7.4** Teste em celular real (Android e iPhone) em homologação. *Dep.: T6.4*
+
+### Próximas funcionalidades (proposta, a decidir)
+Pedido da coordenação (31/10/2026): lembrete mensal para os membros e contribuir direto pelo site. Proposta em quatro pacotes **cumulativos** (cada um inclui o anterior); valores, prazos e condições estão na proposta, fora do git (`web/dados-reais/`). Nenhum começa antes de a coordenação escolher. Em todos: testes, homologação antes da produção e as mesmas regras de privacidade (nenhum contato de membro no site; mudança em RLS ou views com teste pgTAP).
+
+- [ ] **P1 · Essencial**
+  - Página pública **"Contribua"** com a chave Pix do grupo, **QR Code estático** (BR Code do Banco Central, gerado pelo portal, sem serviço externo) e **Pix copia e cola**; mensal ou avulsa, com valores sugeridos.
+  - Chave Pix, nome do titular e cidade em `configuracoes`, editáveis no admin (o QR Code se atualiza sozinho).
+  - Admin: botão que gera a **mensagem pronta** do lembrete (link e chave Pix) para colar no grupo dos membros.
+  - **Aviso por e-mail às administradoras no dia 1** de cada mês (tarefa agendada da Vercel + serviço de e-mail gratuito).
+  - A coordenação continua marcando "Contribuiu" (o QR Code estático não confirma pagamento).
+- [ ] **P2 · Lembrete** (P1 +)
+  - **E-mail automático aos membros** no 5º dia útil de cada mês, ou no dia definido nas configurações, com botão "Contribuir" para a página "Contribua".
+  - Só para quem **autorizou** (LGPD): e-mail do membro e data da autorização guardados no banco, visíveis só para administradores; link pessoal **"não quero mais receber"** em todo e-mail.
+  - Formulário simples para a coordenação coletar os e-mails.
+- [ ] **P3 · Automático** (P2 +)
+  - **Pix com confirmação automática**: o portal gera um Pix por contribuição pela API de um serviço de pagamento (ex.: Mercado Pago ou Asaas); o serviço avisa por *webhook*, o portal confere a assinatura do aviso e registra a contribuição.
+  - Exige conta do grupo num serviço de pagamento (alguns pedem CNPJ) e suporte mensal para acompanhar os pagamentos.
+  - Chaves do serviço só no servidor (como a `SUPABASE_SERVICE_ROLE_KEY`).
+- [ ] **P4 · Completo** (P3 +)
+  - **Contribuição mensal automática** pelo **Pix Automático** (Banco Central), no mesmo serviço de pagamento: o membro autoriza uma vez no app do banco; cada cobrança paga entra no portal pelo mesmo *webhook*; cancelamento pelo próprio banco.
 
 ### Decisões tomadas
 - [x] **Endereço:** o gratuito da Vercel, `<nome>.vercel.app` (nome a escolher; ex.: `sospets-aguasclaras.vercel.app`). Homologação usa a URL de preview do branch `develop`.
