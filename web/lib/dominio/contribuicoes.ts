@@ -12,6 +12,9 @@ export type Contribuicao = {
   membroId: string | null;
   // quando foi registrada ("Pago em 07/10"), já no dia de Brasília: "2026-10-07"
   registradaEm: string;
+  // só nas avulsas: nome (vazio = "Anônimo") e campanha
+  nomeAvulso?: string | null;
+  campanhaId?: string | null;
 };
 
 export type LinhaDoMes = {

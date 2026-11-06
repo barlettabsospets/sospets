@@ -54,7 +54,7 @@ export async function lerContribuicoes(): Promise<Contribuicao[]> {
   for (let de = 0; ; de += 1000) {
     const { data, error } = await supabase
       .from("contribuicoes")
-      .select("id, competencia, valor, membro_id, criado_em")
+      .select("id, competencia, valor, membro_id, nome_avulso, campanha_id, criado_em")
       .is("cancelada_em", null)
       .order("id")
       .range(de, de + 999);
@@ -65,6 +65,8 @@ export async function lerContribuicoes(): Promise<Contribuicao[]> {
       valor: Number(c.valor),
       membroId: c.membro_id,
       registradaEm: diaEmBrasilia(c.criado_em),
+      nomeAvulso: c.nome_avulso,
+      campanhaId: c.campanha_id,
     })));
     if (!data || data.length < 1000) return todas;
   }
