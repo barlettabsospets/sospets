@@ -15,6 +15,8 @@ export const IconePetsPublico = () => (
 
 export const IconeDespesas = () => <Svg><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z" /><path d="M9 8h6M9 12h6" /></Svg>;
 
+export const IconeVoltar = () => <Svg><path d="M15 6l-6 6 6 6" /></Svg>;
+
 export const IconeCadeado = () => <Svg><rect x="5" y="10.5" width="14" height="10" rx="2.5" /><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" /></Svg>;
 
 export const IconeContribuicoes = () => (

@@ -1,5 +1,5 @@
-import Link from "next/link";
-import { IconeCadeado, IconeContas, IconeDespesas, IconePetsPublico } from "./icones";
+import { BotaoAdmin } from "./BotaoAdmin";
+import { IconeContas, IconeDespesas, IconePetsPublico } from "./icones";
 import { LinkDaAba } from "./LinkDaAba";
 import { Marca } from "./partes";
 
@@ -24,10 +24,7 @@ export function CabecalhoPublico() {
             Despesas
           </LinkDaAba>
         </nav>
-        <Link className="th-admin" href="/entrar">
-          <IconeCadeado />
-          <span>Área do administrador</span>
-        </Link>
+        <BotaoAdmin />
       </div>
     </header>
   );
