@@ -8,7 +8,7 @@ import { Paginacao } from "@/components/ui/Paginacao";
 import { paginar } from "@/components/ui/paginacao";
 import { SeletorDePeriodo } from "@/components/ui/SeletorDePeriodo";
 import { useToast } from "@/components/ui/Toast";
-import { desfazerContribuicao, registrarAvulsa, registrarContribuicao } from "@/lib/admin/contribuicoes";
+import { cancelarAvulsa, desfazerContribuicao, registrarAvulsa, registrarContribuicao } from "@/lib/admin/contribuicoes";
 import type { Resultado } from "@/lib/admin/membros";
 import type { CampanhaAberta } from "@/lib/dados/admin";
 import { arrecadadoNoMes, type Contribuicao, diaEMes, type LinhaDoMes, linhasDoMes } from "@/lib/dominio/contribuicoes";
@@ -16,7 +16,7 @@ import { capitalizar, formatarBRL, lerReais, mesPorExtenso, porcentagem, reaisNo
 import type { Membro } from "@/lib/dominio/membros";
 import { type Mes, listaDeMeses } from "@/lib/dominio/meses";
 
-type Visao = "pend" | "paid" | "all";
+type Visao = "pend" | "paid" | "all" | "avul";
 
 // circunferência do anel (r = 44)
 const C = 2 * Math.PI * 44;
@@ -112,6 +112,9 @@ export function PainelContribuicoes({
   const [nomeAvulso, setNomeAvulso] = useState("");
   const [valorAvulso, setValorAvulso] = useState("");
   const [campanhaId, setCampanhaId] = useState("");
+  // cancelar doação avulsa (ex.: registrada em dobro)
+  const [cancelando, setCancelando] = useState<Contribuicao | null>(null);
+  const [motivo, setMotivo] = useState("");
 
   const gravar = <T,>(chave: string, acao: () => Promise<Resultado<T>>, aoGravar: (dados: T) => void) => {
     setOcupados((s) => new Set(s).add(chave));
@@ -148,6 +151,13 @@ export function PainelContribuicoes({
     ? "Ninguém encontrado com esse nome."
     : visao === "pend" ? "Todo mundo contribuiu neste mês. Obrigada pelo cuidado!" : "Ninguém contribuiu neste mês ainda.";
 
+  // doações avulsas do mês escolhido, as mais recentes primeiro (filtro "Doações avulsas")
+  const avulsas = contribuicoes.filter((x) => !x.membroId && x.competencia === mes).reverse();
+  const listaAvulsas = avulsas.filter((a) => !termo || semAcento(a.nomeAvulso || "Anônimo").includes(termo));
+  const pgAvulsas = paginar(listaAvulsas, pagina, ["doação avulsa", "doações avulsas"]);
+  const vazioAvulsas = termo ? "Nenhuma doação avulsa com esse nome." : "Nenhuma doação avulsa neste mês.";
+  const veAvulsas = visao === "avul";
+
   const contribuir = (l: LinhaDoMes, valor: number) =>
     gravar(l.membro.id, () => registrarContribuicao({ membroId: l.membro.id, mes, valor }), (id) =>
       toast(`Contribuição de ${formatarBRL(valor)} registrada para ${l.membro.nome}.`, () =>
@@ -172,8 +182,27 @@ export function PainelContribuicoes({
     setAvulsaAberta(false);
     const v = lerReais(valorAvulso) || 20;
     const n = nomeAvulso.trim();
-    gravar("avulsa", () => registrarAvulsa({ mes, valor: v, nome: n, campanhaId: campanhaId || null }), () =>
-      toast(`Doação avulsa de ${formatarBRL(v)} registrada (${n || "Anônimo"}).`),
+    gravar("avulsa", () => registrarAvulsa({ mes, valor: v, nome: n, campanhaId: campanhaId || null }), (id) =>
+      toast(`Doação avulsa de ${formatarBRL(v)} registrada (${n || "Anônimo"}).`, () =>
+        gravar("avulsa", () => cancelarAvulsa({ id, motivo: "Desfeita na tela de Contribuições" }), () => {}),
+      ),
+    );
+  };
+
+  const nomeDaCampanha = (id: string | null | undefined) => campanhas.find((x) => x.id === id)?.nome;
+
+  const abrirCancelar = (a: Contribuicao) => {
+    setMotivo("");
+    setCancelando(a);
+  };
+
+  const cancelar = (e: FormEvent) => {
+    e.preventDefault();
+    const a = cancelando;
+    if (!a) return;
+    setCancelando(null);
+    gravar(a.id, () => cancelarAvulsa({ id: a.id, motivo }), () =>
+      toast(`Doação avulsa de ${formatarBRL(a.valor)} cancelada.`),
     );
   };
 
@@ -229,10 +258,10 @@ export function PainelContribuicoes({
           <div className="ad-tools">
             <label className="ad-busca">
               <Lupa />
-              <span className="sr-only">Buscar membro</span>
+              <span className="sr-only">{veAvulsas ? "Buscar pelo nome" : "Buscar membro"}</span>
               <input
                 type="search"
-                placeholder="Buscar membro…"
+                placeholder={veAvulsas ? "Buscar pelo nome…" : "Buscar membro…"}
                 autoComplete="off"
                 value={busca}
                 onChange={(e) => {
@@ -253,24 +282,62 @@ export function PainelContribuicoes({
                 { valor: "pend", rotulo: <>Faltam contribuir<b>{falta}</b></> },
                 { valor: "paid", rotulo: <>Já contribuíram<b>{pagos}</b></> },
                 { valor: "all", rotulo: <>Todos<b>{total}</b></> },
+                { valor: "avul", rotulo: <>Doações avulsas<b>{avulsas.length}</b></> },
               ]}
             />
           </div>
-          <p className="ad-count" aria-live="polite">{pg.contador}</p>
-          <div className="glist" hidden={lista.length === 0}>
-            {pg.itens.map((l) => (
-              <Linha
-                // a chave muda com o mês e com o estado: o campo volta ao valor sugerido
-                key={`${mes}-${l.membro.id}-${l.contribuicao?.id ?? "falta"}`}
-                linha={l}
-                ocupado={ocupados.has(l.membro.id)}
-                aoContribuir={(v) => contribuir(l, v)}
-                aoDesfazer={() => desfazer(l)}
-              />
-            ))}
-          </div>
-          <div className="empty" hidden={lista.length > 0}>{vazio}</div>
-          <Paginacao pagina={pg.pagina} paginas={pg.paginas} rotulo="Páginas da lista de membros" aoIr={setPagina} />
+          {veAvulsas ? (
+            <>
+              <p className="ad-count" aria-live="polite">{pgAvulsas.contador}</p>
+              <div className="glist" hidden={listaAvulsas.length === 0}>
+                {pgAvulsas.itens.map((a) => {
+                  const nome = a.nomeAvulso || "Anônimo";
+                  const campanha = nomeDaCampanha(a.campanhaId);
+                  return (
+                    <div className="row paid" key={a.id}>
+                      <div className="avatar" aria-hidden="true">{nome[0]}</div>
+                      <div className="who">
+                        <strong>{nome}</strong>
+                        <small>{campanha ? `${campanha} · ` : ""}Registrada em {diaEMes(a.registradaEm)}</small>
+                      </div>
+                      <div className="actions">
+                        <b style={{ marginRight: "auto" }}>{formatarBRL(a.valor)}</b>
+                        <button
+                          className="btn btn-ghost btn-sm"
+                          type="button"
+                          disabled={ocupados.has(a.id)}
+                          aria-label={`Cancelar doação avulsa de ${nome}, ${formatarBRL(a.valor)}`}
+                          onClick={() => abrirCancelar(a)}
+                        >
+                          Cancelar
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="empty" hidden={listaAvulsas.length > 0}>{vazioAvulsas}</div>
+              <Paginacao pagina={pgAvulsas.pagina} paginas={pgAvulsas.paginas} rotulo="Páginas da lista de doações avulsas" aoIr={setPagina} />
+            </>
+          ) : (
+            <>
+              <p className="ad-count" aria-live="polite">{pg.contador}</p>
+              <div className="glist" hidden={lista.length === 0}>
+                {pg.itens.map((l) => (
+                  <Linha
+                    // a chave muda com o mês e com o estado: o campo volta ao valor sugerido
+                    key={`${mes}-${l.membro.id}-${l.contribuicao?.id ?? "falta"}`}
+                    linha={l}
+                    ocupado={ocupados.has(l.membro.id)}
+                    aoContribuir={(v) => contribuir(l, v)}
+                    aoDesfazer={() => desfazer(l)}
+                  />
+                ))}
+              </div>
+              <div className="empty" hidden={lista.length > 0}>{vazio}</div>
+              <Paginacao pagina={pg.pagina} paginas={pg.paginas} rotulo="Páginas da lista de membros" aoIr={setPagina} />
+            </>
+          )}
         </section>
       </div>
 
@@ -301,6 +368,26 @@ export function PainelContribuicoes({
           <div className="btns">
             <button className="btn btn-secondary" type="button" onClick={() => setAvulsaAberta(false)}>Cancelar</button>
             <button className="btn btn-primary" type="submit">Registrar</button>
+          </div>
+        </form>
+      </Dialogo>
+
+      <Dialogo aberto={cancelando !== null} aoFechar={() => setCancelando(null)} aria-labelledby="ca-t">
+        <form onSubmit={cancelar}>
+          <h2 id="ca-t">Cancelar doação avulsa</h2>
+          <p className="muted" style={{ marginTop: -8 }}>
+            {cancelando && `${cancelando.nomeAvulso || "Anônimo"} (${formatarBRL(cancelando.valor)})`}
+          </p>
+          <div className="field">
+            <label htmlFor="ca-m">Motivo</label>
+            <input id="ca-m" placeholder="Ex.: registrada em dobro" required value={motivo} onChange={(e) => setMotivo(e.target.value)} />
+          </div>
+          <p className="hint muted">
+            A doação não é apagada: sai da lista e do total do mês, e fica registrada no histórico de alterações (em Mais).
+          </p>
+          <div className="btns">
+            <button className="btn btn-secondary" type="button" onClick={() => setCancelando(null)}>Voltar</button>
+            <button className="btn ad-perigo-cheio" type="submit">Cancelar doação</button>
           </div>
         </form>
       </Dialogo>

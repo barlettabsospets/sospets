@@ -319,7 +319,7 @@ Formato: `[ ]` a fazer, `[x]` feito. **Dep.** = precisa de outra tarefa antes. C
 - [x] **T3.1** Página `/entrar` igual a `login.html`, com login por e-mail e senha no Supabase Auth e mensagens de erro em português. *Dep.: T0.5, T2.5*
 - [x] **T3.2** Middleware protegendo `/admin/*`; botão "Sair". *Dep.: T3.1*
 - [x] **T3.3** Desligar o cadastro público no Supabase (nos dois projetos) e criar os 3 administradores (Barbara + duas pessoas) em homologação. Documentar no README como convidar um administrador. *Dep.: T1.9*
-- [ ] **T3.4** Página "esqueci minha senha" (e-mail do Supabase em português). *Dep.: T3.1*
+- [x] **T3.4** Página "esqueci minha senha" (e-mail do Supabase em português). *Dep.: T3.1* SMTP do Gmail do grupo (senha de app) configurado nos dois projetos e testado em 05/11/2026.
 
 ### Fase 4: páginas públicas
 - [x] **T4.1** `/` Prestação de contas, lendo `pub_resumo_mensal`, `pub_gasto_categoria_mes`, `pub_despesas`, `pub_pets` e `pub_campanhas`. Conferir os números contra o protótipo, mês a mês. *Dep.: T1.10, T2.4–T2.6*
@@ -356,6 +356,26 @@ Cada tela usa Server Actions para gravar, valida com Zod e mostra o toast do pro
 - [x] **T7.3** Auditoria de acessibilidade (teclado, contraste, leitor de tela) nas 10 telas. *Dep.: Fases 4 e 5*
 - [ ] **T7.4** Teste em celular real (Android e iPhone) em homologação. *Dep.: T6.4*
 
+### Próximas funcionalidades (proposta, a decidir)
+Pedido da coordenação (31/10/2026): lembrete mensal para os membros e contribuir direto pelo site. Proposta em quatro pacotes **cumulativos** (cada um inclui o anterior); valores, prazos e condições estão na proposta, fora do git (`web/dados-reais/`). Nenhum começa antes de a coordenação escolher. Em todos: testes, homologação antes da produção e as mesmas regras de privacidade (nenhum contato de membro no site; mudança em RLS ou views com teste pgTAP).
+
+- [ ] **P1 · Essencial**
+  - Página pública **"Contribua"** com a chave Pix do grupo, **QR Code estático** (BR Code do Banco Central, gerado pelo portal, sem serviço externo) e **Pix copia e cola**; mensal ou avulsa, com valores sugeridos.
+  - Chave Pix, nome do titular e cidade em `configuracoes`, editáveis no admin (o QR Code se atualiza sozinho).
+  - Admin: botão que gera a **mensagem pronta** do lembrete (link e chave Pix) para colar no grupo dos membros.
+  - **Aviso por e-mail às administradoras no dia 1** de cada mês (tarefa agendada da Vercel + serviço de e-mail gratuito).
+  - A coordenação continua marcando "Contribuiu" (o QR Code estático não confirma pagamento).
+- [ ] **P2 · Lembrete** (P1 +)
+  - **E-mail automático aos membros** no 5º dia útil de cada mês, ou no dia definido nas configurações, com botão "Contribuir" para a página "Contribua".
+  - Só para quem **autorizou** (LGPD): e-mail do membro e data da autorização guardados no banco, visíveis só para administradores; link pessoal **"não quero mais receber"** em todo e-mail.
+  - Formulário simples para a coordenação coletar os e-mails.
+- [ ] **P3 · Automático** (P2 +)
+  - **Pix com confirmação automática**: o portal gera um Pix por contribuição pela API de um serviço de pagamento (ex.: Mercado Pago ou Asaas); o serviço avisa por *webhook*, o portal confere a assinatura do aviso e registra a contribuição.
+  - Exige conta do grupo num serviço de pagamento (alguns pedem CNPJ) e suporte mensal para acompanhar os pagamentos.
+  - Chaves do serviço só no servidor (como a `SUPABASE_SERVICE_ROLE_KEY`).
+- [ ] **P4 · Completo** (P3 +)
+  - **Contribuição mensal automática** pelo **Pix Automático** (Banco Central), no mesmo serviço de pagamento: o membro autoriza uma vez no app do banco; cada cobrança paga entra no portal pelo mesmo *webhook*; cancelamento pelo próprio banco.
+
 ### Decisões tomadas
 - [x] **Endereço:** o gratuito da Vercel, `<nome>.vercel.app` (nome a escolher; ex.: `sospets-aguasclaras.vercel.app`). Homologação usa a URL de preview do branch `develop`.
 - [x] **Administradores:** 3 pessoas (Barbara + duas).
@@ -388,4 +408,6 @@ Cada tela usa Server Actions para gravar, valida com Zod e mostra o toast do pro
 - [x] **Contato do adotante (19/10, Barbara):** pet adotado ganha, na janela do admin, o bloco "Adotante (só a equipe vê)" com nome, telefone e endereço, todos opcionais, e o link "Abrir conversa no WhatsApp" quando o telefone tem DDD. Na lista de Pets, embaixo da situação, aparece "Adotado por Nome · telefone". O campo "Onde fica" vira "Onde foi resgatado" quando o pet está adotado ou em lar temporário (é o mesmo dado; ajuste de 19/10). Se o pet deixar de estar adotado, o contato é apagado; o banco recusa adotante em pet não adotado. Os dados entram na planilha de pets e no histórico (só administradores), nunca em `pub_pets` (teste pgTAP `08_adotante`). LGPD: guardar só com a autorização de quem adotou, para acompanhar o pet.
 - [x] **Dicas "i" no admin (19/10, Barbara):** a descrição de cada página do admin (ao lado do título) e as dicas dos formulários ("Pet (opcional)", "Contribuição mensal", "Dados registrados desde", renomear categoria, "Foto" e o aviso de LGPD do adotante) ficam atrás de um botão "i" (`components/ui/Dica.tsx`): toca e aparece um balão logo abaixo; fecha com Esc, com outro toque ou tocando fora. Continuam sempre visíveis a regra da senha ("Pelo menos 8 caracteres"), os avisos das janelas de confirmação, a instrução de "Ajeitar a foto" e a nota de Mais que tem link. A miniatura da foto no bloco "Quem é" continua quadrada (igual à "Bolinha"), então o "Ajeitar" quase não muda nela em fotos em pé; o efeito aparece em "Como fica no site".
 - [x] **Gráfico "Entrou e saiu, mês a mês" (30/10, Barbara):** o mês escolhido é o último da janela, com os anteriores antes dele (no celular, agosto → jun, jul, ago; no computador, os 5 anteriores). Nos primeiros meses a janela começa no primeiro. No protótipo a janela ficava nos últimos meses e só andava quando o escolhido era mais antigo, começando nele (`mesesVisiveis` em `lib/dominio/graficos.ts`).
+- [x] **Voltar ao admin pelo site público (06/11, Barbara):** quem está logado e abre o site (ex.: "Ver o site público", em Mais) vê no cabeçalho "Voltar à área do administrador" (seta, e "Admin" no celular), que leva a `/admin/contribuicoes`. Sem login, continua "Área do administrador". Como o site público tem cache e não lê cookies no servidor, a verificação é feita no navegador, pela presença do cookie de sessão do Supabase (`components/layout/BotaoAdmin.tsx`); é só o texto: o admin confere a sessão de verdade. Não existe no protótipo.
 - [x] **Indicadores (31/10, Barbara):** Vercel Web Analytics só nas páginas públicas (indicador 5, sem cookies; ativar no painel da Vercel). `web/scripts/indicadores.ts` gera o relatório de um mês (indicadores 1, 4, 6, 7, 9, 10 e 11 do plano de implantação) a partir do banco e do PageSpeed, com o prazo do 5º dia útil do mês seguinte; lançamentos sem autor (importados) ficam de fora. Só números; o relatório vai para `web/dados-reais/indicadores/`.
+- [x] **Cancelar doação avulsa (06/11, Barbara):** a tela Contribuições ganha o filtro **"Doações avulsas"** (ao lado de "Faltam contribuir", "Já contribuíram" e "Todos"), que lista as avulsas do mês escolhido (nome ou "Anônimo", campanha, data e valor, com busca e paginação), cada uma com "Cancelar", que pede o motivo (nada é apagado: sai do total e do site, fica no histórico). O aviso depois de registrar uma avulsa ganhou "Desfazer", como o da contribuição de membro. Não existe no protótipo, que só tinha o botão de registrar.

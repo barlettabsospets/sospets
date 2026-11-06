@@ -139,3 +139,12 @@ body.admin .dica-t[hidden] { display: none; }
 .convite-atalho-b { display: flex; gap: 8px; margin-left: auto; }
 .convite-atalho .convite-atalho-sim { background: #fff; color: var(--ink); min-height: 42px; font-weight: 700; }
 .convite-atalho .convite-atalho-sim:hover { background: #FFF4E3; }
+
+/* "Voltar à área do administrador" no site público, para quem está logado (não existe no protótipo;
+   pedido da Barbara, 06/11). No celular o texto longo fica só para leitores de tela, como no botão normal,
+   e aparece "Admin" ao lado da seta. */
+.th-admin .th-curto { display: none; }
+@media (max-width: 599px) {
+  .th-admin.th-voltar { padding: 0 12px; gap: 4px; }
+  .th-admin.th-voltar .th-curto { display: inline; position: static; width: auto; height: auto; overflow: visible; clip: auto; white-space: nowrap; font-weight: 700; }
+}

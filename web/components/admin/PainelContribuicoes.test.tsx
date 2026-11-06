@@ -10,7 +10,8 @@ import { PainelContribuicoes } from "./PainelContribuicoes";
 const acoes = vi.hoisted(() => ({
   registrarContribuicao: vi.fn(async () => ({ ok: true as const, dados: "nova" })),
   desfazerContribuicao: vi.fn(async () => ({ ok: true as const, dados: null })),
-  registrarAvulsa: vi.fn(async () => ({ ok: true as const, dados: null })),
+  registrarAvulsa: vi.fn(async () => ({ ok: true as const, dados: "avulsa-nova" })),
+  cancelarAvulsa: vi.fn(async () => ({ ok: true as const, dados: null })),
 }));
 vi.mock("@/lib/admin/contribuicoes", () => acoes);
 
@@ -32,7 +33,10 @@ const MEMBROS: Membro[] = [
 ];
 const c = (id: string, membroId: string | null, competencia: string, valor = 20): Contribuicao =>
   ({ id, membroId, competencia: competencia as Contribuicao["competencia"], valor, registradaEm: `${competencia}-07` });
-const CONTRIBUICOES = [c("1", "a", "2026-10"), c("2", "c", "2026-09"), c("4", "b", "2026-07"), c("3", null, "2026-10", 50)];
+const CONTRIBUICOES = [
+  c("1", "a", "2026-10"), c("2", "c", "2026-09"), c("4", "b", "2026-07"),
+  { ...c("00000000-0000-4000-a000-0000000000a3", null, "2026-10", 50), nomeAvulso: "Loja Exemplo" },
+];
 
 const montar = () =>
   render(
@@ -113,5 +117,38 @@ describe("PainelContribuicoes", () => {
       mes: "2026-10", valor: 20, nome: "", campanhaId: "00000000-0000-4000-a000-0000000000c1",
     });
     expect(await screen.findByText("Doação avulsa de R$ 20,00 registrada (Anônimo).")).toBeInTheDocument();
+  });
+
+  it("doação avulsa: o aviso tem Desfazer, que cancela a doação recém-registrada", async () => {
+    const u = userEvent.setup();
+    montar();
+    await u.click(screen.getByRole("button", { name: "Registrar doação avulsa" }));
+    await u.click(within(screen.getByRole("dialog", { name: "Doação avulsa" })).getByRole("button", { name: "Registrar" }));
+    await u.click(await screen.findByRole("button", { name: "Desfazer" }));
+    expect(acoes.cancelarAvulsa).toHaveBeenCalledWith({ id: "avulsa-nova", motivo: "Desfeita na tela de Contribuições" });
+  });
+
+  it("filtro Doações avulsas: lista as do mês e cancela uma com motivo", async () => {
+    const u = userEvent.setup();
+    montar();
+    await u.click(screen.getByRole("button", { name: "Doações avulsas1" }));
+    expect(screen.getByText("Loja Exemplo")).toBeInTheDocument();
+    expect(screen.queryByText("Ana Exemplo")).not.toBeInTheDocument();
+    expect(screen.getByPlaceholderText("Buscar pelo nome…")).toBeInTheDocument();
+
+    await u.click(screen.getByRole("button", { name: "Cancelar doação avulsa de Loja Exemplo, R$ 50,00" }));
+    const janela = screen.getByRole("dialog", { name: "Cancelar doação avulsa" });
+    await u.type(within(janela).getByLabelText("Motivo"), "registrada em dobro");
+    await u.click(within(janela).getByRole("button", { name: "Cancelar doação" }));
+    expect(acoes.cancelarAvulsa).toHaveBeenCalledWith({ id: "00000000-0000-4000-a000-0000000000a3", motivo: "registrada em dobro" });
+    expect(await screen.findByText("Doação avulsa de R$ 50,00 cancelada.")).toBeInTheDocument();
+  });
+
+  it("filtro Doações avulsas: mês sem avulsas mostra o aviso", async () => {
+    const u = userEvent.setup();
+    montar();
+    await u.click(screen.getByRole("button", { name: /anterior/i }));
+    await u.click(screen.getByRole("button", { name: "Doações avulsas0" }));
+    expect(screen.getByText("Nenhuma doação avulsa neste mês.")).toBeInTheDocument();
   });
 });

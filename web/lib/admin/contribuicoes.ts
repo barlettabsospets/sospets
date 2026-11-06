@@ -62,18 +62,41 @@ const Avulsa = z.object({
   campanhaId: z.uuid().nullable(),
 });
 
-// Doação avulsa: quem não é membro, ou quem prefere não ser identificado.
-export async function registrarAvulsa(entrada: z.input<typeof Avulsa>): Promise<Resultado> {
+// Doação avulsa: quem não é membro, ou quem prefere não ser identificado. Devolve o id, para o "Desfazer".
+export async function registrarAvulsa(entrada: z.input<typeof Avulsa>): Promise<Resultado<string>> {
   const lido = Avulsa.safeParse(entrada);
   if (!lido.success) return { ok: false, erro: "Confira o valor." };
 
   const supabase = await criarClienteServidor();
-  const { error } = await supabase.from("contribuicoes").insert({
-    competencia: `${lido.data.mes}-01`,
-    valor: lido.data.valor,
-    nome_avulso: lido.data.nome,
-    campanha_id: lido.data.campanhaId,
-  });
+  const { data, error } = await supabase
+    .from("contribuicoes")
+    .insert({
+      competencia: `${lido.data.mes}-01`,
+      valor: lido.data.valor,
+      nome_avulso: lido.data.nome,
+      campanha_id: lido.data.campanhaId,
+    })
+    .select("id")
+    .single();
+  if (error) return { ok: false, erro: MSG_ERRO };
+
+  salvou();
+  return { ok: true, dados: data.id };
+}
+
+// Cancelar uma doação avulsa (ex.: registrada em dobro). Nada é apagado: sai dos totais e do site,
+// e fica no histórico com o motivo. Só avulsas: a contribuição de membro tem o "Desfazer" da linha.
+export async function cancelarAvulsa(entrada: { id: string; motivo: string }): Promise<Resultado> {
+  const lido = z.object({ id: z.uuid(), motivo: z.string().trim().min(1).max(200) }).safeParse(entrada);
+  if (!lido.success) return { ok: false, erro: "Escreva o motivo do cancelamento." };
+
+  const supabase = await criarClienteServidor();
+  const { error } = await supabase
+    .from("contribuicoes")
+    .update({ cancelada_em: new Date().toISOString(), motivo_cancelamento: lido.data.motivo })
+    .eq("id", lido.data.id)
+    .is("membro_id", null)
+    .is("cancelada_em", null);
   if (error) return { ok: false, erro: MSG_ERRO };
 
   salvou();
