@@ -8,7 +8,7 @@ import { Paginacao } from "@/components/ui/Paginacao";
 import { paginar } from "@/components/ui/paginacao";
 import { SeletorDePeriodo } from "@/components/ui/SeletorDePeriodo";
 import { useToast } from "@/components/ui/Toast";
-import { desfazerContribuicao, registrarAvulsa, registrarContribuicao } from "@/lib/admin/contribuicoes";
+import { cancelarAvulsa, desfazerContribuicao, registrarAvulsa, registrarContribuicao } from "@/lib/admin/contribuicoes";
 import type { Resultado } from "@/lib/admin/membros";
 import type { CampanhaAberta } from "@/lib/dados/admin";
 import { arrecadadoNoMes, type Contribuicao, diaEMes, type LinhaDoMes, linhasDoMes } from "@/lib/dominio/contribuicoes";
@@ -112,6 +112,9 @@ export function PainelContribuicoes({
   const [nomeAvulso, setNomeAvulso] = useState("");
   const [valorAvulso, setValorAvulso] = useState("");
   const [campanhaId, setCampanhaId] = useState("");
+  // cancelar doação avulsa (ex.: registrada em dobro)
+  const [cancelando, setCancelando] = useState<Contribuicao | null>(null);
+  const [motivo, setMotivo] = useState("");
 
   const gravar = <T,>(chave: string, acao: () => Promise<Resultado<T>>, aoGravar: (dados: T) => void) => {
     setOcupados((s) => new Set(s).add(chave));
@@ -172,8 +175,29 @@ export function PainelContribuicoes({
     setAvulsaAberta(false);
     const v = lerReais(valorAvulso) || 20;
     const n = nomeAvulso.trim();
-    gravar("avulsa", () => registrarAvulsa({ mes, valor: v, nome: n, campanhaId: campanhaId || null }), () =>
-      toast(`Doação avulsa de ${formatarBRL(v)} registrada (${n || "Anônimo"}).`),
+    gravar("avulsa", () => registrarAvulsa({ mes, valor: v, nome: n, campanhaId: campanhaId || null }), (id) =>
+      toast(`Doação avulsa de ${formatarBRL(v)} registrada (${n || "Anônimo"}).`, () =>
+        gravar("avulsa", () => cancelarAvulsa({ id, motivo: "Desfeita na tela de Contribuições" }), () => {}),
+      ),
+    );
+  };
+
+  // avulsas do mês escolhido, as mais recentes primeiro
+  const avulsas = contribuicoes.filter((x) => !x.membroId && x.competencia === mes).reverse();
+  const nomeDaCampanha = (id: string | null | undefined) => campanhas.find((x) => x.id === id)?.nome;
+
+  const abrirCancelar = (a: Contribuicao) => {
+    setMotivo("");
+    setCancelando(a);
+  };
+
+  const cancelar = (e: FormEvent) => {
+    e.preventDefault();
+    const a = cancelando;
+    if (!a) return;
+    setCancelando(null);
+    gravar(a.id, () => cancelarAvulsa({ id: a.id, motivo }), () =>
+      toast(`Doação avulsa de ${formatarBRL(a.valor)} cancelada.`),
     );
   };
 
@@ -271,6 +295,39 @@ export function PainelContribuicoes({
           </div>
           <div className="empty" hidden={lista.length > 0}>{vazio}</div>
           <Paginacao pagina={pg.pagina} paginas={pg.paginas} rotulo="Páginas da lista de membros" aoIr={setPagina} />
+
+          {avulsas.length > 0 && (
+            <section aria-labelledby="av-t">
+              <h2 id="av-t" className="ad-sub">Doações avulsas de {mesPorExtenso(mes)}</h2>
+              <div className="glist">
+                {avulsas.map((a) => {
+                  const nome = a.nomeAvulso || "Anônimo";
+                  const campanha = nomeDaCampanha(a.campanhaId);
+                  return (
+                    <div className="row paid" key={a.id}>
+                      <div className="avatar" aria-hidden="true">{nome[0]}</div>
+                      <div className="who">
+                        <strong>{nome}</strong>
+                        <small>{campanha ? `${campanha} · ` : ""}Registrada em {diaEMes(a.registradaEm)}</small>
+                      </div>
+                      <div className="actions">
+                        <b style={{ marginRight: "auto" }}>{formatarBRL(a.valor)}</b>
+                        <button
+                          className="btn btn-ghost btn-sm"
+                          type="button"
+                          disabled={ocupados.has(a.id)}
+                          aria-label={`Cancelar doação avulsa de ${nome}, ${formatarBRL(a.valor)}`}
+                          onClick={() => abrirCancelar(a)}
+                        >
+                          Cancelar
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+          )}
         </section>
       </div>
 
@@ -301,6 +358,26 @@ export function PainelContribuicoes({
           <div className="btns">
             <button className="btn btn-secondary" type="button" onClick={() => setAvulsaAberta(false)}>Cancelar</button>
             <button className="btn btn-primary" type="submit">Registrar</button>
+          </div>
+        </form>
+      </Dialogo>
+
+      <Dialogo aberto={cancelando !== null} aoFechar={() => setCancelando(null)} aria-labelledby="ca-t">
+        <form onSubmit={cancelar}>
+          <h2 id="ca-t">Cancelar doação avulsa</h2>
+          <p className="muted" style={{ marginTop: -8 }}>
+            {cancelando && `${cancelando.nomeAvulso || "Anônimo"} (${formatarBRL(cancelando.valor)})`}
+          </p>
+          <div className="field">
+            <label htmlFor="ca-m">Motivo</label>
+            <input id="ca-m" placeholder="Ex.: registrada em dobro" required value={motivo} onChange={(e) => setMotivo(e.target.value)} />
+          </div>
+          <p className="hint muted">
+            A doação não é apagada: sai da lista e do total do mês, e fica registrada no histórico de alterações (em Mais).
+          </p>
+          <div className="btns">
+            <button className="btn btn-secondary" type="button" onClick={() => setCancelando(null)}>Voltar</button>
+            <button className="btn ad-perigo-cheio" type="submit">Cancelar doação</button>
           </div>
         </form>
       </Dialogo>
