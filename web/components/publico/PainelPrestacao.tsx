@@ -231,7 +231,7 @@ function CartaoUltimas({ despesas }: { despesas: DespesaPublica[] }) {
             {d.especie ? (
               <span className="ani">
                 <IconeEspecie especie={d.especie} />
-                {d.pet}
+                <span className="nome">{d.pet}</span>
                 <span className="sr-only"> ({d.especie})</span>
               </span>
             ) : (

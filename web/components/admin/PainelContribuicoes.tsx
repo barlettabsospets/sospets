@@ -281,8 +281,8 @@ export function PainelContribuicoes({
               opcoes={[
                 { valor: "pend", rotulo: <>Faltam contribuir<b>{falta}</b></> },
                 { valor: "paid", rotulo: <>Já contribuíram<b>{pagos}</b></> },
-                { valor: "all", rotulo: <>Todos<b>{total}</b></> },
                 { valor: "avul", rotulo: <>Doações avulsas<b>{avulsas.length}</b></> },
+                { valor: "all", rotulo: <>Todos<b>{total}</b></> },
               ]}
             />
           </div>
