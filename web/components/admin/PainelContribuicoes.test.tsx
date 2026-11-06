@@ -128,14 +128,15 @@ describe("PainelContribuicoes", () => {
     expect(acoes.cancelarAvulsa).toHaveBeenCalledWith({ id: "avulsa-nova", motivo: "Desfeita na tela de Contribuições" });
   });
 
-  it("lista as avulsas do mês e cancela uma com motivo", async () => {
+  it("filtro Doações avulsas: lista as do mês e cancela uma com motivo", async () => {
     const u = userEvent.setup();
     montar();
-    const lista = screen.getByRole("region", { name: "Doações avulsas de outubro de 2026" });
-    expect(within(lista).getByText("Loja Exemplo")).toBeInTheDocument();
-    expect(within(lista).getByText("R$ 50,00")).toBeInTheDocument();
+    await u.click(screen.getByRole("button", { name: "Doações avulsas1" }));
+    expect(screen.getByText("Loja Exemplo")).toBeInTheDocument();
+    expect(screen.queryByText("Ana Exemplo")).not.toBeInTheDocument();
+    expect(screen.getByPlaceholderText("Buscar pelo nome…")).toBeInTheDocument();
 
-    await u.click(within(lista).getByRole("button", { name: "Cancelar doação avulsa de Loja Exemplo, R$ 50,00" }));
+    await u.click(screen.getByRole("button", { name: "Cancelar doação avulsa de Loja Exemplo, R$ 50,00" }));
     const janela = screen.getByRole("dialog", { name: "Cancelar doação avulsa" });
     await u.type(within(janela).getByLabelText("Motivo"), "registrada em dobro");
     await u.click(within(janela).getByRole("button", { name: "Cancelar doação" }));
@@ -143,10 +144,11 @@ describe("PainelContribuicoes", () => {
     expect(await screen.findByText("Doação avulsa de R$ 50,00 cancelada.")).toBeInTheDocument();
   });
 
-  it("mês sem avulsas não mostra a seção", async () => {
+  it("filtro Doações avulsas: mês sem avulsas mostra o aviso", async () => {
     const u = userEvent.setup();
     montar();
     await u.click(screen.getByRole("button", { name: /anterior/i }));
-    expect(screen.queryByRole("region", { name: /Doações avulsas/ })).not.toBeInTheDocument();
+    await u.click(screen.getByRole("button", { name: "Doações avulsas0" }));
+    expect(screen.getByText("Nenhuma doação avulsa neste mês.")).toBeInTheDocument();
   });
 });
