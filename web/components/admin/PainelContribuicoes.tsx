@@ -16,7 +16,7 @@ import { capitalizar, formatarBRL, lerReais, mesPorExtenso, porcentagem, reaisNo
 import type { Membro } from "@/lib/dominio/membros";
 import { type Mes, listaDeMeses } from "@/lib/dominio/meses";
 
-type Visao = "pend" | "paid" | "all";
+type Visao = "pend" | "paid" | "all" | "avul";
 
 // circunferência do anel (r = 44)
 const C = 2 * Math.PI * 44;
@@ -151,6 +151,13 @@ export function PainelContribuicoes({
     ? "Ninguém encontrado com esse nome."
     : visao === "pend" ? "Todo mundo contribuiu neste mês. Obrigada pelo cuidado!" : "Ninguém contribuiu neste mês ainda.";
 
+  // doações avulsas do mês escolhido, as mais recentes primeiro (filtro "Doações avulsas")
+  const avulsas = contribuicoes.filter((x) => !x.membroId && x.competencia === mes).reverse();
+  const listaAvulsas = avulsas.filter((a) => !termo || semAcento(a.nomeAvulso || "Anônimo").includes(termo));
+  const pgAvulsas = paginar(listaAvulsas, pagina, ["doação avulsa", "doações avulsas"]);
+  const vazioAvulsas = termo ? "Nenhuma doação avulsa com esse nome." : "Nenhuma doação avulsa neste mês.";
+  const veAvulsas = visao === "avul";
+
   const contribuir = (l: LinhaDoMes, valor: number) =>
     gravar(l.membro.id, () => registrarContribuicao({ membroId: l.membro.id, mes, valor }), (id) =>
       toast(`Contribuição de ${formatarBRL(valor)} registrada para ${l.membro.nome}.`, () =>
@@ -182,8 +189,6 @@ export function PainelContribuicoes({
     );
   };
 
-  // avulsas do mês escolhido, as mais recentes primeiro
-  const avulsas = contribuicoes.filter((x) => !x.membroId && x.competencia === mes).reverse();
   const nomeDaCampanha = (id: string | null | undefined) => campanhas.find((x) => x.id === id)?.nome;
 
   const abrirCancelar = (a: Contribuicao) => {
@@ -253,10 +258,10 @@ export function PainelContribuicoes({
           <div className="ad-tools">
             <label className="ad-busca">
               <Lupa />
-              <span className="sr-only">Buscar membro</span>
+              <span className="sr-only">{veAvulsas ? "Buscar pelo nome" : "Buscar membro"}</span>
               <input
                 type="search"
-                placeholder="Buscar membro…"
+                placeholder={veAvulsas ? "Buscar pelo nome…" : "Buscar membro…"}
                 autoComplete="off"
                 value={busca}
                 onChange={(e) => {
@@ -277,30 +282,15 @@ export function PainelContribuicoes({
                 { valor: "pend", rotulo: <>Faltam contribuir<b>{falta}</b></> },
                 { valor: "paid", rotulo: <>Já contribuíram<b>{pagos}</b></> },
                 { valor: "all", rotulo: <>Todos<b>{total}</b></> },
+                { valor: "avul", rotulo: <>Doações avulsas<b>{avulsas.length}</b></> },
               ]}
             />
           </div>
-          <p className="ad-count" aria-live="polite">{pg.contador}</p>
-          <div className="glist" hidden={lista.length === 0}>
-            {pg.itens.map((l) => (
-              <Linha
-                // a chave muda com o mês e com o estado: o campo volta ao valor sugerido
-                key={`${mes}-${l.membro.id}-${l.contribuicao?.id ?? "falta"}`}
-                linha={l}
-                ocupado={ocupados.has(l.membro.id)}
-                aoContribuir={(v) => contribuir(l, v)}
-                aoDesfazer={() => desfazer(l)}
-              />
-            ))}
-          </div>
-          <div className="empty" hidden={lista.length > 0}>{vazio}</div>
-          <Paginacao pagina={pg.pagina} paginas={pg.paginas} rotulo="Páginas da lista de membros" aoIr={setPagina} />
-
-          {avulsas.length > 0 && (
-            <section aria-labelledby="av-t">
-              <h2 id="av-t" className="ad-sub">Doações avulsas de {mesPorExtenso(mes)}</h2>
-              <div className="glist">
-                {avulsas.map((a) => {
+          {veAvulsas ? (
+            <>
+              <p className="ad-count" aria-live="polite">{pgAvulsas.contador}</p>
+              <div className="glist" hidden={listaAvulsas.length === 0}>
+                {pgAvulsas.itens.map((a) => {
                   const nome = a.nomeAvulso || "Anônimo";
                   const campanha = nomeDaCampanha(a.campanhaId);
                   return (
@@ -326,7 +316,27 @@ export function PainelContribuicoes({
                   );
                 })}
               </div>
-            </section>
+              <div className="empty" hidden={listaAvulsas.length > 0}>{vazioAvulsas}</div>
+              <Paginacao pagina={pgAvulsas.pagina} paginas={pgAvulsas.paginas} rotulo="Páginas da lista de doações avulsas" aoIr={setPagina} />
+            </>
+          ) : (
+            <>
+              <p className="ad-count" aria-live="polite">{pg.contador}</p>
+              <div className="glist" hidden={lista.length === 0}>
+                {pg.itens.map((l) => (
+                  <Linha
+                    // a chave muda com o mês e com o estado: o campo volta ao valor sugerido
+                    key={`${mes}-${l.membro.id}-${l.contribuicao?.id ?? "falta"}`}
+                    linha={l}
+                    ocupado={ocupados.has(l.membro.id)}
+                    aoContribuir={(v) => contribuir(l, v)}
+                    aoDesfazer={() => desfazer(l)}
+                  />
+                ))}
+              </div>
+              <div className="empty" hidden={lista.length > 0}>{vazio}</div>
+              <Paginacao pagina={pg.pagina} paginas={pg.paginas} rotulo="Páginas da lista de membros" aoIr={setPagina} />
+            </>
           )}
         </section>
       </div>
