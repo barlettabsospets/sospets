@@ -148,3 +148,30 @@ body.admin .dica-t[hidden] { display: none; }
   .th-admin.th-voltar { padding: 0 12px; gap: 4px; }
   .th-admin.th-voltar .th-curto { display: inline; position: static; width: auto; height: auto; overflow: visible; clip: auto; white-space: nowrap; font-weight: 700; }
 }
+
+/* Sem filetes coloridos (pedido da Barbara, 07/11): a linha azul em cima da aba ativa e o traço
+   na lateral dos números de Pets saem. A aba ativa se destaca pelo fundo claro e pelo texto azul;
+   nos números, a cor vai para o próprio número (rosa: no período; azul: situação hoje). */
+.th-tabs a[aria-current="page"] { box-shadow: none; }
+body.admin .tabbar a[aria-current="page"] { box-shadow: none; }
+.tp-stats .ev, .tp-stats .sn,
+.tp-stats button.ev, .tp-stats button.sn { box-shadow: inset 0 0 0 1px rgba(74, 40, 20, .06); }
+.tp-stats .ev dd, .tp-stats button.ev b { color: var(--pink-700); }
+.tp-stats .sn dd, .tp-stats button.sn b { color: var(--primary); }
+.tp-stats button[aria-pressed="true"].ev { background: var(--pink-100); box-shadow: inset 0 0 0 2px var(--pink); }
+.tp-stats button[aria-pressed="true"].sn { background: var(--blue-100); box-shadow: inset 0 0 0 2px var(--primary-500); }
+
+/* Coluna "Pet" das listas de despesas (Últimas despesas e página Despesas): o selo com o nome
+   do pet não podia encolher e invadia a coluna "Categoria" com nomes longos (ex.: "Laranjinhas").
+   A coluna ganha uma largura mínima e, se o nome ainda não couber, ele quebra dentro do selo. */
+.tp-row .ani { max-width: 100%; min-width: 0; align-items: flex-start; border-radius: 1em; }
+.tp-row .ani svg { margin-top: .15em; }
+.tp-row .ani .nome { min-width: 0; overflow-wrap: anywhere; }
+@media (min-width: 640px) {
+  .tp-rows .hd, .tp-row { grid-template-columns: minmax(0, 1.4fr) minmax(8.5rem, 1.2fr) minmax(0, 1.3fr) 4.5rem 7rem; }
+}
+
+/* Barra de cães e gatos sem pets (ex.: tocar em "0 castrados"): a classe "empty" da barra
+   coincide com a do aviso de lista vazia (.empty, com 56px de espaço), e a barra virava um
+   bloco bege de 112px. Ela volta a ser a barra fina, só sem as cores. */
+.tp-split.empty { padding: 0; margin-top: 0; border-radius: 99px; }
